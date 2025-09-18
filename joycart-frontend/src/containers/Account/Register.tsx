@@ -71,8 +71,21 @@ const Register = ()=> {
                 navigate('/account/login');
             }
         }).catch((e:any)=>{
-            // handle backend error
-            const errorMessage = e?.response?.data || e?.message || 'unknown error.';
+            // 处理后端错误
+            console.error('Register error:', e);
+            console.log('Error response data:', e?.response?.data);
+            
+            let errorMessage = 'Unknown error occurred';
+            
+            // 检查后端返回的结构化错误信息
+            if (e?.response?.data?.message) {
+                errorMessage = e.response.data.message;
+            } else if (e?.response?.data && typeof e.response.data === 'string') {
+                errorMessage = e.response.data;
+            } else if (e?.message) {
+                errorMessage = e.message;
+            }
+            
             message(errorMessage);
         });
     }

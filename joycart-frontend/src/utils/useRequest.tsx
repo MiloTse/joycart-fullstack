@@ -46,10 +46,13 @@ function useRequest<T>(
 
         //bring login token to backend when sending request
         const loginToken = localStorage.getItem('token');
-        const headers = loginToken ? {
-            token: loginToken,
-            Authorization: `Bearer ${loginToken}`,
-        } : {};
+        const headers: any = {
+            'Content-Type': 'application/json',
+        };
+        
+        if (loginToken) {
+            headers['Authorization'] = `Bearer ${loginToken}`;
+        }
 
         //发送异步请求，捕捉异常
         //sending a request, catching an exception
@@ -69,16 +72,18 @@ function useRequest<T>(
                 setData(response.data);
                 return response.data;
             }).catch(e => {
-                if(e?.resopnse?.status === 401) {//401 means unauthorized
+                console.error('Request error:', e);
+                console.log('Response data:', e?.response?.data);
+                
+                if(e?.response?.status === 401) {//401 means unauthorized
                     //if token is invalid, clear it
                     localStorage.removeItem('token');
                     //then directly redirect to login page
                     navigate('/account/login');
-
                 }
 
                 setError(e.message || 'unknown request error.');
-                throw new Error(e);
+                throw e; // 保持原始错误对象，不要包装成新的Error
             }).finally(()=>{
                 setLoaded(true);
             })
