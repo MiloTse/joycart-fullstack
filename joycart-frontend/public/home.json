@@ -1,0 +1,73 @@
+{
+  "success": true,
+  "data": {
+    "location": {
+      "id": "001",
+      "address": "Ottawa(Chinatown store)"
+    },
+    "banners":[{
+      "id": "1135",
+      "imgUrl":"/images/banner01.png"},
+      {
+      "id": "1136",
+      "imgUrl": "/images/external/banner.png"
+    }],
+    "categories": [{
+      "id":"113231",
+      "name": "Produce",
+      "imgUrl":"/images/external/category-1.png"
+    }, {
+        "id": "113232",
+        "name": "Meat & Seafood",
+        "imgUrl": "/images/external/category-2.png"
+    },
+      {
+        "id": "113233",
+        "name": "Fresh Fruit",
+        "imgUrl": "/images/external/category-3.png"
+    },{
+        "id":"113234",
+        "name":"Milk & Dairy",
+        "imgUrl":"/images/external/category-4.png"
+    },{
+        "id":"113235",
+        "name":"Oils & Masala",
+        "imgUrl":"/images/external/category-5.png"
+    }, {
+      "id": "113236",
+      "name":"Snack",
+      "imgUrl":"/images/external/category-6.png"
+    },{
+      "id":"113237",
+      "name":"Appliances",
+      "imgUrl":"/images/external/category-7.png"
+    },{
+      "id":"113238",
+      "name":"Cosmetics",
+      "imgUrl":"/images/external/category-8.png"
+    }],
+    "fresh":[{
+      "id":"1132381",
+      "name":"Domestic pork, skinless pork belly blocks",
+      "imgUrl":"/images/external/fresh-1.png",
+      "price":"66.9"
+    },{
+      "id":"1132382",
+      "name":"Prime live Boston lobster 2 pcs large package",
+      "imgUrl":"/images/external/fresh-2.png",
+      "price":"98"
+    },{
+      "id":"1132383",
+      "name":"Prime imported ported salmon 2 pcs large package",
+      "imgUrl":"/images/external/fresh-3.png",
+      "price":"378"
+    },{
+      "id":"1132384",
+      "name":"Fresh frozen squid head frozen squid tentacles 400g",
+      "imgUrl":"/images/external/fresh-4.png",
+      "price":"39.9"
+    }]
+
+
+  }
+}

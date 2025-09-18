@@ -1,0 +1,49 @@
+{
+  "success": true,
+  "data": [
+    {
+      "shopId": "8137",
+      "shopName": "Ximei Vegetable Store",
+      "cartList": [
+        {
+          "productId": "88391",
+          "imgUrl": "/images/external/category-list-5.png",
+          "weight": "0.45kg",
+          "title": "Weifang Fruit Radish 10kg Sweet Crisp Fruit-type Tianjin Radish",
+          "price": 14.9,
+          "count": 2
+        },
+        {
+          "productId": "88392",
+          "imgUrl": "/images/external/category-list-3.png",
+          "weight": "0.45kg",
+          "title": "City Kitchen Australian Beef Roll 450g Hot Pot Fresh Beef & Lamb Ingredients",
+          "price": 35,
+          "count": 2
+        }
+      ]
+    },
+    {
+      "shopId": "8318",
+      "shopName": "Premium Fruit Market",
+      "cartList": [
+        {
+          "productId": "89391",
+          "imgUrl": "/images/external/category-list-6.png",
+          "weight": "0.9kg",
+          "title": "Premium Fresh Live Fish Three-Cleaned Red Star Grouper Rainbow Tilapia 900g",
+          "price": 69.9,
+          "count": 1
+        },
+        {
+          "productId": "89392",
+          "imgUrl": "/images/external/category-list-2.png",
+          "weight": "1.5kg",
+          "title": "Ximei Domestic Large Shrimp 1.8kg 90-108pcs/box BBQ Hot Pot Fresh Seafood...",
+          "price": 119,
+          "count": 3
+        }
+      ]
+    }
+  ]
+}

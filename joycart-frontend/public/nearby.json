@@ -1,0 +1,23 @@
+{
+  "message": "success",
+  "data": [
+    {
+      "id": "8318",
+      "name": "College Square Store",
+      "phone": "1-613-001-9999",
+      "address": "1385 Woodroffe Ave, Ottawa, ON K4S 1A6, Canada",
+      "distance": "799m",
+      "latitude": "45.3498",
+      "longitude": "-75.7553"
+    },
+    {
+      "id": "8317",
+      "name": "Kanata Technology Park Store",
+      "phone": "1-613-003-8888",
+      "address": "350 Legget Dr, Kanata, ON K2K 3N1, Canada",
+      "distance": "1.1km",
+      "latitude": "45.333",
+      "longitude": "-75.7369"
+    }
+  ]
+}
