@@ -30,15 +30,13 @@ public class LoginResponseDTO {
 
     public static class UserData {
         private int id;
-        private String email;
         private String token;
 
         public UserData() {
         }
 
-        public UserData(int id, String email, String token) {
+        public UserData(int id, String token) {
             this.id = id;
-            this.email = email;
             this.token = token;
         }
 
@@ -48,14 +46,6 @@ public class LoginResponseDTO {
 
         public void setId(int id) {
             this.id = id;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
         }
 
         public String getToken() {

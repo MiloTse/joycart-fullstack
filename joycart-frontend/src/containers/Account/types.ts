@@ -3,7 +3,6 @@ export type LoginResponseType = {
     status: string;
     data: {
         id: number;
-        email: string;
         token: string;
     }
 }

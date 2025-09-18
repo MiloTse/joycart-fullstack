@@ -89,7 +89,6 @@ public class UserController {
             // create return responseDTO
             LoginResponseDTO.UserData userData = new LoginResponseDTO.UserData(
                 user.getId(), 
-                user.getEmail(), 
                 token
             );
             LoginResponseDTO response = new LoginResponseDTO("success", userData);
