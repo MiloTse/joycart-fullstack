@@ -1,7 +1,12 @@
 
 export type LoginResponseType = {
     status:string,
-    data:string
+    data: {
+        token: string;
+        userId: number;
+        expiresIn: number;
+        refreshToken?: string;
+    }
 }
 
 
