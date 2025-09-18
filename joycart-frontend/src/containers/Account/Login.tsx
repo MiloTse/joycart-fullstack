@@ -52,9 +52,6 @@ const Login = ()=> {
             }
          }).catch((e:any)=>{
              // 处理后端错误
-             console.error('Login error:', e);
-             console.log('Error response data:', e?.response?.data);
-             
              let errorMessage = 'Unknown error occurred';
              
              // 检查后端返回的结构化错误信息

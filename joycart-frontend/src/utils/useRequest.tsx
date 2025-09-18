@@ -72,9 +72,6 @@ function useRequest<T>(
                 setData(response.data);
                 return response.data;
             }).catch(e => {
-                console.error('Request error:', e);
-                console.log('Response data:', e?.response?.data);
-                
                 if(e?.response?.status === 401) {//401 means unauthorized
                     //if token is invalid, clear it
                     localStorage.removeItem('token');
