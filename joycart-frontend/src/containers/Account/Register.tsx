@@ -3,6 +3,7 @@ import React, {  useState} from "react";
 import useRequest from "../../utils/useRequest";
 import { message } from "../../utils/message";
 import {useNavigate} from "react-router-dom";
+import {API_ENDPOINTS} from "../../config/api";
 //1. 首先定义接口返回内容
 // type ResponseType = {
 //     status:string,
@@ -53,27 +54,26 @@ const Register = ()=> {
 
 
         request({
-                url:'/register.json',
-                method:'GET',
-                // The original POST request code was implemented using Charles Proxy, and it is currently commented out to facilitate future conversion into a full-stack project.
-                // method:'POST',
-                // data:{
-                //     userName:userName,
-                //     phoneNumber:phoneNumber,
-                //     password:password
-                // }
+                url: API_ENDPOINTS.REGISTER,
+                method:'POST',
+                data:{
+                    username:userName,
+                    phoneNumber:phoneNumber,
+                    password:password
+                }
             }
 
         ).then((data)=>{
             data && console.log(data);
-            if(data?.status==='success') {
+            // 后端成功返回User对象，包含id字段
+            if(data?.id) {
+                message('Register Successfully！');
                 navigate('/account/login');
             }
         }).catch((e:any)=>{
-            // alert(e?.message);
-            // setShowModal(true);
-            // setMessage(e?.message || 'unknown error.');
-            message(e?.message || 'unknown error.');
+            // handle backend error
+            const errorMessage = e?.response?.data || e?.message || 'unknown error.';
+            message(errorMessage);
         });
     }
 
