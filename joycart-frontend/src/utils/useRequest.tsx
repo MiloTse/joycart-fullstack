@@ -2,6 +2,7 @@ import axios, {AxiosRequestConfig} from "axios";
 import {useState, useRef, useCallback, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {message} from "./message";
+import {API_CONFIG} from "../config/api";
 
 //默认请求参数
 const defaultRequestConfig= {
@@ -56,7 +57,7 @@ function useRequest<T>(
                 //passing three parameters as obj
             //if passing, use requestOptions?.url
             //if not passing, use options.url instead.(outer)
-                baseURL: '',
+                baseURL: API_CONFIG.BASE_URL,
                 url: requestOptions.url,
                 method: requestOptions.method,
                 signal: controllerRef.current.signal,
