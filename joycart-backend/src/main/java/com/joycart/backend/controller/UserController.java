@@ -3,6 +3,7 @@ package com.joycart.backend.controller;
 import com.joycart.backend.model.User;
 import com.joycart.backend.dto.LoginRequestDTO;
 import com.joycart.backend.dto.LoginResponseDTO;
+import com.joycart.backend.dto.ErrorResponseDTO;
 import com.joycart.backend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,12 +61,14 @@ public class UserController {
         // 入参参数校验
         if (loginRequestDTO.getPhoneNumber() == null || loginRequestDTO.getPhoneNumber().trim().isEmpty()) {
             logger.warn("Login failed - Phone number is empty");
-            return ResponseEntity.badRequest().body("Phone number cannot be empty!");
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Phone number cannot be empty", 400);
+            return ResponseEntity.badRequest().body(errorResponse);
         }
 
         if (loginRequestDTO.getPassword() == null || loginRequestDTO.getPassword().trim().isEmpty()) {
             logger.warn("Login failed - Password is empty for phone: {}", loginRequestDTO.getPhoneNumber());
-            return ResponseEntity.badRequest().body("Password cannot be empty!");
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Password cannot be empty", 400);
+            return ResponseEntity.badRequest().body(errorResponse);
         }
 
         try {
@@ -73,14 +76,16 @@ public class UserController {
             
             if (!userOptional.isPresent()) {
                 logger.warn("Login failed - User not found for phone: {}", loginRequestDTO.getPhoneNumber());
-                return ResponseEntity.badRequest().body("User not found!");
+                ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Phone number not registered", 400);
+                return ResponseEntity.badRequest().body(errorResponse);
             }
 
             User user = userOptional.get();
 
             if (!user.getPassword().equals(loginRequestDTO.getPassword())) {
                 logger.warn("Login failed - Invalid password for phone: {}", loginRequestDTO.getPhoneNumber());
-                return ResponseEntity.badRequest().body("Invalid password!");
+                ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Incorrect password", 400);
+                return ResponseEntity.badRequest().body(errorResponse);
             }
 
             //use simple token, would be replaced with jwt later
@@ -99,7 +104,8 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Error during login for phone: {} - {}", 
                     loginRequestDTO.getPhoneNumber(), e.getMessage(), e);
-            return ResponseEntity.badRequest().body("Login error: " + e.getMessage());
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Login service temporarily unavailable", 500);
+            return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
 
