@@ -1,0 +1,35 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-transition-delay: 99999s;
+    -webkit-transition: color 99999s ease-out, background-color 99999s ease-out;
+}
+
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+    font-family: 'iconfont';  /* Project id 4876302 */
+    src: url('//at.alicdn.com/t/c/font_4876302_k353f4uz3bj.woff2?t=1747022539104') format('woff2'),
+    url('//at.alicdn.com/t/c/font_4876302_k353f4uz3bj.woff?t=1747022539104') format('woff'),
+    url('//at.alicdn.com/t/c/font_4876302_k353f4uz3bj.ttf?t=1747022539104') format('truetype');
+}
+.iconfont {
+    font-family: "iconfont" !important;
+
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+.page {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: #FFFFFF;
+}

@@ -1,0 +1,116 @@
+.search-list-page {
+  font-size:.14rem;
+  background: #F5F9FA;
+  overflow-y: scroll;
+  a {
+    text-decoration: none;
+  }
+  .search {
+    display: flex;
+    padding:.08rem .32rem .06rem 0;
+    background: #fff;
+    &-back-link {
+      text-decoration: none;
+    }
+     &-back-icon {
+      line-height:.32rem;
+      width: .48rem;
+      font-size: .18rem;
+      text-align: center;
+      color: #242424;
+    }
+
+    &-area {
+      position: relative;
+      display: flex;
+      line-height: .32rem;
+      background: #F5F9FA;
+      border-radius: .16rem;
+      flex: 1;
+      .search-icon {
+        width:.3rem;
+        text-align: center;
+        color: #75818F;
+      }
+      .search-input {
+        flex:1;
+        padding-right:.1rem;
+        background:none;
+        outline:none;
+        border: none;
+        color: #242424;
+      }
+    }
+    &-clear {
+      position: absolute;
+      font-size:.2rem;
+      color: #75818F;
+      right: .4rem;
+      top:.1rem;
+    }
+  }
+  .tab {
+    display: flex;
+    background: #fff;
+    &-item {
+      flex: 1;
+      line-height: .4rem;
+      text-align: center;
+      color: #B1B1B1;
+      font-size: .14rem;
+    }
+    &-item-active {
+      color: #242424;
+      border-bottom: .02rem solid #0084FF;
+    }
+  }
+  .list {
+    padding:0 .1rem;
+    .item {
+      display: flex;
+      margin-top: .1rem;
+      padding: .1rem;
+      background: #fff;
+      &-img {
+        width: 1.08rem;
+        height: 1.08rem;
+        margin-right: .1rem;
+      }
+      &-content {
+        flex: 1;
+        position: relative;
+      }
+      &-title {
+        color: #242424;
+        font-size: .14rem;
+        line-height: .22rem;
+      }
+      &-price {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        color: #F81C00;
+        font-size: .17rem;
+        line-height:.24em;
+      }
+      &-price-symbol {
+        font-size: .17rem;
+        margin-right: .04rem;
+      }
+      &-sales {
+        position: absolute;
+        right: 0;
+        bottom: 0.06rem;
+        color: #B1B1B1;
+        font-size: .15rem;
+        line-height:.01rem;
+      }
+    }
+  }
+  .bottom {
+    line-height: 1rem;
+    color:#B3C1C4;
+    font-size:.12rem;
+    text-align:center;
+  }
+}

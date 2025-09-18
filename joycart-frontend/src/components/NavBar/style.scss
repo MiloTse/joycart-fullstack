@@ -1,0 +1,44 @@
+.navbar {
+    position: fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index: 3;
+    height:.49rem;
+    display: flex;
+    background:#FFF;
+    border-top:.01rem solid #F5F9FA;
+    font-size:.12rem;
+    color:#B3C1C4;
+    text-align:center;
+
+    .iconfont {
+        font-size: 22px;
+        margin: 4px 0;
+    }
+    &-item {
+        flex:1;
+        //adjust for changing element from div  to button
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-size: inherit;
+        font-family: inherit;
+        color: inherit;
+        cursor: pointer;
+        outline: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    &-item-active {
+        color:#73D13D;
+    }
+    //make sure not inherit browser's default style
+    p {
+        margin: 0;
+        padding: 0;
+    }
+}
