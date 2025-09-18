@@ -1,9 +1,9 @@
 package com.joycart.backend.controller;
 
-import com.joycart.backend.model.User;
+import com.joycart.backend.dto.ErrorResponseDTO;
 import com.joycart.backend.dto.LoginRequestDTO;
 import com.joycart.backend.dto.LoginResponseDTO;
-import com.joycart.backend.dto.ErrorResponseDTO;
+import com.joycart.backend.model.User;
 import com.joycart.backend.service.UserService;
 import com.joycart.backend.util.JwtUtil;
 import org.slf4j.Logger;
