@@ -5,6 +5,7 @@ import com.joycart.backend.dto.LoginRequestDTO;
 import com.joycart.backend.dto.LoginResponseDTO;
 import com.joycart.backend.dto.ErrorResponseDTO;
 import com.joycart.backend.service.UserService;
+import com.joycart.backend.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
 
      @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user){
@@ -88,8 +92,8 @@ public class UserController {
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
-            //use simple token, would be replaced with jwt later
-            String token = "token_" + user.getId() + "_" + System.currentTimeMillis();
+            // Generate JWT token
+            String token = jwtUtil.generateToken(user.getId(), user.getPhoneNumber());
             
             // create return responseDTO
             LoginResponseDTO.UserData userData = new LoginResponseDTO.UserData(
