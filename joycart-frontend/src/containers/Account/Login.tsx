@@ -1,8 +1,9 @@
 import type {LoginResponseType} from "./types";
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import useRequest from "../../utils/useRequest";
 import {useNavigate} from "react-router-dom";
 import { message } from "../../utils/message";
+import {API_ENDPOINTS} from "../../config/api";
 //1. 首先定义接口返回内容
 // type ResponseType = {
 //     status:string,
@@ -33,30 +34,26 @@ const Login = ()=> {
         }
         request(
             {
-                url: '/login.json',
-                method: 'GET',
-                // The original POST request code was implemented using Charles Proxy, and it is currently commented out to facilitate future conversion into a full-stack project.
-                // method: 'POST',
-                // data: {
-                //     phoneNumber: phoneNumber,
-                //     password: password,
-                // }
+                url: API_ENDPOINTS.LOGIN,
+                method: 'POST',
+                data: {
+                    phoneNumber: phoneNumber,
+                    password: password,
+                }
             }
         ).then((data)=>{
             data && console.log(data);
-            //validate
-            const {data: token } = data;
-            console.log(token)
-            if(token) {
-                localStorage.setItem('token', token);
+            // 根据后端LoginResponseDTO格式处理响应
+            if(data.status === 'success' && data.data.token) {
+                localStorage.setItem('token', data.data.token);
+                message('Login Successfully！');
                 //if login success, redirect to home page
                 navigate('/home');
             }
          }).catch((e:any)=>{
-             // alert(e?.message);
-            // setShowModal(true);
-            // setMessage(e?.message || 'unknown error.');
-            message(e?.message || 'unknown error.');
+             // 处理后端错误
+             const errorMessage = e?.response?.data || e?.message || 'unknown error.';
+             message(`Login failed: ${errorMessage}`);
         });
     }
 
