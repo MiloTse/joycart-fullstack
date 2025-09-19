@@ -39,7 +39,8 @@ const Home =() => {
 
     const [requestData, setRequestData] = useState(defaultRequestData);
     //data： 请求发送返回的结果
-    const {data} = useRequest<ResponseType>(requestData);
+    // 临时禁用自动请求，避免Network Error
+    const {data} = useRequest<ResponseType>({...requestData, manual: true});
 
     console.log(data);
 
