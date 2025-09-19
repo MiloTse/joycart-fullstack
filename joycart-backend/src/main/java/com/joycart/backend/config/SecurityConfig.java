@@ -1,5 +1,6 @@
 package com.joycart.backend.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,6 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 从配置文件读取允许的CORS源
     @Value("${security.cors.allowed-origins}")
     private String allowedOrigins;
+    
+    // 注入JWT过滤器
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -50,7 +56,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             // 配置session管理：无状态
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
+            // 添加JWT过滤器到Spring Security过滤器链中
+            // 在UsernamePasswordAuthenticationFilter之前执行
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     /**
