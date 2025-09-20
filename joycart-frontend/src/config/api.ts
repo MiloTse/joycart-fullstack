@@ -7,4 +7,5 @@ export const API_CONFIG = {
 export const API_ENDPOINTS = {
     REGISTER: '/users/register',
     LOGIN: '/users/login',
+    HOME: '/home',
 };
