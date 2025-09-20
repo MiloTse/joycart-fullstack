@@ -7,23 +7,16 @@ import Banner from "./components/Banner";
 import Category from "./components/Category";
 import Card from "./components/Card";
 import NavBar from "../../components/NavBar/NavBar";
-//import { message } from "../../utils/message";
+import {API_ENDPOINTS} from "../../config/api";
 
 
 
 
 
-//defaultRequestData
+//defaultRequestData - 使用真实的后端API
 const defaultRequestData = {
-    url: '/home.json',
+    url: API_ENDPOINTS.HOME,
     method: 'GET',
-    // The original POST request code was implemented using Charles Proxy, and it is currently commented out to facilitate future conversion into a full-stack project.
-    // method: 'POST',
-    // data: {
-    //     //default value
-    //     latitude:  45.3497856,
-    //     longitude: -75.7554394,
-    // }
 }
 
 const Home =() => {
@@ -39,8 +32,8 @@ const Home =() => {
 
     const [requestData, setRequestData] = useState(defaultRequestData);
     //data： 请求发送返回的结果
-    // 临时禁用自动请求，避免Network Error
-    const {data} = useRequest<ResponseType>({...requestData, manual: true});
+    // 启用自动请求，调用真实的后端API
+    const {data} = useRequest<ResponseType>(requestData);
 
     console.log(data);
 
