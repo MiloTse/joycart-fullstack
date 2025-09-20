@@ -7,6 +7,7 @@ import type {ResponseType, CartResponseType} from "./types";
 import Popover from "../../components/Popover/Popover";
 import {message} from "../../utils/message";
 import {CartChangeResponseType} from "../../types";
+import {API_ENDPOINTS} from "../../config/api";
 
 
 const Detail = () => {
@@ -17,9 +18,8 @@ const Detail = () => {
 
     //assemble request logic of Detail product
     const requestData = useRef({
-        url: '/detail.json',
+        url: `${API_ENDPOINTS.PRODUCT_DETAIL}/${params?.id}`,
         method: 'GET',
-        params: { id: params?.id},
     });
 
 
