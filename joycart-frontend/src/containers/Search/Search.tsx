@@ -3,11 +3,13 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useState} from "react";
 import useRequest from "../../utils/useRequest";
 import type {ResponseType} from "./types";
+import {API_ENDPOINTS} from "../../config/api";
 
 
-//defaultRequestData
+//defaultRequestData - 改为调用真实后端API
+//defaultRequestData - changed to call real backend API
 const defaultRequestData = {
-    url: '/hotSearchList.json',
+    url: API_ENDPOINTS.SEARCH_HOT,
     method: 'GET',
     params: { shopId: ''},
 }
