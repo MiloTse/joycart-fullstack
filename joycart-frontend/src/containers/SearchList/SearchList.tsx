@@ -54,6 +54,7 @@ const SearchList = () => {
             //request data. old data assign to new data
             const newRequestData = {
                 ...requestData,
+                url: API_ENDPOINTS.SEARCH_PRODUCTS, // 确保使用正确的API端点
             }
             //current key assign to newRequestData's keyword when data changed
             newRequestData.params.keyword = keyword;
@@ -66,6 +67,7 @@ const SearchList = () => {
 
         const newRequestData = {
             ...requestData,
+            url: API_ENDPOINTS.SEARCH_PRODUCTS, // 确保使用正确的API端点
         }
          newRequestData.params.type = tabValue;
         setRequestData(newRequestData);
