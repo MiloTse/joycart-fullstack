@@ -5,6 +5,7 @@ import useRequest from "../../utils/useRequest";
 import type {ResponseType, ListItemType, CartSubmitArray, SubmitResponseType} from "./types";
 import {message} from "../../utils/message";
 import {useNavigate} from "react-router-dom";
+import {API_ENDPOINTS} from "../../config/api";
 
 function Cart() {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ function Cart() {
     const [list, setList ] = useState<ListItemType[]>([]);
     useEffect(() => {
         request({
-                url: '/cartProducts.json',
+                url: API_ENDPOINTS.CART_PRODUCTS,
                 method: 'GET'
             }).then((data)=>{
             const list = data.data;
