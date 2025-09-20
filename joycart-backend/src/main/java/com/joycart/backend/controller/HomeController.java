@@ -37,12 +37,16 @@ public class HomeController {
                 new BannerInfo("1136", "/images/external/banner.png")
             );
             
-            // 硬编码分类信息（模拟原始JSON数据）
+            // 硬编码分类信息（模拟原始JSON数据 - 完整8个分类）
             List<Category> categories = Arrays.asList(
                 createMockCategory(113231L, "Produce", "/images/external/category-1.png"),
                 createMockCategory(113232L, "Meat & Seafood", "/images/external/category-2.png"),
                 createMockCategory(113233L, "Fresh Fruit", "/images/external/category-3.png"),
-                createMockCategory(113234L, "Milk & Dairy", "/images/external/category-4.png")
+                createMockCategory(113234L, "Milk & Dairy", "/images/external/category-4.png"),
+                createMockCategory(113235L, "Oils & Masala", "/images/external/category-5.png"),
+                createMockCategory(113236L, "Snack", "/images/external/category-6.png"),
+                createMockCategory(113237L, "Appliances", "/images/external/category-7.png"),
+                createMockCategory(113238L, "Cosmetics", "/images/external/category-8.png")
             );
             
             // 硬编码新鲜商品信息（模拟原始JSON数据）
