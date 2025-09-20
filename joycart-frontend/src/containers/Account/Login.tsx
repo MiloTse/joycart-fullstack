@@ -13,6 +13,8 @@ import {API_ENDPOINTS} from "../../config/api";
 const Login = ()=> {
      const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
+    //false means not select to agree to terms, true means select
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     const navigate = useNavigate();
 
@@ -30,6 +32,10 @@ const Login = ()=> {
         }
         if(!password ) {
              message('password should not be empty.');
+            return;
+        }
+        if(!agreedToTerms) {
+            message('Please agree to the Terms and Conditions and Privacy Policy.');
             return;
         }
         request(
@@ -97,7 +103,11 @@ const Login = ()=> {
                 login
             </div>
             <p className="notice">
-                <input type="checkbox"/>
+                <input 
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                />
                 I accept the
                 <a href="#">Terms and Conditions</a>
                 &
