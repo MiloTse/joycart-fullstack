@@ -68,12 +68,13 @@ public class CategoryController {
         logger.info("Received category products request");
         
         try {
-            // 硬编码商品列表数据（模拟原始JSON）
+            // 硬编码商品列表数据（包含前端原有的chicken wing商品）
             List<Map<String, Object>> products = Arrays.asList(
                 createMockProduct("1132381", "Domestic pork, skinless pork belly blocks", "/images/external/fresh-1.png", 66.9, 156),
                 createMockProduct("1132382", "Prime live Boston lobster 2 pcs large package", "/images/external/fresh-2.png", 98.0, 89),
                 createMockProduct("1132383", "Prime imported salmon 2 pcs large package", "/images/external/fresh-3.png", 378.0, 45),
-                createMockProduct("1132384", "Fresh frozen squid head frozen squid tentacles 400g", "/images/external/fresh-4.png", 39.9, 203)
+                createMockProduct("1132384", "Fresh frozen squid head frozen squid tentacles 400g", "/images/external/fresh-4.png", 39.9, 203),
+                createMockProduct("1132385", "chicken wing middle 1000g/...", "/images/external/fresh-1.png", 156.0, 156)
             );
             
             Map<String, Object> response = new HashMap<>();
