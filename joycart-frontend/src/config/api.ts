@@ -10,4 +10,5 @@ export const API_ENDPOINTS = {
     HOME: '/home',
     CATEGORY_LIST: '/category/list',
     CATEGORY_PRODUCTS: '/category/products',
+    CART_PRODUCTS: '/cart/products',
 };
