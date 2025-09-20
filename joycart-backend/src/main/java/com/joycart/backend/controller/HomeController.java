@@ -69,8 +69,12 @@ public class HomeController {
     }
     
     private Category createMockCategory(Long id, String name, String imgUrl) {
-        Category category = new Category(name, imgUrl, "");
+        Category category = new Category();
         category.setId(id);
+        category.setName(name);
+        category.setImgUrl(imgUrl);
+        category.setDescription("");
+        category.setActive(true);
         return category;
     }
     
