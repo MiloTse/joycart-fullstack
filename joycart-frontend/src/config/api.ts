@@ -8,4 +8,5 @@ export const API_ENDPOINTS = {
     REGISTER: '/users/register',
     LOGIN: '/users/login',
     HOME: '/home',
+    CATEGORY_LIST: '/category/list',
 };
