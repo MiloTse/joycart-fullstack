@@ -8,6 +8,7 @@ import NavBar from "../../components/NavBar/NavBar";
 import {useNavigate} from "react-router-dom";
 import Popover from "../../components/Popover/Popover";
 import {CartChangeResponseType} from "../../types";
+import {API_ENDPOINTS} from "../../config/api";
 
 
 const Category = () => {
@@ -62,16 +63,15 @@ const Category = () => {
 
     useEffect(() => {
         tagRequest({
-                url:'/categoryAndTagList.json',
+                url: API_ENDPOINTS.CATEGORY_LIST,
                 method:'GET',
-
             }
         ).then((data)=>{
              if(data?.success) {
                  const result = data.data;
                 console.log(result);
                 setCategories(result.category);
-                setTags(result.tag);//should same as ts file and json
+                setTags(result.tag);
             }
         }).catch((e:any)=>{
             message(e?.message);
