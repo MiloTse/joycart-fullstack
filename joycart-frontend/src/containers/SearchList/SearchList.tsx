@@ -3,13 +3,14 @@ import './style.scss';
 import {Link, useParams} from 'react-router-dom';
 import useRequest from "../../utils/useRequest";
 import type {ResponseType} from "./types";
+import {API_ENDPOINTS} from "../../config/api";
 
 const SearchList = () => {
     const params = useParams<{ shopId : string; keyword: string}>();
     const [keyword, setKeyword] = useState(params.keyword);
     const [tabValue,setTabValue] = useState('default');
     const [requestData, setRequestData] = useState({
-        url: '/shopSearchList.json',
+        url: API_ENDPOINTS.SEARCH_PRODUCTS,
         method: 'GET',
         params: {
             keyword: params.keyword,
