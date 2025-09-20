@@ -48,7 +48,9 @@ public class HomeController {
             // 硬编码新鲜商品信息（模拟原始JSON数据）
             List<Product> freshProducts = Arrays.asList(
                 createMockProduct(1132381L, "Domestic pork, skinless pork belly blocks", "/images/external/fresh-1.png", "66.9"),
-                createMockProduct(1132382L, "Prime live Boston lobster 2 pcs large package", "/images/external/fresh-2.png", "98")
+                createMockProduct(1132382L, "Prime live Boston lobster 2 pcs large package", "/images/external/fresh-2.png", "98"),
+                createMockProduct(1132383L, "Prime imported ported salmon 2 pcs large package", "/images/external/fresh-3.png", "378"),
+                createMockProduct(1132384L, "Fresh frozen squid head frozen squid tentacles 400g", "/images/external/fresh-4.png", "39.9")
             );
             
             // 构造响应数据
