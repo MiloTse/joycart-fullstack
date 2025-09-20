@@ -38,16 +38,9 @@ const Category = () => {
     const {request: cartChangeRequest  } = useRequest<CartChangeResponseType>({manual: true});
 
      useEffect(() => {
-         productRequest({
-                url:'/categoryProduct.json',
+        productRequest({
+                url: API_ENDPOINTS.CATEGORY_PRODUCTS,
                 method:'GET',
-                // The original POST request code was implemented using Charles Proxy, and it is currently commented out to facilitate future conversion into a full-stack project.
-                // method:'POST',
-                // data: {
-                //     tag:currentTag,
-                //     keyword ,
-                //     category: currentCategory,
-                // },
             }
         ).then((data)=>{
             if(data?.success) {
