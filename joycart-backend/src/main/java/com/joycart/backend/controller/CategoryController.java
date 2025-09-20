@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,30 @@ public class CategoryController {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             errorResponse.put("data", null);
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+    
+    @GetMapping("/products")
+    public ResponseEntity<?> getCategoryProducts() {
+        logger.info("Received category products request");
+        
+        try {
+            // 硬编码商品列表数据（模拟原始JSON）
+            List<Map<String, Object>> products = new ArrayList<>();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", products);
+            
+            logger.info("Category products retrieved successfully");
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error retrieving category products: {}", e.getMessage(), e);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("data", new ArrayList<>());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
