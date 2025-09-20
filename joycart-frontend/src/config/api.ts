@@ -9,4 +9,5 @@ export const API_ENDPOINTS = {
     LOGIN: '/users/login',
     HOME: '/home',
     CATEGORY_LIST: '/category/list',
+    CATEGORY_PRODUCTS: '/category/products',
 };
