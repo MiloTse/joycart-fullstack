@@ -1,6 +1,7 @@
 import './style.scss';
 import React, { useEffect, useRef} from 'react';
 import {useNavigate} from "react-router-dom";
+import useRequest from "../../utils/useRequest";
 
 //define a custom hook to handle animation
 const useRefAnimation = ()=> {
@@ -36,16 +37,39 @@ const Guide =() => {
     },[navigate]);
 */
 
+    // 使用useRequest来验证token有效性
+    // Use useRequest to validate token validity
+    const {request: validateToken} = useRequest({manual: true});
+
     //simple way to handle click event without useCallback hook without buffering
-    function handleIconClick() {
-        if(localStorage.getItem('token')) {
-            navigate('/home');
-        }else {
+    async function handleIconClick() {
+        const token = localStorage.getItem('token');
+        
+        if(!token) {
+            // 没有token，直接跳转到登录页面
+            // No token, redirect to login page directly
             navigate('/account/login');
+            return;
         }
 
-
-
+        try {
+            // 有token，这里需要验证其有效性 - 尝试调用需要认证的API
+            // Has token, here should validate its validity - try to call an authenticated API
+            await validateToken({
+                url: '/home',
+                method: 'GET'
+            });
+            
+            // token有效，跳转到home页面
+            // Token is valid, redirect to home page
+            navigate('/home');
+        } catch (error) {
+            console.log("invalid token:", token);
+            // token无效或验证失败，清除token并跳转到登录页面
+            // Token is invalid or validation failed, clear token and redirect to login page
+            localStorage.removeItem('token');
+            navigate('/account/login');
+        }
     }
 
 
