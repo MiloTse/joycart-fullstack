@@ -69,7 +69,12 @@ public class CategoryController {
         
         try {
             // 硬编码商品列表数据（模拟原始JSON）
-            List<Map<String, Object>> products = new ArrayList<>();
+            List<Map<String, Object>> products = Arrays.asList(
+                createMockProduct("1132381", "Domestic pork, skinless pork belly blocks", "/images/external/fresh-1.png", 66.9, 156),
+                createMockProduct("1132382", "Prime live Boston lobster 2 pcs large package", "/images/external/fresh-2.png", 98.0, 89),
+                createMockProduct("1132383", "Prime imported salmon 2 pcs large package", "/images/external/fresh-3.png", 378.0, 45),
+                createMockProduct("1132384", "Fresh frozen squid head frozen squid tentacles 400g", "/images/external/fresh-4.png", 39.9, 203)
+            );
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -92,5 +97,15 @@ public class CategoryController {
         category.put("id", id);
         category.put("name", name);
         return category;
+    }
+    
+    private Map<String, Object> createMockProduct(String id, String title, String imgUrl, double price, int sales) {
+        Map<String, Object> product = new HashMap<>();
+        product.put("id", id);
+        product.put("title", title);
+        product.put("imgUrl", imgUrl);
+        product.put("price", price);
+        product.put("sales", sales);
+        return product;
     }
 }
