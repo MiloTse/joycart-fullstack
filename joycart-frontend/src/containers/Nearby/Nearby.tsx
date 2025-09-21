@@ -3,10 +3,12 @@ import useRequest from "../../utils/useRequest";
 import {useLocation, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import type {ResponseType} from "./types";
+import {API_ENDPOINTS} from "../../config/api";
 
 const defaultRequestData = {
-    url: '/nearby.json',
+    url: API_ENDPOINTS.NEARBY_STORES,
     method: 'GET',
+    params: {}, // 可以在这里添加位置参数
     // The original POST request code was implemented using Charles Proxy, and it is currently commented out to facilitate future conversion into a full-stack project.
     // method: 'POST',
     // data: {
@@ -19,13 +21,16 @@ const Nearby = () => {
     const localLocation = localStorage.getItem('location');
     const locationHistory = localLocation ? JSON.parse(localLocation) : null;
     
-   // 位置信息功能暂时禁用,改为GET请求, 解决停用Charles Proxy的404请求报错问题。
-    // if (locationHistory) {
-    //     defaultRequestData.data.latitude = locationHistory.latitude;
-    //     defaultRequestData.data.longitude = locationHistory.longitude;
-    // }
+    // 构建请求数据，如果有位置信息就添加到参数中
+    const requestData = {
+        ...defaultRequestData,
+        params: locationHistory ? {
+            latitude: locationHistory.latitude,
+            longitude: locationHistory.longitude
+        } : {}
+    };
 
-    const { data } = useRequest<ResponseType>(defaultRequestData);
+    const { data } = useRequest<ResponseType>(requestData);
     const navigate = useNavigate();
      const [keyword, setKeyword] = useState('');
 
