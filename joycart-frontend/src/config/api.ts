@@ -15,4 +15,5 @@ export const API_ENDPOINTS = {
     SEARCH_HOT: '/search/hot',
     SEARCH_PRODUCTS: '/search/products',
     NEARBY_STORES: '/nearby/stores',
+    USER_PROFILE: '/user/profile',
 };
