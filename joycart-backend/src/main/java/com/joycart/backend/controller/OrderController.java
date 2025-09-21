@@ -5,8 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/order")
@@ -173,13 +172,37 @@ public class OrderController {
         return orderData;
     }
 
-    private Object createTimeRange() {
-        // 简化时间范围数据
-        return new Object[][][]{
-            {{"label", "2025-05-09"}, {"value", "2025-05-09"}},
-            {{"label", "09"}, {"value", "09"}, {"label", "10"}, {"value", "10"}},
-            {{"label", "00"}, {"value", "00"}, {"label", "15"}, {"value", "15"}}
-        };
+    private List<List<Map<String, String>>> createTimeRange() {
+        // 创建时间选择器数据格式（参考原始orderDetail.json格式）
+        List<List<Map<String, String>>> timeRange = new ArrayList<>();
+        
+        // 日期选项（第一列）
+        List<Map<String, String>> dateOptions = Arrays.asList(
+            Map.of("label", "2025-05-09", "value", "2025-05-09"),
+            Map.of("label", "2025-05-10", "value", "2025-05-10"),
+            Map.of("label", "2025-05-11", "value", "2025-05-11")
+        );
+        
+        // 小时选项（第二列）
+        List<Map<String, String>> hourOptions = Arrays.asList(
+            Map.of("label", "09", "value", "09"),
+            Map.of("label", "10", "value", "10"),
+            Map.of("label", "11", "value", "11")
+        );
+        
+        // 分钟选项（第三列）
+        List<Map<String, String>> minuteOptions = Arrays.asList(
+            Map.of("label", "00", "value", "00"),
+            Map.of("label", "15", "value", "15"),
+            Map.of("label", "30", "value", "30"),
+            Map.of("label", "45", "value", "45")
+        );
+        
+        timeRange.add(dateOptions);
+        timeRange.add(hourOptions);
+        timeRange.add(minuteOptions);
+        
+        return timeRange;
     }
 
     private Object createShopData() {
