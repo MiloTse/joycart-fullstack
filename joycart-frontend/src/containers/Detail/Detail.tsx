@@ -143,7 +143,7 @@ const Detail = () => {
             </div>
             {/*docker area */}
             <div className='docker'>
-                <div className='cart-icon'>
+                <div className='cart-icon' onClick={() => navigate('/cart')} style={{ cursor: 'pointer' }}>
                     <div className='iconfont'>
                         &#xe949;
                         <span className='icon-count'>{count}</span>
