@@ -46,6 +46,34 @@ public class OrderController {
     }
 
     /**
+     * 获取用户地址列表
+     * @return 用户地址列表
+     */
+    @GetMapping("/addresses")
+    public ResponseEntity<?> getUserAddresses() {
+        logger.info("Received user addresses request");
+        
+        try {
+            // 硬编码用户地址数据（实际项目中应该根据JWT token获取用户的地址）
+            Object[] addressList = {
+                createAddressItem("1", "John Zhang", "13800138000", 
+                    "Room 101, Unit 1, Building 1, Residential Complex, Chaoyang District, Beijing", true),
+                createAddressItem("2", "Mike Li", "13900139000", 
+                    "Room 2001, 20th Floor, Office Building, Pudong New Area, Shanghai", false),
+                createAddressItem("3", "Jerry Wang", "1-613-727-4723", 
+                    "1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8", false)
+            };
+            
+            logger.info("User addresses retrieved successfully, found {} addresses", addressList.length);
+            return ResponseEntity.ok(addressList);
+            
+        } catch (Exception e) {
+            logger.error("Error retrieving user addresses: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().body(new Object[]{});
+        }
+    }
+
+    /**
      * 获取订单详情
      * @param id 订单ID
      * @return 订单详情数据
@@ -171,5 +199,16 @@ public class OrderController {
         shop1.put("cartList", new Object[]{product1});
         
         return new Object[]{shop1};
+    }
+
+    private Map<String, Object> createAddressItem(String id, String name, String phone, 
+                                                  String address, boolean isDefault) {
+        Map<String, Object> item = new HashMap<>();
+        item.put("id", id);
+        item.put("name", name);
+        item.put("phone", phone);
+        item.put("address", address);
+        item.put("isDefault", isDefault);
+        return item;
     }
 }
