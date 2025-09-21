@@ -6,6 +6,7 @@ import {message} from "../../utils/message";
 import {useNavigate, useParams} from "react-router-dom";
 import Popover from "../../components/Popover/Popover";
 import { Picker } from 'antd-mobile';
+import {API_ENDPOINTS} from "../../config/api";
 
 
 
@@ -68,23 +69,23 @@ import { Picker } from 'antd-mobile';
 
 
      function handleOrderSubmit() {
-         const orderId =params.id;
-         const addressId =data?.address.id;
-         const time =data?.time;
+         const orderId = params.id;
+         const addressId = data?.address.id;
+         const timeArray = data?.time;
+         const timeString = timeArray ? timeArray.join(' ') : ''; // 将时间数组转换为字符串
+         
          paymentRequest({
-             method:'GET',
-             url:'/pay.json',
-             // The original POST request code was implemented using Charles Proxy, and it is currently commented out to facilitate future conversion into a full-stack project.
-             // method:'POST',
-             // data:{
-             //     orderId,
-             //     addressId,
-             //     time,
-             //     payWay
-             // }
+             method: 'POST',
+             url: API_ENDPOINTS.ORDER_PAY,
+             data: {
+                 orderId,
+                 addressId,
+                 time: timeString,
+                 payWay
+             }
          }).then((response)=>{
              if(response.data){
-
+                 message('Payment successful!');
                  navigate('/home');
              }else{
                  message('Payment failed');
