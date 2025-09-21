@@ -55,6 +55,43 @@ public class CartController {
     }
 
     /**
+     * 获取商品的购物车信息（用于Category页面弹窗）
+     * @param productId 商品ID
+     * @return 商品的购物车信息
+     */
+    @GetMapping("/product-info")
+    public ResponseEntity<?> getCartProductInfo(@RequestParam String productId) {
+        logger.info("Received cart product info request for productId: {}", productId);
+        
+        try {
+            // 硬编码商品购物车信息（实际项目中应该从数据库根据商品ID查询）
+            Map<String, Object> productInfo = new HashMap<>();
+            productInfo.put("id", productId);
+            productInfo.put("name", "Shandong Haian Provolone cherry tomatoes natural seeds potato fruit vegetables healthy snack");
+            productInfo.put("price", 39.9);
+            productInfo.put("imgUrl", "/images/banner01.png");
+            productInfo.put("count", 0);
+            productInfo.put("sales", 456);
+            productInfo.put("specification", "5kg package");
+            productInfo.put("origin", "Shandong Haian");
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", productInfo);
+            
+            logger.info("Cart product info retrieved successfully for productId: {}", productId);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error retrieving cart product info: {}", e.getMessage(), e);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("data", null);
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    /**
      * 获取商品在购物车中的数量
      * @param id 商品ID
      * @return 购物车中该商品的数量
