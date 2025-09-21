@@ -45,11 +45,12 @@ import {API_ENDPOINTS} from "../../config/api";
      function handleReceiverClick() {
            setShowAddress(true);
            addressRequest({
-               url: '/userAddress.json',
+               url: API_ENDPOINTS.ORDER_ADDRESSES,
                method: 'GET'
            }).then((response)=>{
-               console.log(response.data);
-                 setAddressList(response.data);
+               console.log('User addresses response:', response);
+               // 后端直接返回数组格式，进行类型转换
+               setAddressList(response as unknown as AddressItemType[]);
            }).catch((e)=>{
                message(e.message);
            });

@@ -19,4 +19,5 @@ export const API_ENDPOINTS = {
     ORDER_PAY: '/order/pay',
     ORDER_DETAIL: '/order/detail',
     ORDER_SUBMIT: '/order/submit',
+    ORDER_ADDRESSES: '/order/addresses',
 };
