@@ -84,7 +84,7 @@ const Category = () => {
     function handleProductClick(e: React.MouseEvent<HTMLDivElement>, productId:string ) {
         e.stopPropagation();
         cartRequest ({
-                url:'/cartProductInfo.json',
+                url: API_ENDPOINTS.CART_PRODUCT_INFO,
                 method:'GET',
                 params: {
                     productId,
@@ -94,6 +94,7 @@ const Category = () => {
             //if success, load data from response api and set to cartProductInfo and show popover
             setCartProductInfo(data.data);
             setShowCart(true);
+            console.log('Category cart product info response:', data);
         }).catch((e:any)=>{
             message(e?.message);
         });
@@ -116,12 +117,20 @@ const Category = () => {
 
     function changeCartInfo() {
         cartChangeRequest({
-            url: '/cartChange.json',
-            method: 'GET',
-            params: {id: cartProductInfo.id, count: cartProductInfo.count},
+            url: API_ENDPOINTS.CART_CHANGE,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: new URLSearchParams({
+                id: cartProductInfo.id,
+                count: cartProductInfo.count.toString()
+            }).toString()
         }).then(response => {
             if(response.success){
-                 setShowCart(false);
+                setShowCart(false);
+                message('Cart updated successfully!');
+                console.log('Category cart change response:', response);
             }
         }).catch((e)=>{
             message(e.message);
