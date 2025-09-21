@@ -8,6 +8,19 @@
     color: #242424;
     background: #FFF;
     text-align: center;
+    position: relative;
+    .back-icon {
+      cursor: pointer;
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: #333;
+      &:hover {
+        color: #73D13D;
+      }
+    }
   }
   .radio {
     position: absolute;
