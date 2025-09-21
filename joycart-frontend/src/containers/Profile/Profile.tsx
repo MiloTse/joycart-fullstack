@@ -10,6 +10,8 @@ import {message} from "../../utils/message";
 
 
 function Profile() {
+    const navigate = useNavigate();
+    
     // 使用useMemo缓存请求配置对象，防止无限循环
     const requestConfig = useMemo(() => ({
         url: API_ENDPOINTS.USER_PROFILE,
@@ -36,6 +38,20 @@ function Profile() {
         console.log('member centre')
     }
 
+
+    function handleLogout() {
+        try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('location');
+            message('Successfully logged out!');
+            //jump to login page
+            navigate('/account/login');
+        } catch (error) {
+            console.error('Logout error:', error);
+            message('Logout failed, please try again');
+        }
+    }
+
     return (
         <div className="profile-page">
             {/*title section*/}
@@ -46,7 +62,12 @@ function Profile() {
             <div className='profile-profile'>
                 <div className='profile-profile-left'>
                     <img className='avatar' alt='avatar' src={userData.avatar}/>
-                    <div className='nickname'>{userData.nickname}</div>
+                    <div className='user-info'>
+                        <div className='nickname'>{userData.nickname}</div>
+                        <div className='logout-button' onClick={handleLogout}>
+                            Logout
+                        </div>
+                    </div>
                     <div className='vip-info'>
                         <span  className='vip-level'>{userData.vipLevel}</span>
                     </div>
