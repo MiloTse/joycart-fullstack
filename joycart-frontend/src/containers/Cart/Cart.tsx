@@ -4,11 +4,17 @@ import React, {useEffect, useRef, useState} from "react";
 import useRequest from "../../utils/useRequest";
 import type {ResponseType, ListItemType, CartSubmitArray, SubmitResponseType} from "./types";
 import {message} from "../../utils/message";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {API_ENDPOINTS} from "../../config/api";
 
 function Cart() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    
+    // 检查是否从Detail页面跳转而来
+    const fromDetail = searchParams.get('from') === 'detail';
+    console.log("is from detail page:"+fromDetail);
+    const productId = searchParams.get('productId');
 
     //loading data from backend server at the first time only
     const { request } = useRequest<ResponseType>({manual: true});
@@ -143,9 +149,24 @@ function Cart() {
 
 
 
+    // 返回Detail页面的函数
+    function handleBackToDetail() {
+        if (productId) {
+            navigate(`/detail/${productId}`);
+        } else {
+            navigate(-1); // 如果没有productId，就返回上一页
+        }
+    }
+
     return (
         <div className="page cart-page">
+            {/*show back icon depends on from Detail page or NaviBar */}
             <div className='title'>
+                {fromDetail && (
+                    <div className="iconfont back-icon" onClick={handleBackToDetail}>
+                        &#xe6a9;
+                    </div>
+                )}
                 Cart
             </div>
 
