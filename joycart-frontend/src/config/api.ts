@@ -16,4 +16,5 @@ export const API_ENDPOINTS = {
     SEARCH_PRODUCTS: '/search/products',
     NEARBY_STORES: '/nearby/stores',
     USER_PROFILE: '/user/profile',
+    ORDER_PAY: '/order/pay',
 };
