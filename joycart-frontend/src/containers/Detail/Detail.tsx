@@ -44,7 +44,7 @@ const Detail = () => {
     const {request: cartRequest} = useRequest<CartResponseType>({manual: true});
     useEffect(() => {
         cartRequest({
-                url: '/cart.json',
+                url: API_ENDPOINTS.CART_ITEM,
                 method: 'GET',
                 params: {id: params!.id},
             }
@@ -52,6 +52,7 @@ const Detail = () => {
              setCount(response.data.count);
              //when request success, set tempCount to count as well
              setTempCount(response.data.count);
+             console.log('Cart item count response:', response);
          }).catch((e)=>{
             message(e.message);
         })
@@ -76,13 +77,21 @@ const Detail = () => {
     const {request: cartChangeRequest} = useRequest<CartChangeResponseType>({manual: true});
     function changeCartInfo() {
         cartChangeRequest({
-            url: '/cartChange.json',
-            method: 'GET',
-            params: {id: params!.id, count: tempCount},
+            url: API_ENDPOINTS.CART_CHANGE,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: new URLSearchParams({
+                id: params!.id || '',
+                count: tempCount.toString()
+            }).toString()
         }).then(response => {
             if(response.success){
                 setCount(tempCount);
                 setShowCart(false);
+                message('Cart updated successfully!');
+                console.log('Cart change response:', response);
             }
         }).catch((e)=>{
             message(e.message);
