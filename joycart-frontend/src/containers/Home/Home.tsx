@@ -86,7 +86,18 @@ const Home =() => {
     const dataResult = data?.data;
     //assign value if dataResult exist
     if(dataResult) {
-        location = dataResult.location;
+        //优先使用用户选择的商店位置，如果没有则使用后端API返回的位置
+        if (locationHistory && locationHistory.name) {
+            //用户从Nearby页面选择了商店
+            location = {
+                id: locationHistory.id,
+                address: locationHistory.name // 显示商店名称
+            };
+        } else {
+            //使用后端API返回的默认位置
+            location = dataResult.location;
+        }
+        
         banners = dataResult.banners;
         categories = dataResult.categories;
         fresh = dataResult.fresh;
