@@ -1,10 +1,28 @@
 import './style.scss';
 import React from "react";
 import NavBar from "../../components/NavBar/NavBar";
+import useRequest from "../../utils/useRequest";
+import {API_ENDPOINTS} from "../../config/api";
+import type {ResponseType} from "./types";
 
 
 
 function Profile() {
+    // 获取用户资料数据
+    const { data } = useRequest<ResponseType>({
+        url: API_ENDPOINTS.USER_PROFILE,
+        method: 'GET'
+    });
+
+    // 从API响应中提取用户数据，如果没有数据则使用默认值
+    const userData = data?.data || {
+        nickname: 'Shopper',
+        avatar: '/images/external/category-list-5.png',
+        vipLevel: 'VIP0',
+        coupons: 0,
+        rewardPoints: 0
+    };
+
     function handleMemberClick() {
         console.log('member centre')
     }
@@ -18,10 +36,10 @@ function Profile() {
             {/*profile information section*/}
             <div className='profile-profile'>
                 <div className='profile-profile-left'>
-                    <img className='avatar' alt='avatar' src='/images/external/category-list-5.png'/>
-                    <div className='nickname'>Tom Wang</div>
+                    <img className='avatar' alt='avatar' src={userData.avatar}/>
+                    <div className='nickname'>{userData.nickname}</div>
                     <div className='vip-info'>
-                        <span  className='vip-level'>VIP5</span>
+                        <span  className='vip-level'>{userData.vipLevel}</span>
                     </div>
                 </div>
                 <div className='profile-profile-right'>
@@ -34,11 +52,11 @@ function Profile() {
             {/* point section */}
             <div className="profile-points">
                 <div className="profile-points-item">
-                    <div className="profile-points-value">4</div>
+                    <div className="profile-points-value">{userData.coupons}</div>
                     <div className="profile-points-label">Coupons</div>
                 </div>
                 <div className="profile-points-item">
-                    <div className="profile-points-value">258</div>
+                    <div className="profile-points-value">{userData.rewardPoints}</div>
                     <div className="profile-points-label">Reward Points</div>
                 </div>
                 <div className="profile-points-item">
