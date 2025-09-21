@@ -49,9 +49,22 @@ const Nearby = () => {
     );
 
     function handleItemClick(latitude: string, longitude: string) {
-        localStorage.setItem('location', JSON.stringify({
-            latitude, longitude
-        }));
+        //根据点击时传入的经纬度，找到被点击的商店信息
+        const selectedStore = list.find(store => 
+            store.latitude === latitude && store.longitude === longitude
+        );
+        
+        if (selectedStore) {
+            //存储完整的商店信息，包括名称和地址到页面缓存，以便跳转到Home page 后从页面缓存localStorage 取得
+            //并替换来自后端api返回的门店
+            localStorage.setItem('location', JSON.stringify({
+                id: selectedStore.id,
+                name: selectedStore.name,
+                address: selectedStore.address,
+                latitude: latitude,
+                longitude: longitude
+            }));
+        }
         navigate('/home');
     }
     const handleGoBackClick = () => {
