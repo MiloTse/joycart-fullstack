@@ -26,12 +26,12 @@ import {API_ENDPOINTS} from "../../config/api";
      const navigate = useNavigate();
      useEffect(() => {
          request({
-             url: '/orderDetail.json',
+             url: API_ENDPOINTS.ORDER_DETAIL,
              method: 'GET',
              params: {id: params.id}
          }).then((response)=>{
              setData(response.data);
-             console.log(response. data);
+             console.log('Order detail response:', response.data);
          }).catch((e)=>{
              message(e.message);
          })

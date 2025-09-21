@@ -17,4 +17,5 @@ export const API_ENDPOINTS = {
     NEARBY_STORES: '/nearby/stores',
     USER_PROFILE: '/user/profile',
     ORDER_PAY: '/order/pay',
+    ORDER_DETAIL: '/order/detail',
 };
