@@ -17,6 +17,45 @@ public class CartController {
     private static final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     /**
+     * 获取购物车商品列表
+     * @return 购物车中所有商品列表
+     */
+    @GetMapping("/products")
+    public ResponseEntity<?> getCartProducts() {
+        logger.info("Received cart products request");
+        
+        try {
+            // 硬编码购物车商品数据（实际项目中应该根据用户ID从数据库查询）
+            Object[] cartData = {
+                createShopCartData("8137", "Mei's Fresh Produce", new Object[]{
+                    createCartProduct("88391", "/images/external/category-list-5.png", 
+                        "Sweet Radish 10 lbs - Crisp and Sweet, Perfect for Salads", 14.9, 2),
+                    createCartProduct("88392", "/images/external/category-list-3.png", 
+                        "Australian Beef Rolls 450g - Ideal for Hot Pot and BBQ", 35.0, 1)
+                }),
+                createShopCartData("8318", "Gourmet Delights", new Object[]{
+                    createCartProduct("89391", "/images/external/category-list-6.png", 
+                        "Fresh Snapper 900g - Cleaned and Ready to Cook", 69.9, 1)
+                })
+            };
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", cartData);
+            
+            logger.info("Cart products retrieved successfully, found {} shops", cartData.length);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error retrieving cart products: {}", e.getMessage(), e);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("data", new Object[]{});
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    /**
      * 获取商品在购物车中的数量
      * @param id 商品ID
      * @return 购物车中该商品的数量
@@ -83,5 +122,24 @@ public class CartController {
             errorResponse.put("data", null);
             return ResponseEntity.internalServerError().body(errorResponse);
         }
+    }
+
+    private Map<String, Object> createShopCartData(String shopId, String shopName, Object[] cartList) {
+        Map<String, Object> shop = new HashMap<>();
+        shop.put("shopId", shopId);
+        shop.put("shopName", shopName);
+        shop.put("cartList", cartList);
+        return shop;
+    }
+
+    private Map<String, Object> createCartProduct(String productId, String imgUrl, String title, 
+                                                  double price, int count) {
+        Map<String, Object> product = new HashMap<>();
+        product.put("productId", productId);
+        product.put("imgUrl", imgUrl);
+        product.put("title", title);
+        product.put("price", price);
+        product.put("count", count);
+        return product;
     }
 }
