@@ -16,6 +16,36 @@ public class OrderController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     /**
+     * 提交购物车，创建订单
+     * @return 订单ID
+     */
+    @PostMapping("/submit")
+    public ResponseEntity<?> submitCart() {
+        logger.info("Received cart submit request");
+        
+        try {
+            // 硬编码生成订单ID（实际项目中应该保存到数据库并返回真实ID）
+            String orderId = "1234567890";
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            Map<String, String> data = new HashMap<>();
+            data.put("orderId", orderId);
+            response.put("data", data);
+            
+            logger.info("Cart submitted successfully, generated orderId: {}", orderId);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error submitting cart: {}", e.getMessage(), e);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("data", null);
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    /**
      * 获取订单详情
      * @param id 订单ID
      * @return 订单详情数据
