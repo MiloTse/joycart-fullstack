@@ -18,4 +18,5 @@ export const API_ENDPOINTS = {
     USER_PROFILE: '/user/profile',
     ORDER_PAY: '/order/pay',
     ORDER_DETAIL: '/order/detail',
+    ORDER_SUBMIT: '/order/submit',
 };
