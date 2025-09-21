@@ -77,12 +77,15 @@ import {API_ENDPOINTS} from "../../config/api";
          paymentRequest({
              method: 'POST',
              url: API_ENDPOINTS.ORDER_PAY,
-             data: {
-                 orderId,
-                 addressId,
+             headers: {
+                 'Content-Type': 'application/x-www-form-urlencoded',
+             },
+             data: new URLSearchParams({
+                 orderId: orderId || '',
+                 addressId: addressId || '',
                  time: timeString,
-                 payWay
-             }
+                 payWay: payWay
+             }).toString()
          }).then((response)=>{
              if(response.data){
                  message('Payment successful!');

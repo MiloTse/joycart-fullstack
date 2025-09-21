@@ -54,6 +54,11 @@ function useRequest<T>(
             headers['Authorization'] = `Bearer ${loginToken}`;
         }
 
+        // 允许请求覆盖默认的headers
+        if (requestOptions.headers) {
+            Object.assign(headers, requestOptions.headers);
+        }
+
         //发送异步请求，捕捉异常
         //sending a request, catching an exception
         return axios.request<T>({
