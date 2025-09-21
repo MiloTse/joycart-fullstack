@@ -22,4 +22,5 @@ export const API_ENDPOINTS = {
     ORDER_ADDRESSES: '/order/addresses',
     CART_ITEM: '/cart/item',
     CART_CHANGE: '/cart/change',
+    CART_PRODUCT_INFO: '/cart/product-info',
 };
