@@ -1,18 +1,27 @@
 import './style.scss';
-import React from "react";
+import React, {useMemo} from "react";
 import NavBar from "../../components/NavBar/NavBar";
 import useRequest from "../../utils/useRequest";
 import {API_ENDPOINTS} from "../../config/api";
 import type {ResponseType} from "./types";
+import {useNavigate} from "react-router-dom";
+import {message} from "../../utils/message";
 
 
 
 function Profile() {
-    // 获取用户资料数据
-    const { data } = useRequest<ResponseType>({
+    // 使用useMemo缓存请求配置对象，防止无限循环
+    const requestConfig = useMemo(() => ({
         url: API_ENDPOINTS.USER_PROFILE,
         method: 'GET'
-    });
+    }), []); // 空依赖数组 = 只创建一次
+    
+    const { data, error, loaded } = useRequest<ResponseType>(requestConfig);
+
+    console.log('Profile - data:', data);
+    console.log('Profile - error:', error);
+    console.log('Profile - loaded:', loaded);
+    console.log('Profile - token:', localStorage.getItem('token'));
 
     // 从API响应中提取用户数据，如果没有数据则使用默认值
     const userData = data?.data || {
