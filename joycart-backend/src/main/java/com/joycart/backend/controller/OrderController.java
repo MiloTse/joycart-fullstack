@@ -7,6 +7,34 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+/**
+ * 购物车商品项数据结构
+ */
+class CartItem {
+    private String productId;
+    private Integer count;
+    
+    // 构造函数
+    public CartItem() {}
+    
+    public CartItem(String productId, Integer count) {
+        this.productId = productId;
+        this.count = count;
+    }
+    
+    // Getters and Setters
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
+    
+    public Integer getCount() { return count; }
+    public void setCount(Integer count) { this.count = count; }
+    
+    @Override
+    public String toString() {
+        return "CartItem{productId='" + productId + "', count=" + count + "}";
+    }
+}
+
 @RestController
 @RequestMapping("/order")
 @CrossOrigin("*")
@@ -14,17 +42,36 @@ public class OrderController {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
+    //先模拟订单数据
+    // Key: orderId, Value: selected productList
+    private static final Map<String, List<CartItem>> orderStorage = new HashMap<>();
+    
     /**
      * 提交购物车，创建订单
+     * @param cartItems 用户选中的商品列表
      * @return 订单ID
      */
     @PostMapping("/submit")
-    public ResponseEntity<?> submitCart() {
-        logger.info("Received cart submit request");
+    public ResponseEntity<?> submitCart(@RequestBody List<CartItem> cartItems) {
+        logger.info("Received cart submit request with {} items", cartItems != null ? cartItems.size() : 0);
+        
+        if (cartItems != null) {
+            for (CartItem item : cartItems) {
+                logger.info("Selected item: {}", item);
+            }
+        }
         
         try {
-            // 硬编码生成订单ID（实际项目中应该保存到数据库并返回真实ID）
-            String orderId = "1234567890";
+            //生成唯一订单ID（简单实现）
+            String orderId = "ORDER_" + System.currentTimeMillis();
+            
+            // 保存选中的商品到订单存储, 后续改为使用db
+            if (cartItems != null && !cartItems.isEmpty()) {
+                orderStorage.put(orderId, new ArrayList<>(cartItems));
+                logger.info("Stored {} items for order: {}", cartItems.size(), orderId);
+            } else {
+                logger.warn("No items provided for order: {}", orderId);
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
