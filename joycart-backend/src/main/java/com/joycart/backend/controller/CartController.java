@@ -134,49 +134,39 @@ public class CartController {
      * @return 添加结果
      */
     @PostMapping("/add")
-    public ResponseEntity<?> addToCart(
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> addToCart(
             @RequestParam String productId,
             @RequestParam int count) {
         
         logger.info("Received add to cart request - productId: {}, count: {}", productId, count);
         
         try {
-            //实际更新购物车存储
             String action;
             if (cartStorage.containsKey(productId)) {
-                // 商品已存在，则覆盖数量
                 action = "updated";
                 logger.info("Product {} already in cart, updating count from {} to {}", 
                     productId, cartStorage.get(productId), count);
             } else {
-                //商品不存在，则新增
                 action = "added";
                 logger.info("Adding new product {} to cart with count {}", productId, count);
             }
-            // 更新购物车存储
             cartStorage.put(productId, count);
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "商品已成功添加到购物车");
             
             Map<String, Object> data = new HashMap<>();
             data.put("productId", productId);
             data.put("count", count);
             data.put("action", action);
             data.put("timestamp", LocalDateTime.now().toString());
-            response.put("data", data);
+            
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品已成功添加到购物车", data);
             
             logger.info("Product {} {} successfully - new count: {}", productId, action, count);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error adding product to cart: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", "添加到购物车失败，请重试");
-            errorResponse.put("data", null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("添加到购物车失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
