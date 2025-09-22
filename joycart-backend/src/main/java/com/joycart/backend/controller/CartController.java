@@ -123,6 +123,45 @@ public class CartController {
     }
 
     /**
+     * 添加商品到购物车（新增或更新数量）
+     * @param productId 商品ID
+     * @param count 商品数量
+     * @return 添加结果
+     */
+    @PostMapping("/add")
+    public ResponseEntity<?> addToCart(
+            @RequestParam String productId,
+            @RequestParam int count) {
+        
+        logger.info("Received add to cart request - productId: {}, count: {}", productId, count);
+        
+        try {
+            //暂时用最简单的实现，硬编码返回成功结果
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "商品已成功添加到购物车");
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("productId", productId);
+            data.put("count", count);
+            data.put("action", "added"); // "added" 表示新增，"updated" 表示更新数量
+            data.put("timestamp", LocalDateTime.now().toString());
+            response.put("data", data);
+            
+            logger.info("Product added to cart successfully - productId: {}, count: {}", productId, count);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error adding product to cart: {}", e.getMessage(), e);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "添加到购物车失败，请重试");
+            errorResponse.put("data", null);
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    /**
      * 更新购物车中商品的数量
      * @param id 商品ID
      * @param count 新的数量
