@@ -42,6 +42,8 @@ const Detail = () => {
     const [tempCount, setTempCount] = useState(0);
     //manually trigger a request
     const {request: cartRequest} = useRequest<CartResponseType>({manual: true});
+    //manually trigger add to cart request
+    const {request: addToCartRequest} = useRequest({manual: true});
     useEffect(() => {
         cartRequest({
                 url: API_ENDPOINTS.CART_ITEM,
@@ -98,6 +100,44 @@ const Detail = () => {
         })
     }
 
+    /**
+     * 处理Shopping Cart按钮点击
+     * 先调用API，再跳转
+     */
+    function handleShoppingCartClick() {
+        console.log('=== Shopping Cart clicked ===');
+        console.log('Current count:', count);
+        console.log('Product ID:', params.id);
+        console.log('============================');
+
+        //只有当count > 0时才调用API
+        if (count > 0) {
+            //调用add to cart API
+            addToCartRequest({
+                url: API_ENDPOINTS.CART_ADD,
+                method: 'POST',
+                data: `productId=${params.id}&count=${count}`,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(response => {
+                console.log('Add to cart response:', response);
+                message('商品已添加到购物车');
+                //API调用成功后跳转
+                navigate(`/cart?from=detail&productId=${params.id}`);
+            }).catch(error => {
+                console.error('Add to cart error:', error);
+                message('添加到购物车失败，请重试');
+                //即使API失败也跳转
+                navigate(`/cart?from=detail&productId=${params.id}`);
+            });
+        } else {
+            // count为0时直接跳转，不调用API
+            console.log('Count is 0, navigating directly');
+            navigate(`/cart?from=detail&productId=${params.id}`);
+        }
+    }
+
     return result ? (
         <div className="page detail-page">
             {/*title area */}
@@ -144,7 +184,7 @@ const Detail = () => {
             {/*docker area */}
             <div className='docker'>
                 <div className='cart-icon'
-                     onClick={() => navigate(`/cart?from=detail&productId=${params.id}`)}
+                     onClick={handleShoppingCartClick}
                      style={{ cursor: 'pointer' }}>
                     <div className='iconfont'>
                         &#xe949;
