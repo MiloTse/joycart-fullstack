@@ -15,6 +15,16 @@ public class CartController {
 
     private static final Logger logger = LoggerFactory.getLogger(CartController.class);
 
+    // Key: productId, Value: count
+    private static final Map<String, Integer> cartStorage = new HashMap<>();
+    
+    static {
+        //测试数据，模拟用户已有的购物车商品
+        cartStorage.put("88391", 2);
+        cartStorage.put("88392", 1);
+        cartStorage.put("89391", 1);
+    }
+
     /**
      * 获取购物车商品列表
      * @return 购物车中所有商品列表
@@ -101,8 +111,7 @@ public class CartController {
         logger.info("Received cart item count request for productId: {}", id);
         
         try {
-            // 硬编码购物车数量（实际项目中应该从数据库根据用户ID和商品ID查询）
-            int count = 18; // 模拟该商品在购物车中的数量
+            int count = cartStorage.getOrDefault(id, 0); // 如果商品不在购物车中，返回0
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -136,7 +145,21 @@ public class CartController {
         logger.info("Received add to cart request - productId: {}, count: {}", productId, count);
         
         try {
-            //暂时用最简单的实现，硬编码返回成功结果
+            //实际更新购物车存储
+            String action;
+            if (cartStorage.containsKey(productId)) {
+                // 商品已存在，则覆盖数量
+                action = "updated";
+                logger.info("Product {} already in cart, updating count from {} to {}", 
+                    productId, cartStorage.get(productId), count);
+            } else {
+                //商品不存在，则新增
+                action = "added";
+                logger.info("Adding new product {} to cart with count {}", productId, count);
+            }
+            // 更新购物车存储
+            cartStorage.put(productId, count);
+            
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "商品已成功添加到购物车");
@@ -144,11 +167,11 @@ public class CartController {
             Map<String, Object> data = new HashMap<>();
             data.put("productId", productId);
             data.put("count", count);
-            data.put("action", "added"); // "added" 表示新增，"updated" 表示更新数量
+            data.put("action", action);
             data.put("timestamp", LocalDateTime.now().toString());
             response.put("data", data);
             
-            logger.info("Product added to cart successfully - productId: {}, count: {}", productId, count);
+            logger.info("Product {} {} successfully - new count: {}", productId, action, count);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
@@ -175,7 +198,17 @@ public class CartController {
         logger.info("Received cart change request for productId: {}, count: {}", id, count);
         
         try {
-            // 硬编码更新结果（实际项目中应该更新数据库）
+            // 第1步：实际更新购物车存储
+            if (count <= 0) {
+                // 数量为0或负数时，从购物车中移除商品
+                cartStorage.remove(id);
+                logger.info("Product {} removed from cart", id);
+            } else {
+                // 更新商品数量
+                cartStorage.put(id, count);
+                logger.info("Product {} quantity updated to {}", id, count);
+            }
+            
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Cart updated successfully");
