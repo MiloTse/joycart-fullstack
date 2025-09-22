@@ -100,10 +100,7 @@ const Detail = () => {
         })
     }
 
-    /**
-     * 处理Shopping Cart按钮点击
-     * 先调用API，再跳转
-     */
+
     function handleShoppingCartClick() {
         console.log('=== Shopping Cart clicked ===');
         console.log('Current count:', count);
@@ -123,6 +120,17 @@ const Detail = () => {
             }).then(response => {
                 console.log('Add to cart response:', response);
                 message('商品已添加到购物车');
+                //API调用成功后，重新获取购物车数量以刷新显示
+                cartRequest({
+                    url: API_ENDPOINTS.CART_ITEM,
+                    method: 'GET',
+                    params: {id: params!.id},
+                }).then(countResponse => {
+                    setCount(countResponse.data.count);
+                    console.log('Updated cart count:', countResponse.data.count);
+                }).catch(countError => {
+                    console.error('Failed to refresh cart count:', countError);
+                });
                 //API调用成功后跳转
                 navigate(`/cart?from=detail&productId=${params.id}`);
             }).catch(error => {
