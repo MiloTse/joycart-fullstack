@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.joycart.backend.dto.ResponseDTO;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -107,27 +108,22 @@ public class CartController {
      * @return 购物车中该商品的数量
      */
     @GetMapping("/item")
-    public ResponseEntity<?> getCartItemCount(@RequestParam String id) {
+    public ResponseEntity<ResponseDTO<Map<String, Integer>>> getCartItemCount(@RequestParam String id) {
         logger.info("Received cart item count request for productId: {}", id);
         
         try {
-            int count = cartStorage.getOrDefault(id, 0); // 如果商品不在购物车中，返回0
+            int count = cartStorage.getOrDefault(id, 0);
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            Map<String, Integer> data = new HashMap<>();
-            data.put("count", count);
-            response.put("data", data);
+            Map<String, Integer> data = Map.of("count", count);
+            ResponseDTO<Map<String, Integer>> response = ResponseDTO.success(data);
             
             logger.info("Cart item count retrieved successfully for productId: {}, count: {}", id, count);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving cart item count: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", Map.of("count", 0));
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Map<String, Integer>> errorResponse = ResponseDTO.error("Failed to retrieve cart item count");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
