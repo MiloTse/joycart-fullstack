@@ -3,7 +3,7 @@ import './style.scss';
 import React, {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import useRequest from "../../utils/useRequest";
-import type {ResponseType, CartResponseType} from "./types";
+import type {ResponseType, CartResponseType, AddToCartResponseType} from "./types";
 import Popover from "../../components/Popover/Popover";
 import {message} from "../../utils/message";
 import {CartChangeResponseType} from "../../types";
@@ -43,7 +43,7 @@ const Detail = () => {
     //manually trigger a request
     const {request: cartRequest} = useRequest<CartResponseType>({manual: true});
     //manually trigger add to cart request
-    const {request: addToCartRequest} = useRequest({manual: true});
+    const {request: addToCartRequest} = useRequest<AddToCartResponseType>({manual: true});
     useEffect(() => {
         cartRequest({
                 url: API_ENDPOINTS.CART_ITEM,
@@ -128,8 +128,19 @@ const Detail = () => {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             }).then(response => {
-                console.log('Add to cart response:', response);
-                message('商品已添加到购物车');
+                console.log('=== Add to Cart API Response ===');
+                console.log('Full response:', response);
+                console.log('Response structure:', {
+                    code: response.code,
+                    message: response.message,
+                    data: response.data
+                });
+                console.log('Action:', response.data?.action);
+                console.log('================================');
+                
+                // 使用后端返回的消息，如果没有则使用默认消息
+                const successMessage = response.message || 'Product Added To Cart';
+                message(successMessage);
                 //API调用成功后，重新获取购物车数量以刷新显示
                 cartRequest({
                     url: API_ENDPOINTS.CART_ITEM,
