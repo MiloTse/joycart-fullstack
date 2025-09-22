@@ -301,6 +301,8 @@ public class OrderController {
         orderData.put("total", (int) Math.round(totalPrice));
         
         logger.info("Dynamic order total: ${}", totalPrice);
+        logger.info("Order data structure: shop array size = {}", shopList.size());
+        logger.info("Full order data keys: {}", orderData.keySet());
         return orderData;
     }
 
