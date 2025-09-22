@@ -23,3 +23,15 @@ export type CartResponseType = {
         count: number;
     }
 }
+
+//添加到购物车返回内容类型 (ResponseDTO格式)
+export type AddToCartResponseType = {
+    code: number,
+    message: string,
+    data: {
+        productId: string;
+        count: number;
+        action: string;
+        timestamp: string;
+    }
+}
