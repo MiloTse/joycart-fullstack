@@ -1,3 +1,13 @@
+// order loading style
+.order-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 16px;
+  color: #666;
+}
+
 .order-page {
   background: #F5F9FA;
   overflow: scroll;

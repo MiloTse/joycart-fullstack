@@ -100,7 +100,16 @@ import {API_ENDPOINTS} from "../../config/api";
          });
      }
 
-     return data? (
+     // 添加加载状态，确保数据完全加载后再渲染
+     if (!data) {
+         return (
+             <div className="order-loading">
+                 Loading...
+             </div>
+         );
+     }
+
+     return data ? (
         <div className="page order-page">
             <div className='title'>
                 <div className="iconfont" onClick={() => {
@@ -112,11 +121,11 @@ import {API_ENDPOINTS} from "../../config/api";
                 <div className='iconfont'>&#xe68e; </div>
                 <div className='receiver-content'>
                     <div className='receiver-name'>
-                        Receiver: {data.address.name}
-                        <span className='receiver-phone'>{data.address.phone}</span>
+                        Receiver: {data?.address?.name}
+                        <span className='receiver-phone'>{data?.address?.phone}</span>
                     </div>
                     <div className='receiver-address'>
-                        Address: {data.address.address}
+                        Address: {data?.address?.address}
                     </div>
                 </div>
 
@@ -129,31 +138,31 @@ import {API_ENDPOINTS} from "../../config/api";
             </div>
 
             {
-                data.shop.map(shop =>  (
-                    <div key={shop.shopId}>
+                data?.shop?.map(shop =>  (
+                    <div key={shop?.shopId}>
                         {/*iterate show div from dynamic data*/}
                         <div className='shop'>
                             <div className='shop-title'>
                                 <span className='iconfont'>&#xe7ce;</span>
-                                {shop.shopName}
+                                {shop?.shopName}
                             </div>
                             <div className='shop-products'>
 
                                 {
-                                    shop.cartList.map(product => (
-                                        <div className='shop-product' key={product.productId}>
-                                            <img src={product.imgUrl}
-                                                 alt={product.title}
+                                    shop.cartList?.map(product => (
+                                        <div className='shop-product' key={product?.productId}>
+                                            <img src={product?.imgUrl}
+                                                 alt={product?.title}
                                                  className='shop-product-img'/>
                                             <div className='shop-product-content'>
                                                 <div className='shop-product-title'>
-                                                    {product.title}
+                                                    {product?.title}
                                                 </div>
-                                                <div className='shop-product-kilo'>{product.weight}</div>
+                                                <div className='shop-product-kilo'>{product?.weight}</div>
                                             </div>
                                             <div className='shop-product-order'>
-                                                <div>&#36;{product.price}</div>
-                                                <div>X{product.count}</div>
+                                                <div>&#36;{product?.price}</div>
+                                                <div>X{product?.count}</div>
                                             </div>
                                         </div>
                                     ))
@@ -173,7 +182,7 @@ import {API_ENDPOINTS} from "../../config/api";
                     Total:
                     <span className='footer-total-price'>
                         <span className='footer-total-symbol'>&#36;</span>
-                        {data.total}
+                        {data?.total}
                     </span>
                 </div>
                 <div className='footer-submit' onClick={()=>{setShowPayment(true)}}>Place Order</div>
@@ -213,7 +222,7 @@ import {API_ENDPOINTS} from "../../config/api";
             <Popover show={showPayment} blankClickCallBack={()=> setShowPayment(false)}>
                 <div className='payment-popover'>
                     <div className='payment-popover-title'>Choose Payment</div>
-                    <div className='payment-popover-price'>&#36; {data.total}</div>
+                    <div className='payment-popover-price'>&#36; {data?.total}</div>
                     <div className='payment-popover-products'>
                         <div className='payment-popover-product' onClick={()=>{setPayWay('wechat')}}>
                             <img className='payment-popover-img' src='/images/external/weixin.png' alt='wechat' />
@@ -223,7 +232,7 @@ import {API_ENDPOINTS} from "../../config/api";
                         </div>
                         <div className='payment-popover-product' onClick={()=>{setPayWay('cash')}}>
                             <img className='payment-popover-img' src='/images/external/cash.png' alt='weixin' />
-                            Balance({data.balance})
+                            Balance({data?.balance})
                             <div className={payWay === 'cash' ? 'radio radio-active' : 'radio'}></div>
                         </div>
                     </div>
