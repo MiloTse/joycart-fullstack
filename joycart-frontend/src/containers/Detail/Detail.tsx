@@ -51,10 +51,20 @@ const Detail = () => {
                 params: {id: params!.id},
             }
          ).then(response => {
-             setCount(response.data.count);
-             //when request success, set tempCount to count as well
-             setTempCount(response.data.count);
-             console.log('Cart item count response:', response);
+             console.log('=== Cart Item Count API Response ===');
+             console.log('Full response:', response);
+             console.log('Response structure:', {
+                 code: response.code,
+                 message: response.message,
+                 data: response.data
+             });
+             console.log('Count value:', response.data.count);
+             console.log('=====================================');
+             
+             // 使用新的ResponseDTO格式：response.data.count
+             const count = response.data.count || 0;
+             setCount(count);
+             setTempCount(count);
          }).catch((e)=>{
             message(e.message);
         })
@@ -126,8 +136,13 @@ const Detail = () => {
                     method: 'GET',
                     params: {id: params!.id},
                 }).then(countResponse => {
-                    setCount(countResponse.data.count);
-                    console.log('Updated cart count:', countResponse.data.count);
+                    console.log('=== Cart Count Refresh Response ===');
+                    console.log('Count response:', countResponse);
+                    
+                    const count = countResponse.data.count || 0;
+                    setCount(count);
+                    console.log('Updated cart count:', count);
+                    console.log('===================================');
                 }).catch(countError => {
                     console.error('Failed to refresh cart count:', countError);
                 });

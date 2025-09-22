@@ -15,11 +15,11 @@ export type ResponseType = {
     }
 }
 
-//购物车返回内容类型
+//购物车返回内容类型 (已更新为ResponseDTO格式)
 export type CartResponseType = {
-    success: boolean,
+    code: number,
+    message: string,
     data: {
         count: number;
-
     }
 }
