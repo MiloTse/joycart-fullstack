@@ -30,9 +30,23 @@ import {API_ENDPOINTS} from "../../config/api";
              method: 'GET',
              params: {id: params.id}
          }).then((response)=>{
-             setData(response.data);
-             console.log('Order detail response:', response.data);
+             console.log('=== Order Detail API Response ===');
+             console.log('Full response:', response);
+             console.log('Response structure:', {
+                 code: response.code,
+                 message: response.message,
+                 data: response.data
+             });
+             console.log('Order detail data:', response.data);
+             console.log('================================');
+             
+             if(response.code === 200) {
+                 setData(response.data);
+             } else {
+                 message(response.message || '获取订单详情失败');
+             }
          }).catch((e)=>{
+             console.error('Order detail error:', e);
              message(e.message);
          })
      }, [params,request]);
