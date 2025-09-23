@@ -25,8 +25,24 @@ const Detail = () => {
 
     //data is a dynamic data fetch from api detail.json
     const {data} = useRequest<ResponseType>(requestData.current);
+    
+    // 添加ResponseDTO格式的调试日志
+    useEffect(() => {
+        if (data) {
+            console.log('=== Product Detail API Response ===');
+            console.log('Full response:', data);
+            console.log('Response structure:', {
+                code: data.code,
+                message: data.message,
+                data: data.data
+            });
+            console.log('Product info:', data.data);
+            console.log('==================================');
+        }
+    }, [data]);
+    
     //define default value if undefined or null
-    const result = data?.data || {
+    const result = data?.code === 200 ? data.data : {
         id: '',
         imgUrl: '',
         title: '',
