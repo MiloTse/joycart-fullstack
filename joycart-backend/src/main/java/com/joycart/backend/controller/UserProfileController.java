@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.dto.ResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserProfileController {
      * @return 用户个人资料数据
      */
     @GetMapping("/profile")
-    public ResponseEntity<?> getUserProfile() {
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getUserProfile() {
         logger.info("Received user profile request");
         
         try {
@@ -35,20 +36,14 @@ public class UserProfileController {
             profileData.put("phoneNumber", "1234567890");
             profileData.put("email", "tom.wang@example.com");
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "success");
-            response.put("data", profileData);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("用户资料获取成功", profileData);
             
             logger.info("User profile retrieved successfully");
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving user profile: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", "error");
-            errorResponse.put("data", null);
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取用户资料失败，请重试");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
