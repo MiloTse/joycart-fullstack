@@ -122,7 +122,7 @@ public class OrderController {
      * @return 用户地址列表
      */
     @GetMapping("/addresses")
-    public ResponseEntity<?> getUserAddresses() {
+    public ResponseEntity<ResponseDTO<Object[]>> getUserAddresses() {
         logger.info("Received user addresses request");
         
         try {
@@ -136,12 +136,15 @@ public class OrderController {
                     "1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8", false)
             };
             
+            ResponseDTO<Object[]> response = ResponseDTO.success("用户地址列表获取成功", addressList);
+            
             logger.info("User addresses retrieved successfully, found {} addresses", addressList.length);
-            return ResponseEntity.ok(addressList);
+            return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving user addresses: {}", e.getMessage(), e);
-            return ResponseEntity.internalServerError().body(new Object[]{});
+            ResponseDTO<Object[]> errorResponse = ResponseDTO.error("获取用户地址失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
