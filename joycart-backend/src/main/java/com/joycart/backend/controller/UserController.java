@@ -3,6 +3,7 @@ package com.joycart.backend.controller;
 import com.joycart.backend.dto.ErrorResponseDTO;
 import com.joycart.backend.dto.LoginRequestDTO;
 import com.joycart.backend.dto.LoginResponseDTO;
+import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.model.User;
 import com.joycart.backend.service.UserService;
 import com.joycart.backend.util.JwtUtil;
@@ -29,7 +30,7 @@ public class UserController {
     private JwtUtil jwtUtil;
 
      @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user){
+    public ResponseEntity<ResponseDTO<User>> registerUser(@RequestBody User user){
         logger.info("Received registration request for user: {}, phone: {}, email: {}", 
                    user.getUsername(), user.getPhoneNumber(), user.getEmail());
 
@@ -37,24 +38,29 @@ public class UserController {
         if (userService.existsByPhoneNumber(user.getPhoneNumber())) {
             logger.warn("Registration failed - Phone number already exists: {}",
                     user.getPhoneNumber());
-            return ResponseEntity.badRequest().body("Phone number already exists!");
+            ResponseDTO<User> errorResponse = ResponseDTO.error("手机号已存在，请使用其他手机号");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
 
         if (user.getEmail() != null && !user.getEmail().isEmpty()
                 && userService.existsByEmail(user.getEmail())) {
             logger.warn("Registration failed - Email already exists: {}", user.getEmail());
-            return ResponseEntity.badRequest().body("Email already exists!");
+            ResponseDTO<User> errorResponse = ResponseDTO.error("邮箱已存在，请使用其他邮箱");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
         
         try {
             User savedUser = userService.saveUser(user);
             logger.info("User registered successfully with ID: {} for username: {}", 
                        savedUser.getId(), savedUser.getUsername());
-            return ResponseEntity.ok(savedUser);
+            
+            ResponseDTO<User> response = ResponseDTO.success("用户注册成功", savedUser);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Error registering user: {} - {}",
                     user.getUsername(), e.getMessage(), e);
-            return ResponseEntity.badRequest().body("Error saving user: " + e.getMessage());
+            ResponseDTO<User> errorResponse = ResponseDTO.error("用户注册失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
