@@ -177,44 +177,42 @@ public class CartController {
      * @return 更新结果
      */
     @PostMapping("/change")
-    public ResponseEntity<?> changeCartItem(
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> changeCartItem(
             @RequestParam String id,
             @RequestParam int count) {
         
         logger.info("Received cart change request for productId: {}, count: {}", id, count);
         
         try {
+            String action;
             // 第1步：实际更新购物车存储
             if (count <= 0) {
                 // 数量为0或负数时，从购物车中移除商品
                 cartStorage.remove(id);
+                action = "removed";
                 logger.info("Product {} removed from cart", id);
             } else {
                 // 更新商品数量
                 cartStorage.put(id, count);
+                action = "updated";
                 logger.info("Product {} quantity updated to {}", id, count);
             }
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Cart updated successfully");
             
             Map<String, Object> data = new HashMap<>();
             data.put("id", Integer.parseInt(id));
             data.put("count", count);
+            data.put("action", action);
             data.put("updatedAt", LocalDateTime.now().toString());
-            response.put("data", data);
             
-            logger.info("Cart item updated successfully for productId: {}, new count: {}", id, count);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("购物车更新成功", data);
+            
+            logger.info("Cart item {} successfully for productId: {}, new count: {}", action, id, count);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error updating cart item: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", "Failed to update cart");
-            errorResponse.put("data", null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("购物车更新失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
