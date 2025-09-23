@@ -290,8 +290,8 @@ public class OrderController {
         shopList.add(shop);
         orderData.put("shop", shopList);
         
-        // 设置动态计算的总价
-        orderData.put("total", (int) Math.round(totalPrice));
+        // 设置动态计算的总价（保留两位小数精度）
+        orderData.put("total", Math.round(totalPrice * 100.0) / 100.0);
         
         logger.info("Dynamic order total: ${}", totalPrice);
         logger.info("Order data structure: shop array size = {}", shopList.size());
