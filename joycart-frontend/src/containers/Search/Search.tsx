@@ -1,6 +1,6 @@
 import './style.scss';
 import {useNavigate, useParams} from "react-router-dom";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import useRequest from "../../utils/useRequest";
 import type {ResponseType} from "./types";
 import {API_ENDPOINTS} from "../../config/api";
@@ -16,7 +16,23 @@ const defaultRequestData = {
 
 const Search = () => {
     const {data} = useRequest<ResponseType>(defaultRequestData);
-    const hotList = data?.data || [];
+    
+    // 添加ResponseDTO格式的调试日志
+    useEffect(() => {
+        if (data) {
+            console.log('=== Search Hot API Response ===');
+            console.log('Full response:', data);
+            console.log('Response structure:', {
+                code: data.code,
+                message: data.message,
+                data: data.data
+            });
+            console.log('Hot list:', data.data);
+            console.log('==============================');
+        }
+    }, [data]);
+    
+    const hotList = data?.code === 200 ? data.data : [];
 
 
 
