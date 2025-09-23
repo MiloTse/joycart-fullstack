@@ -30,6 +30,7 @@ export type CartType = {
 }
 
 export type CartResponseType = {
-    success: boolean;
+    code: number;
+    message: string;
     data: CartType;
 }
