@@ -65,19 +65,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<ResponseDTO<LoginResponseDTO.UserData>> loginUser(@RequestBody LoginRequestDTO loginRequestDTO){
         logger.info("Received login request for phone: {}", loginRequestDTO.getPhoneNumber());
 
         // 入参参数校验
         if (loginRequestDTO.getPhoneNumber() == null || loginRequestDTO.getPhoneNumber().trim().isEmpty()) {
             logger.warn("Login failed - Phone number is empty");
-            ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Phone number cannot be empty", 400);
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("手机号不能为空");
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
         if (loginRequestDTO.getPassword() == null || loginRequestDTO.getPassword().trim().isEmpty()) {
             logger.warn("Login failed - Password is empty for phone: {}", loginRequestDTO.getPhoneNumber());
-            ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Password cannot be empty", 400);
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("密码不能为空");
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
@@ -86,7 +86,7 @@ public class UserController {
             
             if (!userOptional.isPresent()) {
                 logger.warn("Login failed - User not found for phone: {}", loginRequestDTO.getPhoneNumber());
-                ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Phone number not registered", 400);
+                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("手机号未注册");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
@@ -94,7 +94,7 @@ public class UserController {
 
             if (!user.getPassword().equals(loginRequestDTO.getPassword())) {
                 logger.warn("Login failed - Invalid password for phone: {}", loginRequestDTO.getPhoneNumber());
-                ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Incorrect password", 400);
+                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("密码错误");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
@@ -106,7 +106,8 @@ public class UserController {
                 user.getId(), 
                 token
             );
-            LoginResponseDTO response = new LoginResponseDTO("success", userData);
+            
+            ResponseDTO<LoginResponseDTO.UserData> response = ResponseDTO.success("登录成功", userData);
             
             logger.info("User logged in successfully: {}", user.getUsername());
             return ResponseEntity.ok(response);
@@ -114,7 +115,7 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Error during login for phone: {} - {}", 
                     loginRequestDTO.getPhoneNumber(), e.getMessage(), e);
-            ErrorResponseDTO errorResponse = new ErrorResponseDTO("error", "Login service temporarily unavailable", 500);
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("登录服务暂时不可用，请重试");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
