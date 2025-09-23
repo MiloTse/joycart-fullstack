@@ -47,16 +47,28 @@ const Login = ()=> {
                     password: password,
                 }
             }
-        ).then((data)=>{
-            data && console.log(data);
-            // 根据后端LoginResponseDTO格式处理响应
-            if(data.status === 'success' && data.data.token) {
-                localStorage.setItem('token', data.data.token);
-                message('Login Successfully！');
+        ).then((response)=>{
+            console.log('=== Login API Response ===');
+            console.log('Full response:', response);
+            console.log('Response structure:', {
+                code: response.code,
+                message: response.message,
+                data: response.data
+            });
+            console.log('User data:', response.data);
+            console.log('=========================');
+            
+            // 检查ResponseDTO格式的响应
+            if(response.code === 200 && response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                message(response.message || 'Login Successfully！');
                 //if login success, redirect to home page
                 navigate('/home');
+            } else {
+                message(response.message || 'Login failed');
             }
          }).catch((e:any)=>{
+             console.error('Login error:', e);
              // 处理后端错误
              let errorMessage = 'Unknown error occurred';
              

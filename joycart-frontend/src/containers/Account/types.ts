@@ -1,6 +1,7 @@
 
 export type LoginResponseType = {
-    status: string;
+    code: number;
+    message: string;
     data: {
         id: number;
         token: string;
