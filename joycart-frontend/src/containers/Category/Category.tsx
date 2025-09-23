@@ -127,12 +127,26 @@ const Category = () => {
                 count: cartProductInfo.count.toString()
             }).toString()
         }).then(response => {
-            if(response.success){
+            console.log('=== Category Cart Change API Response ===');
+            console.log('Full response:', response);
+            console.log('Response structure:', {
+                code: response.code,
+                message: response.message,
+                data: response.data
+            });
+            console.log('Action:', response.data?.action);
+            console.log('========================================');
+
+            if(response.code === 200){
                 setShowCart(false);
-                message('Cart updated successfully!');
-                console.log('Category cart change response:', response);
+                // 使用后端返回的消息，如果没有则使用默认消息
+                const successMessage = response.message || 'Cart updated successfully!';
+                message(successMessage);
+            } else {
+                message(response.message || 'Cart update failed');
             }
         }).catch((e)=>{
+            console.error('Category cart change error:', e);
             message(e.message);
         })
     }
