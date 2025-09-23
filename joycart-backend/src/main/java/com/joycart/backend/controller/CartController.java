@@ -67,7 +67,7 @@ public class CartController {
      * @return 商品的购物车信息
      */
     @GetMapping("/product-info")
-    public ResponseEntity<?> getCartProductInfo(@RequestParam String productId) {
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getCartProductInfo(@RequestParam String productId) {
         logger.info("Received cart product info request for productId: {}", productId);
         
         try {
@@ -82,19 +82,15 @@ public class CartController {
             productInfo.put("specification", "5kg package");
             productInfo.put("origin", "Shandong Haian");
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", productInfo);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品购物车信息获取成功", productInfo);
             
             logger.info("Cart product info retrieved successfully for productId: {}", productId);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving cart product info: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取商品购物车信息失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
