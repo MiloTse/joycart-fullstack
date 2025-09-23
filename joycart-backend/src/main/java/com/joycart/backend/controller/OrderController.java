@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.joycart.backend.dto.ResponseDTO;
 
 import java.util.*;
 
@@ -80,7 +81,7 @@ public class OrderController {
      * @return 订单ID
      */
     @PostMapping("/submit")
-    public ResponseEntity<?> submitCart(@RequestBody List<CartItem> cartItems) {
+    public ResponseEntity<ResponseDTO<Map<String, String>>> submitCart(@RequestBody List<CartItem> cartItems) {
         logger.info("Received cart submit request with {} items", cartItems != null ? cartItems.size() : 0);
         
         if (cartItems != null) {
@@ -101,21 +102,18 @@ public class OrderController {
                 logger.warn("No items provided for order: {}", orderId);
             }
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
             Map<String, String> data = new HashMap<>();
             data.put("orderId", orderId);
-            response.put("data", data);
+            
+            ResponseDTO<Map<String, String>> response = ResponseDTO.success("订单提交成功", data);
             
             logger.info("Cart submitted successfully, generated orderId: {}", orderId);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error submitting cart: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Map<String, String>> errorResponse = ResponseDTO.error("订单提交失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
