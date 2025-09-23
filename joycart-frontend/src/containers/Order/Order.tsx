@@ -115,14 +115,24 @@ import {API_ENDPOINTS} from "../../config/api";
                  payWay: payWay
              }).toString()
          }).then((response)=>{
-             if(response.data){
+             console.log('=== Order Payment API Response ===');
+             console.log('Full response:', response);
+             console.log('Response structure:', {
+                 code: response.code,
+                 message: response.message,
+                 data: response.data
+             });
+             console.log('Payment result:', response.data);
+             console.log('==================================');
+             
+             if(response.code === 200 && response.data){
                  message('Payment successful!');
                  navigate('/home');
-             }else{
-                 message('Payment failed');
+             } else {
+                 message(response.message || 'Payment failed');
              }
-             console.log(response);
          }).catch((e)=>{
+             console.error('Order payment error:', e);
              message(e.message);
          });
      }
