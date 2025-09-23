@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.joycart.backend.dto.ResponseDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,26 +17,22 @@ public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductDetail(@PathVariable String id) {
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getProductDetail(@PathVariable String id) {
         logger.info("Received product detail request for id: {}", id);
         
         try {
             // 硬编码商品详情数据（模拟原始JSON）
             Map<String, Object> productDetail = createMockProductDetail(id);
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "success");
-            response.put("data", productDetail);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品详情获取成功", productDetail);
             
             logger.info("Product detail retrieved successfully for id: {}", id);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving product detail for id: {} - {}", id, e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "error");
-            errorResponse.put("data", null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取商品详情失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
     
