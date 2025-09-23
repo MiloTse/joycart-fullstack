@@ -154,7 +154,7 @@ public class OrderController {
      * @return 订单详情数据
      */
     @GetMapping("/detail")
-    public ResponseEntity<?> getOrderDetail(@RequestParam String id) {
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getOrderDetail(@RequestParam String id) {
         logger.info("Received order detail request for orderId: {}", id);
         
         try {
@@ -176,19 +176,15 @@ public class OrderController {
                 orderData = createOrderDetailData();
             }
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", orderData);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("订单详情获取成功", orderData);
             
             logger.info("Order detail retrieved successfully for orderId: {}", id);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving order detail: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取订单详情失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
