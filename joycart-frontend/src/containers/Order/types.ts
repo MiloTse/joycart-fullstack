@@ -37,7 +37,8 @@ export type AddressItemType = {
 }
 
 export type AddressResponseType ={
-    success: boolean;
+    code: number;
+    message: string;
     data: Array<AddressItemType>;
 };
 

@@ -48,10 +48,23 @@ import {API_ENDPOINTS} from "../../config/api";
                url: API_ENDPOINTS.ORDER_ADDRESSES,
                method: 'GET'
            }).then((response)=>{
-               console.log('User addresses response:', response);
-               // 后端直接返回数组格式，进行类型转换
-               setAddressList(response as unknown as AddressItemType[]);
+               console.log('=== Order Addresses API Response ===');
+               console.log('Full response:', response);
+               console.log('Response structure:', {
+                   code: response.code,
+                   message: response.message,
+                   data: response.data
+               });
+               console.log('Address list:', response.data);
+               console.log('====================================');
+               
+               if(response.code === 200) {
+                   setAddressList(response.data);
+               } else {
+                   message(response.message || '获取地址列表失败');
+               }
            }).catch((e)=>{
+               console.error('Order addresses error:', e);
                message(e.message);
            });
      }
