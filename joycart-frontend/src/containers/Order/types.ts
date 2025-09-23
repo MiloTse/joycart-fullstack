@@ -44,6 +44,7 @@ export type AddressResponseType ={
 };
 
 export type PaymentResponseType ={
-    success: boolean;
+    code: number;
+    message: string;
     data: boolean;
 };

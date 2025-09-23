@@ -197,7 +197,7 @@ public class OrderController {
      * @return 支付结果
      */
     @PostMapping("/pay")
-    public ResponseEntity<?> processPayment(
+    public ResponseEntity<ResponseDTO<Boolean>> processPayment(
             @RequestParam String orderId,
             @RequestParam String addressId,
             @RequestParam String time,
@@ -210,9 +210,7 @@ public class OrderController {
             // 模拟支付处理逻辑
             boolean paymentSuccess = true; //暂时硬编码为成功，后续改为调用支付服务
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", paymentSuccess);
-            response.put("data", paymentSuccess);
+            ResponseDTO<Boolean> response = ResponseDTO.success("支付处理成功", paymentSuccess);
             
             if (paymentSuccess) {
                 logger.info("Payment processed successfully for order: {}", orderId);
@@ -224,10 +222,8 @@ public class OrderController {
             
         } catch (Exception e) {
             logger.error("Error processing payment: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", false);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<Boolean> errorResponse = ResponseDTO.error("支付处理失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
