@@ -91,11 +91,25 @@ const Category = () => {
                 },
             }
         ).then((data)=>{
-            //if success, load data from response api and set to cartProductInfo and show popover
-            setCartProductInfo(data.data);
-            setShowCart(true);
-            console.log('Category cart product info response:', data);
+            console.log('=== Category Cart Product Info API Response ===');
+            console.log('Full response:', data);
+            console.log('Response structure:', {
+                code: data.code,
+                message: data.message,
+                data: data.data
+            });
+            console.log('Product info:', data.data);
+            console.log('==============================================');
+
+            if(data.code === 200) {
+                //if success, load data from response api and set to cartProductInfo and show popover
+                setCartProductInfo(data.data);
+                setShowCart(true);
+            } else {
+                message(data.message || '获取商品信息失败');
+            }
         }).catch((e:any)=>{
+            console.error('Category cart product info error:', e);
             message(e?.message);
         });
 
