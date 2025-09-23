@@ -25,21 +25,35 @@ function Cart() {
                 url: API_ENDPOINTS.CART_PRODUCTS,
                 method: 'GET'
             }).then((data)=>{
-            const list = data.data;
-            //fetch shop list data from response data
-            const newList= list.map(shop =>{
-
-                //added new return property 'selected' to every product
-                const newCartList= shop.cartList.map(product => {
-                    return {...product, selected: false}
-                });
-                return{ shopId:shop.shopId, shopName:shop.shopName, cartList: newCartList}
+            console.log('=== Cart Products API Response ===');
+            console.log('Full response:', data);
+            console.log('Response structure:', {
+                code: data.code,
+                message: data.message,
+                data: data.data
             });
-            // console.log(newList);
-            //passing newList to list
-            setList(newList);
+            console.log('Data length:', data.data?.length);
+            console.log('==================================');
+
+            if(data.code === 200) {
+                const list = data.data;
+                //fetch shop list data from response data
+                const newList= list.map(shop =>{
+
+                    //added new return property 'selected' to every product
+                    const newCartList= shop.cartList.map(product => {
+                        return {...product, selected: false}
+                    });
+                    return{ shopId:shop.shopId, shopName:shop.shopName, cartList: newCartList}
+                });
+                // console.log(newList);
+                //passing newList to list
+                setList(newList);
+            } else {
+                message(data.message || '获取购物车商品失败');
+            }
         }).catch((e)=>{
-                console.log(e?.message);
+                console.error('Cart products error:', e);
                 message(e.message);
             })
     }, [request]);
