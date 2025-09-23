@@ -15,8 +15,9 @@ export type ListItemType = {
     cartList: Array<CartItemType>;
 }
 export type ResponseType = {
-    success: boolean,
-    data:  Array<ListItemType>,
+    code: number,
+    message: string,
+    data: Array<ListItemType>,
 }
 
 export type CartSubmitArray = Array<{
