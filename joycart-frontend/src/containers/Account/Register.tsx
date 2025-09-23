@@ -63,14 +63,26 @@ const Register = ()=> {
                 }
             }
 
-        ).then((data)=>{
-            data && console.log(data);
-            // 后端成功返回User对象，包含id字段
-            if(data?.id) {
-                message('Register Successfully！');
+        ).then((response)=>{
+            console.log('=== Register API Response ===');
+            console.log('Full response:', response);
+            console.log('Response structure:', {
+                code: response.code,
+                message: response.message,
+                data: response.data
+            });
+            console.log('User data:', response.data);
+            console.log('============================');
+            
+            // 检查ResponseDTO格式的响应
+            if(response.code === 200) {
+                message(response.message || 'Register Successfully！');
                 navigate('/account/login');
+            } else {
+                message(response.message || 'Registration failed');
             }
         }).catch((e:any)=>{
+            console.error('Register error:', e);
             // 处理后端错误
             let errorMessage = 'Unknown error occurred';
             

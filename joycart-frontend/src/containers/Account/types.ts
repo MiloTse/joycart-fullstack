@@ -9,9 +9,13 @@ export type LoginResponseType = {
 
 
 export type RegisterResponseType = {
-    id: number;
-    username: string;
-    phoneNumber: string;
-    email: string;
-    password: string;
+    code: number;
+    message: string;
+    data: {
+        id: number;
+        username: string;
+        phoneNumber: string;
+        email: string;
+        password: string;
+    }
 }
