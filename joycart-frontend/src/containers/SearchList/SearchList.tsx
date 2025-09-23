@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './style.scss';
 import {Link, useParams} from 'react-router-dom';
 import useRequest from "../../utils/useRequest";
@@ -22,8 +22,23 @@ const SearchList = () => {
 
     });
     const {data} = useRequest<ResponseType>(requestData);
-    console.log(data);
-    const list = data?.data || [];
+    
+    // 添加ResponseDTO格式的调试日志
+    useEffect(() => {
+        if (data) {
+            console.log('=== Search Products API Response ===');
+            console.log('Full response:', data);
+            console.log('Response structure:', {
+                code: data.code,
+                message: data.message,
+                data: data.data
+            });
+            console.log('Product list:', data.data);
+            console.log('===================================');
+        }
+    }, [data]);
+    
+    const list = data?.code === 200 ? data.data : [];
 
     function handleClearKeyword() {
         setKeyword('');
