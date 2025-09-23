@@ -150,12 +150,26 @@ function Cart() {
             method: 'POST',
             data: params
         }).then(response=>{
-            // message('Please Confirm Your Order!');
-            //if success, get orderId and navigate to order page
-            const {orderId} = response.data;
-            navigate(`/order/${orderId}`);
-            console.log('Cart submit response:', response);
+            console.log('=== Cart Submit API Response ===');
+            console.log('Full response:', response);
+            console.log('Response structure:', {
+                code: response.code,
+                message: response.message,
+                data: response.data
+            });
+            console.log('Order ID:', response.data?.orderId);
+            console.log('================================');
+            
+            if(response.code === 200) {
+                // message('Please Confirm Your Order!');
+                //if success, get orderId and navigate to order page
+                const {orderId} = response.data;
+                navigate(`/order/${orderId}`);
+            } else {
+                message(response.message || '订单提交失败');
+            }
         }).catch((e)=>{
+            console.error('Cart submit error:', e);
             message(e.message);
         })
         console.log(params);

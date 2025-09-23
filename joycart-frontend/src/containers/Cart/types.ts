@@ -25,7 +25,8 @@ export type CartSubmitArray = Array<{
     count: number;
 }>
 export type SubmitResponseType = {
-    success: boolean;
+    code: number;
+    message: string;
     data: {
         orderId: string;
     }
