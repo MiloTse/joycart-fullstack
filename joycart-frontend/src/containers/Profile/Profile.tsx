@@ -20,13 +20,24 @@ function Profile() {
     
     const { data, error, loaded } = useRequest<ResponseType>(requestConfig);
 
+    console.log('=== Profile API Response ===');
     console.log('Profile - data:', data);
     console.log('Profile - error:', error);
     console.log('Profile - loaded:', loaded);
     console.log('Profile - token:', localStorage.getItem('token'));
+    
+    if (data) {
+        console.log('Response structure:', {
+            code: data.code,
+            message: data.message,
+            data: data.data
+        });
+        console.log('User profile data:', data.data);
+    }
+    console.log('============================');
 
-    // 从API响应中提取用户数据，如果没有数据则使用默认值
-    const userData = data?.data || {
+    // 从API响应中提取用户数据，检查ResponseDTO格式
+    const userData = (data?.code === 200 && data?.data) ? data.data : {
         nickname: 'Shopper',
         avatar: '/images/external/category-list-5.png',
         vipLevel: 'VIP0',
