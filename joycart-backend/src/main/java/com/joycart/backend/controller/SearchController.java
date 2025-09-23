@@ -51,7 +51,7 @@ public class SearchController {
      * @return 商品搜索结果列表
      */
     @GetMapping("/products")
-    public ResponseEntity<?> searchProducts(
+    public ResponseEntity<ResponseDTO<List<Map<String, Object>>>> searchProducts(
             @RequestParam String keyword,
             @RequestParam(required = false) String shopId,
             @RequestParam(required = false, defaultValue = "default") String type) {
@@ -79,19 +79,15 @@ public class SearchController {
                     39.9, 598)
             );
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", productList);
+            ResponseDTO<List<Map<String, Object>>> response = ResponseDTO.success("商品搜索完成", productList);
             
             logger.info("Product search completed successfully, found {} products", productList.size());
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error searching products: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", Arrays.asList());
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<List<Map<String, Object>>> errorResponse = ResponseDTO.error("商品搜索失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
     
