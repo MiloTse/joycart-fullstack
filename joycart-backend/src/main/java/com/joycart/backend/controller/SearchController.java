@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.joycart.backend.dto.ResponseDTO;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public class SearchController {
     private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
     @GetMapping("/hot")
-    public ResponseEntity<?> getHotSearchList() {
+    public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getHotSearchList() {
         logger.info("Received hot search list request");
         
         try {
@@ -30,19 +31,15 @@ public class SearchController {
                 createHotSearchItem("8320", "Vegetables")
             );
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "success");
-            response.put("data", hotSearchList);
+            ResponseDTO<List<Map<String, String>>> response = ResponseDTO.success("热门搜索列表获取成功", hotSearchList);
             
             logger.info("Hot search list retrieved successfully");
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving hot search list: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "error");
-            errorResponse.put("data", Arrays.asList());
-            return ResponseEntity.internalServerError().body(errorResponse);
+            ResponseDTO<List<Map<String, String>>> errorResponse = ResponseDTO.error("获取热门搜索列表失败，请重试");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
