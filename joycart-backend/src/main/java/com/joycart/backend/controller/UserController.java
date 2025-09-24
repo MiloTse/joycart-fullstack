@@ -92,7 +92,8 @@ public class UserController {
 
             User user = userOptional.get();
 
-            if (!user.getPassword().equals(loginRequestDTO.getPassword())) {
+            // 验证密码（使用加密验证）
+            if (!userService.verifyPassword(loginRequestDTO.getPassword(), user.getPassword())) {
                 logger.warn("Login failed - Invalid password for phone: {}", loginRequestDTO.getPhoneNumber());
                 ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("密码错误");
                 return ResponseEntity.badRequest().body(errorResponse);
