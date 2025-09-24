@@ -1,6 +1,7 @@
 package com.joycart.backend.controller;
 
 import com.joycart.backend.dto.HomeResponseDTO;
+import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.dto.common.BannerInfo;
 import com.joycart.backend.dto.common.LocationInfo;
 import com.joycart.backend.model.Category;
@@ -24,7 +25,7 @@ public class HomeController {
     // 暂时移除数据库依赖，使用硬编码数据测试
 
     @GetMapping
-    public ResponseEntity<HomeResponseDTO> getHomeData() {
+    public ResponseEntity<ResponseDTO<HomeResponseDTO.HomeData>> getHomeData() {
         logger.info("Received home data request");
         
         try {
@@ -62,15 +63,12 @@ public class HomeController {
                 location, banners, categories, freshProducts
             );
             
-            HomeResponseDTO response = new HomeResponseDTO(true, homeData);
-            
             logger.info("Home data retrieved successfully");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ResponseDTO.success("主页数据获取成功", homeData));
             
         } catch (Exception e) {
             logger.error("Error retrieving home data: {}", e.getMessage(), e);
-            HomeResponseDTO errorResponse = new HomeResponseDTO(false, null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            return ResponseEntity.ok(ResponseDTO.error("主页数据获取失败: " + e.getMessage()));
         }
     }
     
