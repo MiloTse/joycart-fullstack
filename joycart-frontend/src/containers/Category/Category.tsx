@@ -43,11 +43,23 @@ const Category = () => {
                 method:'GET',
             }
         ).then((data)=>{
-            if(data?.success) {
+            console.log('=== Category Products API Response ===');
+            console.log('Full response:', data);
+            console.log('Response structure:', {
+                code: data.code,
+                message: data.message,
+                data: data.data
+            });
+            console.log('=====================================');
+
+            if(data?.code === 200) {
                 const result = data.data;
                 setProducts(result);
+            } else {
+                message(data?.message || '获取商品列表失败');
             }
         }).catch((e:any)=>{
+            console.error('Category products error:', e);
             message(e?.message);
         });
     },[keyword, currentTag, currentCategory,productRequest]);
@@ -60,13 +72,25 @@ const Category = () => {
                 method:'GET',
             }
         ).then((data)=>{
-             if(data?.success) {
-                 const result = data.data;
-                console.log(result);
+            console.log('=== Category List API Response ===');
+            console.log('Full response:', data);
+            console.log('Response structure:', {
+                code: data.code,
+                message: data.message,
+                data: data.data
+            });
+            console.log('==================================');
+
+            if(data?.code === 200) {
+                const result = data.data;
+                console.log('Category and tag data:', result);
                 setCategories(result.category);
                 setTags(result.tag);
+            } else {
+                message(data?.message || '获取分类列表失败');
             }
         }).catch((e:any)=>{
+            console.error('Category list error:', e);
             message(e?.message);
         });
     },[tagRequest]);
