@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.dto.ResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class NearbyController {
      * @return 附近商店列表
      */
     @GetMapping("/stores")
-    public ResponseEntity<?> getNearbyStores(
+    public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getNearbyStores(
             @RequestParam(required = false) String latitude,
             @RequestParam(required = false) String longitude) {
         
@@ -51,19 +52,12 @@ public class NearbyController {
                     "4.2km", "45.4213", "-75.6187")
             );
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "success");
-            response.put("data", storeList);
-            
             logger.info("Nearby stores retrieved successfully, found {} stores", storeList.size());
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ResponseDTO.success("附近商店列表获取成功", storeList));
             
         } catch (Exception e) {
             logger.error("Error retrieving nearby stores: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("message", "error");
-            errorResponse.put("data", Arrays.asList());
-            return ResponseEntity.internalServerError().body(errorResponse);
+            return ResponseEntity.ok(ResponseDTO.error("获取附近商店列表失败: " + e.getMessage()));
         }
     }
 
