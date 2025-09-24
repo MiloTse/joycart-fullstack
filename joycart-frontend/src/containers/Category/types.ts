@@ -1,6 +1,7 @@
-//返回内容类型
+//返回内容类型 - 适配ResponseDTO格式
 export type CategoryAndTagResponseType = {
-    success: boolean,
+    code: number;
+    message: string;
     data:  {
         category: Array<{
             id: string;
@@ -18,7 +19,8 @@ export type ProductType = {
 }
 
 export type ProductResponseType = {
-    success: boolean,
+    code: number;
+    message: string;
     data: Array<ProductType>;
 }
 export type CartType = {
