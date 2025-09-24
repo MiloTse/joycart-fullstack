@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.dto.ResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class CategoryController {
     private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
     @GetMapping("/list")
-    public ResponseEntity<?> getCategoryAndTagList() {
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getCategoryAndTagList() {
         logger.info("Received category and tag list request");
         
         try {
@@ -47,24 +48,17 @@ public class CategoryController {
             data.put("category", categories);
             data.put("tag", tags);
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", data);
-            
             logger.info("Category and tag list retrieved successfully");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ResponseDTO.success("分类和标签列表获取成功", data));
             
         } catch (Exception e) {
             logger.error("Error retrieving category and tag list: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", null);
-            return ResponseEntity.internalServerError().body(errorResponse);
+            return ResponseEntity.ok(ResponseDTO.error("获取分类和标签列表失败: " + e.getMessage()));
         }
     }
     
     @GetMapping("/products")
-    public ResponseEntity<?> getCategoryProducts() {
+    public ResponseEntity<ResponseDTO<List<Map<String, Object>>>> getCategoryProducts() {
         logger.info("Received category products request");
         
         try {
@@ -77,19 +71,12 @@ public class CategoryController {
                 createMockProduct("1132385", "chicken wing middle 1000g/...", "/images/external/fresh-1.png", 156.0, 156)
             );
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", products);
-            
             logger.info("Category products retrieved successfully");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ResponseDTO.success("分类商品列表获取成功", products));
             
         } catch (Exception e) {
             logger.error("Error retrieving category products: {}", e.getMessage(), e);
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("data", new ArrayList<>());
-            return ResponseEntity.internalServerError().body(errorResponse);
+            return ResponseEntity.ok(ResponseDTO.error("获取分类商品列表失败: " + e.getMessage()));
         }
     }
     
