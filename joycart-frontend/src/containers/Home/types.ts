@@ -30,9 +30,10 @@ export type CardListType = Array<{
 }>
 
 
-//返回内容类型
+//返回内容类型 - 适配ResponseDTO格式
 export type ResponseType = {
-    success: boolean;
+    code: number;
+    message: string;
     data: {
         location: LocationType;
         banners: BannersType;
