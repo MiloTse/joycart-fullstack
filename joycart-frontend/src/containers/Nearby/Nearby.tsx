@@ -40,11 +40,18 @@ const Nearby = () => {
     const navigate = useNavigate();
     const [keyword, setKeyword] = useState('');
 
-    console.log('Nearby - data:', data);
-    console.log('Nearby - data?.data:', data?.data);
+    console.log('=== Nearby API Response ===');
+    console.log('Full response:', data);
+    console.log('Response structure:', {
+        code: data?.code,
+        message: data?.message,
+        data: data?.data
+    });
+    console.log('Store list:', data?.data);
+    console.log('==========================');
 
     // use the search keyword to filter the list
-    const list = (data?.data || []).filter(
+    const list = (data?.code === 200 ? data.data : []).filter(
         item => item.name.toLowerCase().includes(keyword.toLowerCase())
     );
 
