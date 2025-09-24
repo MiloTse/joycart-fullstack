@@ -1,5 +1,6 @@
-//返回内容类型
+//返回内容类型 - 适配ResponseDTO格式
 export type ResponseType = {
+    code: number;
     message: string;
     data: Array<{
         id: string;
