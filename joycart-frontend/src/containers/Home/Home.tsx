@@ -35,7 +35,7 @@ const Home =() => {
     // 启用自动请求，调用真实的后端API
     const {data} = useRequest<ResponseType>(requestData);
 
-    console.log(data);
+    console.log('Home API Response:', data);
 
     //request backend server when requestData changed
 /* useRequest 已经封装了，这里不需要重新写请求
@@ -83,7 +83,7 @@ const Home =() => {
 
 
     let  location, banners, categories, fresh  = undefined;
-    const dataResult = data?.data;
+    const dataResult = data?.code === 200 ? data.data : null;
     //assign value if dataResult exist
     if(dataResult) {
         //优先使用用户选择的商店位置，如果没有则使用后端API返回的位置
