@@ -1,8 +1,7 @@
 package com.joycart.backend.model;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
@@ -11,37 +10,62 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @Column(nullable = false, unique = true)
+    private String productId;
+
     @Column(nullable = false)
-    private String name;
-    
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String subtitle;
+
     @Column(nullable = false)
-    private BigDecimal price;
-    
+    private Double price;
+
+    @Column(nullable = false)
+    private Integer sales = 0;
+
     @Column
     private String imgUrl;
-    
-    @Column
-    private String description;
-    
-    @Column(nullable = false)
-    private Long categoryId;
-    
-    @Column
-    private boolean isActive = true;
 
+    @Column
+    private String origin;
+
+    @Column
+    private String specification;
+
+    @Column(columnDefinition = "TEXT")
+    private String detail;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, String imgUrl, String description, Long categoryId) {
-        this.name = name;
+    public Product(String productId, String title, String subtitle, Double price, 
+                   Integer sales, String imgUrl, String origin, String specification, String detail) {
+        this.productId = productId;
+        this.title = title;
+        this.subtitle = subtitle;
         this.price = price;
+        this.sales = sales;
         this.imgUrl = imgUrl;
-        this.description = description;
-        this.categoryId = categoryId;
+        this.origin = origin;
+        this.specification = specification;
+        this.detail = detail;
+        this.isActive = true;
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
     }
-
 
     public Long getId() {
         return id;
@@ -51,20 +75,44 @@ public class Product {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
-    public BigDecimal getPrice() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Integer getSales() {
+        return sales;
+    }
+
+    public void setSales(Integer sales) {
+        this.sales = sales;
     }
 
     public String getImgUrl() {
@@ -75,27 +123,51 @@ public class Product {
         this.imgUrl = imgUrl;
     }
 
-    public String getDescription() {
-        return description;
+    public String getOrigin() {
+        return origin;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public String getSpecification() {
+        return specification;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setSpecification(String specification) {
+        this.specification = specification;
     }
 
-    public boolean isActive() {
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
