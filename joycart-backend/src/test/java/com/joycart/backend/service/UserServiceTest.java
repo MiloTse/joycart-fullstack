@@ -2,20 +2,22 @@ package com.joycart.backend.service;
 
 import com.joycart.backend.model.User;
 import com.joycart.backend.repository.UserRepository;
+import com.joycart.backend.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import org.springframework.data.domain.Sort;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,9 +25,12 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+    
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     private User testUser;
     private User savedUser;
@@ -43,11 +48,12 @@ class UserServiceTest {
         savedUser.setUsername("testuser");
         savedUser.setPhoneNumber("13800138000");
         savedUser.setEmail("test@example.com");
-        savedUser.setPassword("123456");
+        savedUser.setPassword("encoded_password");
     }
 
     @Test
     void saveUser_Success() {
+        when(passwordEncoder.encode("123456")).thenReturn("encoded_password");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         User result = userService.saveUser(testUser);
@@ -57,8 +63,9 @@ class UserServiceTest {
         assertEquals("testuser", result.getUsername());
         assertEquals("13800138000", result.getPhoneNumber());
         assertEquals("test@example.com", result.getEmail());
-        assertEquals("123456", result.getPassword());
+        assertEquals("encoded_password", result.getPassword());
 
+        verify(passwordEncoder, times(1)).encode("123456");
         verify(userRepository, times(1)).save(testUser);
     }
 
