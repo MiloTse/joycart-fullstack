@@ -1,6 +1,7 @@
 package com.joycart.backend.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * 商品分类实体类
@@ -24,6 +25,15 @@ public class Category {
     
     @Column
     private boolean isActive = true;
+    
+    @Column(name = "sort_order", nullable = false)
+    private Integer sortOrder = 0;
+    
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
 
     public Category() {
@@ -74,5 +84,29 @@ public class Category {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
