@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +47,56 @@ public class CartServiceImpl implements CartService {
             // 发生异常时返回0
             Map<String, Integer> result = new HashMap<>();
             result.put("count", 0);
+            return result;
+        }
+    }
+
+    @Override
+    public Map<String, Object> addToCart(Integer userId, String productId, Integer count) {
+        logger.debug("Adding to cart - userId: {}, productId: {}, count: {}", userId, productId, count);
+        
+        try {
+            // 查找是否已存在该商品
+            Optional<Cart> existingCartOptional = cartRepository.findByUserIdAndProductIdAndIsActiveTrue(userId, productId);
+            
+            String action;
+            Cart cartItem;
+            
+            if (existingCartOptional.isPresent()) {
+                // 更新现有商品数量
+                cartItem = existingCartOptional.get();
+                cartItem.setQuantity(count);
+                cartItem.setUpdatedAt(LocalDateTime.now());
+                action = "updated";
+                logger.debug("Updated existing cart item for userId: {}, productId: {}, new count: {}", userId, productId, count);
+            } else {
+                // 创建新的购物车商品
+                cartItem = new Cart(userId, productId, count);
+                action = "added";
+                logger.debug("Created new cart item for userId: {}, productId: {}, count: {}", userId, productId, count);
+            }
+            
+            // 保存到数据库
+            cartRepository.save(cartItem);
+            
+            // 构建返回数据
+            Map<String, Object> result = new HashMap<>();
+            result.put("productId", productId);
+            result.put("count", count);
+            result.put("action", action);
+            result.put("timestamp", LocalDateTime.now().toString());
+            
+            logger.info("Successfully {} product to cart - userId: {}, productId: {}, count: {}", action, userId, productId, count);
+            return result;
+            
+        } catch (Exception e) {
+            logger.error("Error adding product to cart for userId: {}, productId: {}, count: {} - {}", userId, productId, count, e.getMessage(), e);
+            // 发生异常时返回错误信息
+            Map<String, Object> result = new HashMap<>();
+            result.put("productId", productId);
+            result.put("count", 0);
+            result.put("action", "error");
+            result.put("timestamp", LocalDateTime.now().toString());
             return result;
         }
     }
