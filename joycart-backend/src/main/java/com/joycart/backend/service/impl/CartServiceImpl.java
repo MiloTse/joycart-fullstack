@@ -180,7 +180,7 @@ public class CartServiceImpl implements CartService {
                 return new Object[0];
             }
             
-            // 按商店分组（这里简化处理，所有商品归为一个商店）
+            // 按商店分组（这里简化处理，所有商品归为一个商店, 后续修改）
             Map<String, Object> shopData = createShopCartData("8137", "Mei's Fresh Produce", cartItems);
             
             Object[] result = {shopData};
@@ -190,7 +190,6 @@ public class CartServiceImpl implements CartService {
             
         } catch (Exception e) {
             logger.error("Error getting cart products for userId: {} - {}", userId, e.getMessage(), e);
-            // 发生异常时返回空数组
             return new Object[0];
         }
     }
@@ -215,7 +214,7 @@ public class CartServiceImpl implements CartService {
             } else {
                 logger.warn("Product info not found for productId: {}, using minimal data", cartItem.getProductId());
                 product.put("imgUrl", "/images/external/category-list-5.png");
-                product.put("title", "Product " + cartItem.getProductId());
+                product.put("title", "Default Product " + cartItem.getProductId());
                 product.put("price", 0.0);
             }
             
