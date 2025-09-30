@@ -32,11 +32,6 @@ import {API_ENDPOINTS} from "../../config/api";
          }).then((response)=>{
              console.log('=== Order Detail API Response ===');
              console.log('Full response:', response);
-             console.log('Response structure:', {
-                 code: response.code,
-                 message: response.message,
-                 data: response.data
-             });
              console.log('Order detail data:', response.data);
              console.log('================================');
              
@@ -117,11 +112,6 @@ import {API_ENDPOINTS} from "../../config/api";
          }).then((response)=>{
              console.log('=== Order Payment API Response ===');
              console.log('Full response:', response);
-             console.log('Response structure:', {
-                 code: response.code,
-                 message: response.message,
-                 data: response.data
-             });
              console.log('Payment result:', response.data);
              console.log('==================================');
              

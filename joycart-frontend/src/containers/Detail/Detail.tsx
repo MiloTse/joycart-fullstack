@@ -31,11 +31,6 @@ const Detail = () => {
         if (data) {
             console.log('=== Product Detail API Response ===');
             console.log('Full response:', data);
-            console.log('Response structure:', {
-                code: data.code,
-                message: data.message,
-                data: data.data
-            });
             console.log('Product info:', data.data);
             console.log('==================================');
         }
@@ -69,11 +64,6 @@ const Detail = () => {
          ).then(response => {
              console.log('=== Cart Item Count API Response ===');
              console.log('Full response:', response);
-             console.log('Response structure:', {
-                 code: response.code,
-                 message: response.message,
-                 data: response.data
-             });
              console.log('Count value:', response.data.count);
              console.log('=====================================');
              

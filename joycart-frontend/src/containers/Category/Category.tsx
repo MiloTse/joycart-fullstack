@@ -45,11 +45,6 @@ const Category = () => {
         ).then((data)=>{
             console.log('=== Category Products API Response ===');
             console.log('Full response:', data);
-            console.log('Response structure:', {
-                code: data.code,
-                message: data.message,
-                data: data.data
-            });
             console.log('=====================================');
 
             if(data?.code === 200) {
@@ -74,11 +69,6 @@ const Category = () => {
         ).then((data)=>{
             console.log('=== Category List API Response ===');
             console.log('Full response:', data);
-            console.log('Response structure:', {
-                code: data.code,
-                message: data.message,
-                data: data.data
-            });
             console.log('==================================');
 
             if(data?.code === 200) {
@@ -106,6 +96,7 @@ const Category = () => {
     console.log(products)
 
     function handleProductClick(e: React.MouseEvent<HTMLDivElement>, productId:string ) {
+        console.log('=== handleProductClick in Category.tsx ===');
         e.stopPropagation();
         cartRequest ({
                 url: API_ENDPOINTS.CART_PRODUCT_INFO,
@@ -117,11 +108,6 @@ const Category = () => {
         ).then((data)=>{
             console.log('=== Category Cart Product Info API Response ===');
             console.log('Full response:', data);
-            console.log('Response structure:', {
-                code: data.code,
-                message: data.message,
-                data: data.data
-            });
             console.log('Product info:', data.data);
             console.log('==============================================');
 
@@ -167,11 +153,6 @@ const Category = () => {
         }).then(response => {
             console.log('=== Category Cart Change API Response ===');
             console.log('Full response:', response);
-            console.log('Response structure:', {
-                code: response.code,
-                message: response.message,
-                data: response.data
-            });
             console.log('Action:', response.data?.action);
             console.log('========================================');
 

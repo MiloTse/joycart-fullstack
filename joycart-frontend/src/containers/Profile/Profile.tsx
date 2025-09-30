@@ -27,11 +27,6 @@ function Profile() {
     console.log('Profile - token:', localStorage.getItem('token'));
     
     if (data) {
-        console.log('Response structure:', {
-            code: data.code,
-            message: data.message,
-            data: data.data
-        });
         console.log('User profile data:', data.data);
     }
     console.log('============================');

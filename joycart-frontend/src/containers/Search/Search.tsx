@@ -22,11 +22,6 @@ const Search = () => {
         if (data) {
             console.log('=== Search Hot API Response ===');
             console.log('Full response:', data);
-            console.log('Response structure:', {
-                code: data.code,
-                message: data.message,
-                data: data.data
-            });
             console.log('Hot list:', data.data);
             console.log('==============================');
         }

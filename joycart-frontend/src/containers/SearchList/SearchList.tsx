@@ -28,11 +28,6 @@ const SearchList = () => {
         if (data) {
             console.log('=== Search Products API Response ===');
             console.log('Full response:', data);
-            console.log('Response structure:', {
-                code: data.code,
-                message: data.message,
-                data: data.data
-            });
             console.log('Product list:', data.data);
             console.log('===================================');
         }

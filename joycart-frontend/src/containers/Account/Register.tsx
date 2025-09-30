@@ -66,11 +66,6 @@ const Register = ()=> {
         ).then((response)=>{
             console.log('=== Register API Response ===');
             console.log('Full response:', response);
-            console.log('Response structure:', {
-                code: response.code,
-                message: response.message,
-                data: response.data
-            });
             console.log('User data:', response.data);
             console.log('============================');
             

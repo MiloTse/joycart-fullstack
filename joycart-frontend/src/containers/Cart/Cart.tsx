@@ -27,11 +27,6 @@ function Cart() {
             }).then((data)=>{
             console.log('=== Cart Products API Response ===');
             console.log('Full response:', data);
-            console.log('Response structure:', {
-                code: data.code,
-                message: data.message,
-                data: data.data
-            });
             console.log('Data length:', data.data?.length);
             console.log('==================================');
 
@@ -152,11 +147,6 @@ function Cart() {
         }).then(response=>{
             console.log('=== Cart Submit API Response ===');
             console.log('Full response:', response);
-            console.log('Response structure:', {
-                code: response.code,
-                message: response.message,
-                data: response.data
-            });
             console.log('Order ID:', response.data?.orderId);
             console.log('================================');
             
