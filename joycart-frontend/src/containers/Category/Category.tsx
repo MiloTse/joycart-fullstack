@@ -84,8 +84,8 @@ const Category = () => {
             if(data?.code === 200) {
                 const result = data.data;
                 console.log('Category and tag data:', result);
-                setCategories(result.category);
-                setTags(result.tag);
+                setCategories(result.categories || []);
+                setTags(result.tags || []);
             } else {
                 message(data?.message || '获取分类列表失败');
             }
@@ -211,7 +211,7 @@ const Category = () => {
                 onClick={()=>{setCurrentCategory('')}}
                 >全部商品</div>
                 {
-                    categories.map((category)=>{
+                    categories && categories.map((category)=>{
                         return(
                             <div key={category.id}
                                  className={category.id === currentCategory ? "category-item category-item-active":"category-item "}
@@ -229,7 +229,7 @@ const Category = () => {
                     全部
                 </div>
                 {
-                    tags.map((tag,index)=>(
+                    tags && tags.map((tag,index)=>(
                             <div className= {tag===currentTag? 'tag-item tag-item-active':'tag-item'}
                                  key={tag+index}
                                  onClick={()=>{setCurrentTag(tag)}}
@@ -244,7 +244,7 @@ const Category = () => {
             <div className="product">
                 <div className="product-title">精选商品({products.length})</div>
                 {
-                    products.map((product)=> {
+                    products && products.map((product)=> {
 
                             return(
                                 <div className="product-item"
