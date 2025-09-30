@@ -203,12 +203,22 @@ public class CartServiceImpl implements CartService {
         // 转换Cart实体为前端期望的格式
         List<Map<String, Object>> cartList = new ArrayList<>();
         for (Cart cartItem : cartItems) {
+            Map<String, Object> productInfo = productService.getProductDetail(cartItem.getProductId());
             Map<String, Object> product = new HashMap<>();
             product.put("productId", cartItem.getProductId());
-            product.put("imgUrl", "/images/external/category-list-5.png"); // 默认图片
-            product.put("title", "Product " + cartItem.getProductId()); // 默认标题
-            product.put("price", 14.9); // 默认价格
             product.put("count", cartItem.getQuantity());
+            
+            if (productInfo != null) {
+                product.put("imgUrl", productInfo.get("imgUrl"));
+                product.put("title", productInfo.get("title"));
+                product.put("price", productInfo.get("price"));
+            } else {
+                logger.warn("Product info not found for productId: {}, using minimal data", cartItem.getProductId());
+                product.put("imgUrl", "/images/external/category-list-5.png");
+                product.put("title", "Product " + cartItem.getProductId());
+                product.put("price", 0.0);
+            }
+            
             cartList.add(product);
         }
         
