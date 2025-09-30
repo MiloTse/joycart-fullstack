@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -163,5 +161,54 @@ public class CartServiceImpl implements CartService {
             result.put("updatedAt", LocalDateTime.now().toString());
             return result;
         }
+    }
+
+    @Override
+    public Object[] getCartProducts(Integer userId) {
+        logger.debug("Getting cart products for userId: {}", userId);
+        
+        try {
+            // 查找用户的所有活跃购物车商品
+            List<Cart> cartItems = cartRepository.findByUserIdAndIsActiveTrue(userId);
+            
+            if (cartItems.isEmpty()) {
+                logger.info("No cart items found for userId: {}", userId);
+                return new Object[0];
+            }
+            
+            // 按商店分组（这里简化处理，所有商品归为一个商店）
+            Map<String, Object> shopData = createShopCartData("8137", "Mei's Fresh Produce", cartItems);
+            
+            Object[] result = {shopData};
+            
+            logger.info("Successfully retrieved {} cart items for userId: {}", cartItems.size(), userId);
+            return result;
+            
+        } catch (Exception e) {
+            logger.error("Error getting cart products for userId: {} - {}", userId, e.getMessage(), e);
+            // 发生异常时返回空数组
+            return new Object[0];
+        }
+    }
+    
+    private Map<String, Object> createShopCartData(String shopId, String shopName, List<Cart> cartItems) {
+        Map<String, Object> shop = new HashMap<>();
+        shop.put("shopId", shopId);
+        shop.put("shopName", shopName);
+        
+        // 转换Cart实体为前端期望的格式
+        List<Map<String, Object>> cartList = new ArrayList<>();
+        for (Cart cartItem : cartItems) {
+            Map<String, Object> product = new HashMap<>();
+            product.put("productId", cartItem.getProductId());
+            product.put("imgUrl", "/images/external/category-list-5.png"); // 默认图片
+            product.put("title", "Product " + cartItem.getProductId()); // 默认标题
+            product.put("price", 14.9); // 默认价格
+            product.put("count", cartItem.getQuantity());
+            cartList.add(product);
+        }
+        
+        shop.put("cartList", cartList.toArray());
+        return shop;
     }
 }

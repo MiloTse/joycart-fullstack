@@ -9,4 +9,6 @@ public interface CartService {
     Map<String, Object> addToCart(Integer userId, String productId, Integer count);
     
     Map<String, Object> changeCartItem(Integer userId, String productId, Integer count);
+    
+    Object[] getCartProducts(Integer userId);
 }
