@@ -100,4 +100,68 @@ public class CartServiceImpl implements CartService {
             return result;
         }
     }
+
+    @Override
+    public Map<String, Object> changeCartItem(Integer userId, String productId, Integer count) {
+        logger.debug("Changing cart item - userId: {}, productId: {}, count: {}", userId, productId, count);
+        
+        try {
+            // 查找是否已存在该商品
+            Optional<Cart> existingCartOptional = cartRepository.findByUserIdAndProductIdAndIsActiveTrue(userId, productId);
+            
+            String action;
+            Map<String, Object> result = new HashMap<>();
+            
+            if (count <= 0) {
+                // 数量为0或负数时，从购物车中移除商品
+                if (existingCartOptional.isPresent()) {
+                    Cart cartItem = existingCartOptional.get();
+                    cartItem.setIsActive(false);
+                    cartItem.setUpdatedAt(LocalDateTime.now());
+                    cartRepository.save(cartItem);
+                    action = "removed";
+                    logger.debug("Removed cart item for userId: {}, productId: {}", userId, productId);
+                } else {
+                    action = "not_found";
+                    logger.debug("Cart item not found for removal - userId: {}, productId: {}", userId, productId);
+                }
+                result.put("count", 0);
+            } else {
+                // 更新商品数量
+                if (existingCartOptional.isPresent()) {
+                    Cart cartItem = existingCartOptional.get();
+                    cartItem.setQuantity(count);
+                    cartItem.setUpdatedAt(LocalDateTime.now());
+                    cartRepository.save(cartItem);
+                    action = "updated";
+                    logger.debug("Updated cart item for userId: {}, productId: {}, new count: {}", userId, productId, count);
+                } else {
+                    // 如果商品不存在，创建新的购物车商品
+                    Cart newCartItem = new Cart(userId, productId, count);
+                    cartRepository.save(newCartItem);
+                    action = "added";
+                    logger.debug("Added new cart item for userId: {}, productId: {}, count: {}", userId, productId, count);
+                }
+                result.put("count", count);
+            }
+            
+            // 构建返回数据
+            result.put("id", Integer.parseInt(productId));
+            result.put("action", action);
+            result.put("updatedAt", LocalDateTime.now().toString());
+            
+            logger.info("Successfully {} cart item - userId: {}, productId: {}, count: {}", action, userId, productId, count);
+            return result;
+            
+        } catch (Exception e) {
+            logger.error("Error changing cart item for userId: {}, productId: {}, count: {} - {}", userId, productId, count, e.getMessage(), e);
+            // 发生异常时返回错误信息
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", Integer.parseInt(productId));
+            result.put("count", 0);
+            result.put("action", "error");
+            result.put("updatedAt", LocalDateTime.now().toString());
+            return result;
+        }
+    }
 }
