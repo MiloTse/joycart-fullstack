@@ -11,4 +11,6 @@ public interface CartService {
     Map<String, Object> changeCartItem(Integer userId, String productId, Integer count);
     
     Object[] getCartProducts(Integer userId);
+    
+    Map<String, Object> getCartProductInfo(String productId);
 }
