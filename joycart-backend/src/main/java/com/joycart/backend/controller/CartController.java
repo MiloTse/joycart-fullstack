@@ -92,6 +92,12 @@ public class CartController {
             // 调用CartService获取商品购物车信息
             Map<String, Object> productInfo = cartService.getCartProductInfo(productId);
             
+            if (productInfo == null) {
+                logger.warn("Product not found for productId: {}", productId);
+                ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("商品不存在");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+            
             ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品购物车信息获取成功", productInfo);
             
             logger.info("Cart product info retrieved successfully for productId: {}", productId);
