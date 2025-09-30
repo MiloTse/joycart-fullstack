@@ -37,30 +37,39 @@ public class CartController {
 
     /**
      * 获取购物车商品列表
+     * @param token JWT token (从Header中获取)
      * @return 购物车中所有商品列表
      */
     @GetMapping("/products")
-    public ResponseEntity<ResponseDTO<Object[]>> getCartProducts() {
+    public ResponseEntity<ResponseDTO<Object[]>> getCartProducts(
+            @RequestHeader(value = "Authorization", required = false) String token) {
         logger.info("Received cart products request");
         
         try {
-            // 硬编码购物车商品数据（实际项目中应该根据用户ID从数据库查询）
-            Object[] cartData = {
-                createShopCartData("8137", "Mei's Fresh Produce", new Object[]{
-                    createCartProduct("88391", "/images/external/category-list-5.png", 
-                        "Sweet Radish 10 lbs - Crisp and Sweet, Perfect for Salads", 14.9, 2),
-                    createCartProduct("88392", "/images/external/category-list-3.png", 
-                        "Australian Beef Rolls 450g - Ideal for Hot Pot and BBQ", 35.0, 1)
-                }),
-                createShopCartData("8318", "Gourmet Delights", new Object[]{
-                    createCartProduct("89391", "/images/external/category-list-6.png", 
-                        "Fresh Snapper 900g - Cleaned and Ready to Cook", 69.9, 1)
-                })
-            };
+            // 从JWT token中获取用户ID
+            Integer userId = null;
+            if (token != null && token.startsWith("Bearer ")) {
+                try {
+                    String jwtToken = token.substring(7);
+                    userId = jwtUtil.getUserIdFromToken(jwtToken);
+                    logger.debug("Extracted userId: {} from token", userId);
+                } catch (Exception e) {
+                    logger.warn("Failed to extract userId from token: {}", e.getMessage());
+                }
+            }
+            
+            // 如果没有有效的用户ID，使用默认值1（保持向后兼容）
+            if (userId == null) {
+                userId = 1;
+                logger.debug("Using default userId: {}", userId);
+            }
+            
+            // 调用CartService获取购物车商品
+            Object[] cartData = cartService.getCartProducts(userId);
             
             ResponseDTO<Object[]> response = ResponseDTO.success("购物车商品列表获取成功", cartData);
             
-            logger.info("Cart products retrieved successfully, found {} shops", cartData.length);
+            logger.info("Cart products retrieved successfully for userId: {}, found {} shops", userId, cartData.length);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
