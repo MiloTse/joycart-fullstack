@@ -1,10 +1,13 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.dto.ResponseDTO;
+import com.joycart.backend.service.CartService;
+import com.joycart.backend.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.joycart.backend.dto.ResponseDTO;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,6 +18,12 @@ import java.util.*;
 public class CartController {
 
     private static final Logger logger = LoggerFactory.getLogger(CartController.class);
+    
+    @Autowired
+    private CartService cartService;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // Key: productId, Value: count
     private static final Map<String, Integer> cartStorage = new HashMap<>();
@@ -97,19 +106,41 @@ public class CartController {
     /**
      * 获取商品在购物车中的数量
      * @param id 商品ID
+     * @param token JWT token (从Header中获取)
      * @return 购物车中该商品的数量
      */
     @GetMapping("/item")
-    public ResponseEntity<ResponseDTO<Map<String, Integer>>> getCartItemCount(@RequestParam String id) {
+    public ResponseEntity<ResponseDTO<Map<String, Integer>>> getCartItemCount(
+            @RequestParam String id,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         logger.info("Received cart item count request for productId: {}", id);
         
         try {
-            int count = cartStorage.getOrDefault(id, 0);
+            // 从JWT token中获取用户ID
+            Integer userId = null;
+            if (token != null && token.startsWith("Bearer ")) {
+                try {
+                    String jwtToken = token.substring(7);
+                    userId = jwtUtil.getUserIdFromToken(jwtToken);
+                    logger.debug("Extracted userId: {} from token", userId);
+                } catch (Exception e) {
+                    logger.warn("Failed to extract userId from token: {}", e.getMessage());
+                }
+            }
             
-            Map<String, Integer> data = Map.of("count", count);
+            // 如果没有有效的用户ID，使用默认值1（保持向后兼容）
+            if (userId == null) {
+                userId = 1;
+                logger.debug("Using default userId: {}", userId);
+            }
+            
+            // 从数据库获取购物车商品数量
+            Map<String, Integer> data = cartService.getCartItemCount(userId, id);
+            
             ResponseDTO<Map<String, Integer>> response = ResponseDTO.success(data);
             
-            logger.info("Cart item count retrieved successfully for productId: {}, count: {}", id, count);
+            logger.info("Cart item count retrieved successfully for userId: {}, productId: {}, count: {}", 
+                       userId, id, data.get("count"));
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
