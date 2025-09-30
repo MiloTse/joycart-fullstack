@@ -3,6 +3,7 @@ package com.joycart.backend.service.impl;
 import com.joycart.backend.model.Cart;
 import com.joycart.backend.repository.CartRepository;
 import com.joycart.backend.service.CartService;
+import com.joycart.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private ProductService productService;
 
     @Override
     public Map<String, Integer> getCartItemCount(Integer userId, String productId) {
@@ -210,5 +214,30 @@ public class CartServiceImpl implements CartService {
         
         shop.put("cartList", cartList.toArray());
         return shop;
+    }
+
+    @Override
+    public Map<String, Object> getCartProductInfo(String productId) {
+        logger.debug("Getting cart product info for productId: {}", productId);
+        
+        try {
+            // 通过ProductService获取真实商品信息
+            Map<String, Object> productInfo = productService.getProductDetail(productId);
+            
+            if (productInfo == null) {
+                logger.warn("Product not found for productId: {}, returning null", productId);
+                return null;
+            }
+            
+            // 添加购物车相关字段
+            productInfo.put("count", 0); // 默认数量为0
+            
+            logger.info("Successfully retrieved cart product info for productId: {}", productId);
+            return productInfo;
+            
+        } catch (Exception e) {
+            logger.error("Error getting cart product info for productId: {} - {}", productId, e.getMessage(), e);
+            return null;
+        }
     }
 }
