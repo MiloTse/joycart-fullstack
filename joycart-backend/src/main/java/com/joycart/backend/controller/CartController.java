@@ -89,16 +89,8 @@ public class CartController {
         logger.info("Received cart product info request for productId: {}", productId);
         
         try {
-            // 硬编码商品购物车信息（实际项目中应该从数据库根据商品ID查询）
-            Map<String, Object> productInfo = new HashMap<>();
-            productInfo.put("id", productId);
-            productInfo.put("name", "Shandong Haian Provolone cherry tomatoes natural seeds potato fruit vegetables healthy snack");
-            productInfo.put("price", 39.9);
-            productInfo.put("imgUrl", "/images/banner01.png");
-            productInfo.put("count", 0);
-            productInfo.put("sales", 456);
-            productInfo.put("specification", "5kg package");
-            productInfo.put("origin", "Shandong Haian");
+            // 调用CartService获取商品购物车信息
+            Map<String, Object> productInfo = cartService.getCartProductInfo(productId);
             
             ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品购物车信息获取成功", productInfo);
             
