@@ -83,8 +83,14 @@ public class HomeController {
     }
     
     private Product createMockProduct(Long id, String name, String imgUrl, String price) {
-        Product product = new Product(name, new BigDecimal(price), imgUrl, "", 1L);
+        Product product = new Product();
         product.setId(id);
+        product.setProductId(String.valueOf(id));
+        product.setTitle(name);
+        product.setPrice(Double.parseDouble(price));
+        product.setImgUrl(imgUrl);
+        product.setSales(1);
+        product.setIsActive(true);
         return product;
     }
 }
