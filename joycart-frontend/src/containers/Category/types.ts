@@ -3,11 +3,11 @@ export type CategoryAndTagResponseType = {
     code: number;
     message: string;
     data:  {
-        category: Array<{
+        categories: Array<{
             id: string;
             name: string;
         }>;
-        tag: Array<string>;
+        tags: Array<string>;
     }
 }
 export type ProductType = {
