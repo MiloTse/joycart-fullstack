@@ -154,36 +154,43 @@ public class CartController {
      * 添加商品到购物车（新增或更新数量）
      * @param productId 商品ID
      * @param count 商品数量
+     * @param token JWT token (从Header中获取)
      * @return 添加结果
      */
     @PostMapping("/add")
     public ResponseEntity<ResponseDTO<Map<String, Object>>> addToCart(
             @RequestParam String productId,
-            @RequestParam int count) {
+            @RequestParam int count,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         
         logger.info("Received add to cart request - productId: {}, count: {}", productId, count);
         
         try {
-            String action;
-            if (cartStorage.containsKey(productId)) {
-                action = "updated";
-                logger.info("Product {} already in cart, updating count from {} to {}", 
-                    productId, cartStorage.get(productId), count);
-            } else {
-                action = "added";
-                logger.info("Adding new product {} to cart with count {}", productId, count);
+            // 从JWT token中获取用户ID
+            Integer userId = null;
+            if (token != null && token.startsWith("Bearer ")) {
+                try {
+                    String jwtToken = token.substring(7);
+                    userId = jwtUtil.getUserIdFromToken(jwtToken);
+                    logger.debug("Extracted userId: {} from token", userId);
+                } catch (Exception e) {
+                    logger.warn("Failed to extract userId from token: {}", e.getMessage());
+                }
             }
-            cartStorage.put(productId, count);
             
-            Map<String, Object> data = new HashMap<>();
-            data.put("productId", productId);
-            data.put("count", count);
-            data.put("action", action);
-            data.put("timestamp", LocalDateTime.now().toString());
+            // 如果没有有效的用户ID，使用默认值1（保持向后兼容）
+            if (userId == null) {
+                userId = 1;
+                logger.debug("Using default userId: {}", userId);
+            }
+            
+            // 调用CartService添加到购物车
+            Map<String, Object> data = cartService.addToCart(userId, productId, count);
             
             ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品已成功添加到购物车", data);
             
-            logger.info("Product {} {} successfully - new count: {}", productId, action, count);
+            logger.info("Product {} {} successfully - userId: {}, productId: {}, count: {}", 
+                       data.get("action"), userId, productId, count);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
