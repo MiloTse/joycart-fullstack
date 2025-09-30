@@ -204,39 +204,43 @@ public class CartController {
      * 更新购物车中商品的数量
      * @param id 商品ID
      * @param count 新的数量
+     * @param token JWT token (从Header中获取)
      * @return 更新结果
      */
     @PostMapping("/change")
     public ResponseEntity<ResponseDTO<Map<String, Object>>> changeCartItem(
             @RequestParam String id,
-            @RequestParam int count) {
+            @RequestParam int count,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         
         logger.info("Received cart change request for productId: {}, count: {}", id, count);
         
         try {
-            String action;
-            // 第1步：实际更新购物车存储
-            if (count <= 0) {
-                // 数量为0或负数时，从购物车中移除商品
-                cartStorage.remove(id);
-                action = "removed";
-                logger.info("Product {} removed from cart", id);
-            } else {
-                // 更新商品数量
-                cartStorage.put(id, count);
-                action = "updated";
-                logger.info("Product {} quantity updated to {}", id, count);
+            // 从JWT token中获取用户ID
+            Integer userId = null;
+            if (token != null && token.startsWith("Bearer ")) {
+                try {
+                    String jwtToken = token.substring(7);
+                    userId = jwtUtil.getUserIdFromToken(jwtToken);
+                    logger.debug("Extracted userId: {} from token", userId);
+                } catch (Exception e) {
+                    logger.warn("Failed to extract userId from token: {}", e.getMessage());
+                }
             }
             
-            Map<String, Object> data = new HashMap<>();
-            data.put("id", Integer.parseInt(id));
-            data.put("count", count);
-            data.put("action", action);
-            data.put("updatedAt", LocalDateTime.now().toString());
+            // 如果没有有效的用户ID，使用默认值1（保持向后兼容）
+            if (userId == null) {
+                userId = 1;
+                logger.debug("Using default userId: {}", userId);
+            }
+            
+            // 调用CartService更新购物车商品
+            Map<String, Object> data = cartService.changeCartItem(userId, id, count);
             
             ResponseDTO<Map<String, Object>> response = ResponseDTO.success("购物车更新成功", data);
             
-            logger.info("Cart item {} successfully for productId: {}, new count: {}", action, id, count);
+            logger.info("Cart item {} successfully - userId: {}, productId: {}, count: {}", 
+                       data.get("action"), userId, id, count);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
