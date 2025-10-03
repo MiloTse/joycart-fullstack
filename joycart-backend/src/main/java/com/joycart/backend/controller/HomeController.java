@@ -6,14 +6,17 @@ import com.joycart.backend.dto.common.BannerInfo;
 import com.joycart.backend.dto.common.LocationInfo;
 import com.joycart.backend.model.Category;
 import com.joycart.backend.model.Product;
+import com.joycart.backend.service.CategoryService;
+import com.joycart.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/home")
@@ -22,7 +25,11 @@ public class HomeController {
 
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-    // 暂时移除数据库依赖，使用硬编码数据测试
+    @Autowired
+    private CategoryService categoryService;
+    
+    @Autowired
+    private ProductService productService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO<HomeResponseDTO.HomeData>> getHomeData() {
@@ -38,32 +45,20 @@ public class HomeController {
                 new BannerInfo("1136", "/images/external/banner.png")
             );
             
-            // 硬编码分类信息（模拟原始JSON数据 - 完整8个分类）
-            List<Category> categories = Arrays.asList(
-                createMockCategory(113231L, "Produce", "/images/external/category-1.png"),
-                createMockCategory(113232L, "Meat & Seafood", "/images/external/category-2.png"),
-                createMockCategory(113233L, "Fresh Fruit", "/images/external/category-3.png"),
-                createMockCategory(113234L, "Milk & Dairy", "/images/external/category-4.png"),
-                createMockCategory(113235L, "Oils & Masala", "/images/external/category-5.png"),
-                createMockCategory(113236L, "Snack", "/images/external/category-6.png"),
-                createMockCategory(113237L, "Appliances", "/images/external/category-7.png"),
-                createMockCategory(113238L, "Cosmetics", "/images/external/category-8.png")
-            );
+            // 从数据库获取分类信息
+            Map<String, Object> categoryData = categoryService.getCategoryAndTagList();
+            List<Category> categories = convertToCategoryList(categoryData);
             
-            // 硬编码新鲜商品信息（模拟原始JSON数据）
-            List<Product> freshProducts = Arrays.asList(
-                createMockProduct(1132381L, "Domestic pork, skinless pork belly blocks", "/images/external/fresh-1.png", "66.9"),
-                createMockProduct(1132382L, "Prime live Boston lobster 2 pcs large package", "/images/external/fresh-2.png", "98"),
-                createMockProduct(1132383L, "Prime imported ported salmon 2 pcs large package", "/images/external/fresh-3.png", "378"),
-                createMockProduct(1132384L, "Fresh frozen squid head frozen squid tentacles 400g", "/images/external/fresh-4.png", "39.9")
-            );
+            // 从数据库获取商品信息
+            List<Map<String, Object>> productData = productService.getAllActiveProducts();
+            List<Product> freshProducts = convertToProductList(productData);
             
             // 构造响应数据
             HomeResponseDTO.HomeData homeData = new HomeResponseDTO.HomeData(
                 location, banners, categories, freshProducts
             );
             
-            logger.info("Home data retrieved successfully");
+            logger.info("Home data retrieved successfully from database");
             return ResponseEntity.ok(ResponseDTO.success("主页数据获取成功", homeData));
             
         } catch (Exception e) {
@@ -72,25 +67,52 @@ public class HomeController {
         }
     }
     
-    private Category createMockCategory(Long id, String name, String imgUrl) {
-        Category category = new Category();
-        category.setId(id);
-        category.setName(name);
-        category.setImgUrl(imgUrl);
-        category.setDescription("");
-        category.setActive(true);
-        return category;
+    private List<Category> convertToCategoryList(Map<String, Object> categoryData) {
+        if (categoryData == null) {
+            logger.warn("No category data found");
+            return Arrays.asList();
+        }
+        
+        @SuppressWarnings("unchecked")
+        List<Map<String, String>> categoryList = (List<Map<String, String>>) categoryData.get("categories");
+        if (categoryList == null) {
+            logger.warn("No categories found in category data");
+            return Arrays.asList();
+        }
+        
+        List<Category> categories = new java.util.ArrayList<>();
+        for (Map<String, String> categoryMap : categoryList) {
+            Category category = new Category();
+            category.setId(Long.parseLong(categoryMap.get("id")));
+            category.setName(categoryMap.get("name"));
+            category.setImgUrl("/images/external/category-1.png"); // 默认图片
+            category.setDescription("");
+            category.setActive(true);
+            categories.add(category);
+        }
+        
+        return categories;
     }
     
-    private Product createMockProduct(Long id, String name, String imgUrl, String price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setProductId(String.valueOf(id));
-        product.setTitle(name);
-        product.setPrice(Double.parseDouble(price));
-        product.setImgUrl(imgUrl);
-        product.setSales(1);
-        product.setIsActive(true);
-        return product;
+    private List<Product> convertToProductList(List<Map<String, Object>> productData) {
+        if (productData == null) {
+            logger.warn("No product data found");
+            return Arrays.asList();
+        }
+        
+        List<Product> products = new java.util.ArrayList<>();
+        for (Map<String, Object> productMap : productData) {
+            Product product = new Product();
+            product.setId(Long.parseLong(productMap.get("id").toString()));
+            product.setProductId(productMap.get("id").toString());
+            product.setTitle(productMap.get("title").toString());
+            product.setPrice(Double.parseDouble(productMap.get("price").toString()));
+            product.setImgUrl(productMap.get("imgUrl").toString());
+            product.setSales(Integer.parseInt(productMap.get("sales").toString()));
+            product.setIsActive(true);
+            products.add(product);
+        }
+        
+        return products;
     }
 }
