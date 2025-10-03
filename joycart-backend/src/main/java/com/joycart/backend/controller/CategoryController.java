@@ -2,15 +2,13 @@ package com.joycart.backend.controller;
 
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.CategoryService;
+import com.joycart.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +21,9 @@ public class CategoryController {
     
     @Autowired
     private CategoryService categoryService;
+    
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/list")
     public ResponseEntity<ResponseDTO<Map<String, Object>>> getCategoryAndTagList() {
@@ -31,6 +32,11 @@ public class CategoryController {
         try {
             // 从数据库获取分类和标签数据
             Map<String, Object> data = categoryService.getCategoryAndTagList();
+            
+            if (data == null) {
+                logger.warn("No category and tag data found in database");
+                return ResponseEntity.badRequest().body(ResponseDTO.error("数据库中未找到分类和标签数据"));
+            }
             
             logger.info("Category and tag list retrieved successfully from database");
             return ResponseEntity.ok(ResponseDTO.success("分类和标签列表获取成功", data));
@@ -46,38 +52,20 @@ public class CategoryController {
         logger.info("Received category products request");
         
         try {
-            // 硬编码商品列表数据（包含前端原有的chicken wing商品）
-            List<Map<String, Object>> products = Arrays.asList(
-                createMockProduct("1132381", "Domestic pork, skinless pork belly blocks", "/images/external/fresh-1.png", 66.9, 156),
-                createMockProduct("1132382", "Prime live Boston lobster 2 pcs large package", "/images/external/fresh-2.png", 98.0, 89),
-                createMockProduct("1132383", "Prime imported salmon 2 pcs large package", "/images/external/fresh-3.png", 378.0, 45),
-                createMockProduct("1132384", "Fresh frozen squid head frozen squid tentacles 400g", "/images/external/fresh-4.png", 39.9, 203),
-                createMockProduct("1132385", "chicken wing middle 1000g/...", "/images/external/fresh-1.png", 156.0, 156)
-            );
+            // 真实查询数据库数据，代替之前的硬编码
+            List<Map<String, Object>> products = productService.getAllActiveProducts();
             
-            logger.info("Category products retrieved successfully");
+            if (products == null) {
+                logger.warn("No products found in database");
+                return ResponseEntity.badRequest().body(ResponseDTO.error("数据库中未找到商品数据"));
+            }
+            
+            logger.info("Category products retrieved successfully from database");
             return ResponseEntity.ok(ResponseDTO.success("分类商品列表获取成功", products));
             
         } catch (Exception e) {
             logger.error("Error retrieving category products: {}", e.getMessage(), e);
             return ResponseEntity.ok(ResponseDTO.error("获取分类商品列表失败: " + e.getMessage()));
         }
-    }
-    
-    private Map<String, String> createCategoryMap(String id, String name) {
-        Map<String, String> category = new HashMap<>();
-        category.put("id", id);
-        category.put("name", name);
-        return category;
-    }
-    
-    private Map<String, Object> createMockProduct(String id, String title, String imgUrl, double price, int sales) {
-        Map<String, Object> product = new HashMap<>();
-        product.put("id", id);
-        product.put("title", title);
-        product.put("imgUrl", imgUrl);
-        product.put("price", price);
-        product.put("sales", sales);
-        return product;
     }
 }
