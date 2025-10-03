@@ -1,10 +1,12 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.dto.ResponseDTO;
+import com.joycart.backend.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.joycart.backend.dto.ResponseDTO;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,12 +20,15 @@ public class SearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
+    @Autowired
+    private ProductService productService;
+
     @GetMapping("/hot")
     public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getHotSearchList() {
         logger.info("Received hot search list request");
         
         try {
-            // 硬编码热门搜索数据（模拟原始JSON）
+            // 热门搜索关键词（相对固定的数据，暂时保留硬编码）
             List<Map<String, String>> hotSearchList = Arrays.asList(
                 createHotSearchItem("8318", "Pork"),
                 createHotSearchItem("8317", "Steak"),
@@ -60,28 +65,27 @@ public class SearchController {
                    keyword, shopId, type);
         
         try {
-            // 硬编码商品搜索数据（模拟原始JSON）
-            List<Map<String, Object>> productList = Arrays.asList(
-                createProductItem("88391", "/images/external/list-1.png", 
-                    "Provolone cherry tomatoes natural seeds potato fruit vegetables healthy snack from Shandong Haian", 
-                    49.8, 388),
-                createProductItem("88392", "/images/external/list-2.png", 
-                    "Natural sun-dried cherry tomatoes and potato fruit vegetables healthy snack from Shandong Xiwan", 
-                    27.9, 982),
-                createProductItem("88393", "/images/external/list-3.png", 
-                    "Shandong Haiyang Provence Tomatoes Natural Ripe Sandy Tomatoes Fresh Vegetables", 
-                    39.9, 546),
-                createProductItem("88394", "/images/external/list-4.png", 
-                    "Millennium Cherry Tomatoes Small Tomatoes 500g Premium Fresh Fruit", 
-                    29.9, 368),
-                createProductItem("88395", "/images/external/list-5.png", 
-                    "Haiyang Provence Tomatoes Sandy Flesh 4.5kg Fresh Vegetables Premium 5kg Pack", 
-                    39.9, 598)
-            );
+            // 从数据库获取所有商品进行搜索（简化实现，实际项目中应该实现真正的搜索逻辑）
+            List<Map<String, Object>> allProducts = productService.getAllActiveProducts();
             
-            ResponseDTO<List<Map<String, Object>>> response = ResponseDTO.success("商品搜索完成", productList);
+            if (allProducts == null) {
+                logger.warn("No products found in database");
+                return ResponseEntity.badRequest().body(ResponseDTO.error("数据库中未找到商品数据"));
+            }
             
-            logger.info("Product search completed successfully, found {} products", productList.size());
+            // 简单的关键词过滤（实际项目中应该使用更复杂的搜索算法）
+            List<Map<String, Object>> filteredProducts = new java.util.ArrayList<>();
+            for (Map<String, Object> product : allProducts) {
+                String title = product.get("title").toString().toLowerCase();
+                if (title.contains(keyword.toLowerCase())) {
+                    filteredProducts.add(product);
+                }
+            }
+            
+            ResponseDTO<List<Map<String, Object>>> response = ResponseDTO.success("商品搜索完成", filteredProducts);
+            
+            logger.info("Product search completed successfully, found {} products for keyword: {}", 
+                       filteredProducts.size(), keyword);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
@@ -98,14 +102,4 @@ public class SearchController {
         return item;
     }
 
-    private Map<String, Object> createProductItem(String id, String imgUrl, String title, 
-                                                  double price, int sales) {
-        Map<String, Object> item = new HashMap<>();
-        item.put("id", id);
-        item.put("imgUrl", imgUrl);
-        item.put("title", title);
-        item.put("price", price);
-        item.put("sales", sales);
-        return item;
-    }
 }
