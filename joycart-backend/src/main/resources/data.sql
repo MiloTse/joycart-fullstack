@@ -63,3 +63,51 @@ INSERT INTO nearby_stores (store_id, name, phone, address, latitude, longitude, 
                                                                                                           ('8320', 'Bayshore Shopping Centre Store', '1-613-007-6666', '100 Bayshore Dr, Ottawa, ON K2B 8C1, Canada', 45.3636, -75.8064, '3.8km', 4),
                                                                                                           ('8321', 'St. Laurent Shopping Centre Store', '1-613-009-5555', '1200 St Laurent Blvd, Ottawa, ON K1K 3B8, Canada', 45.4213, -75.6187, '4.2km', 5)
 ON CONFLICT (store_id) DO NOTHING;
+
+
+
+CREATE TABLE user_addresses (
+                                id BIGSERIAL PRIMARY KEY,
+                                user_id INTEGER NOT NULL,              -- 用户ID，关联users表
+                                name VARCHAR(100) NOT NULL,            -- 收货人姓名
+                                phone VARCHAR(50) NOT NULL,            -- 联系电话
+                                address TEXT NOT NULL,                 -- 详细地址
+                                is_default BOOLEAN DEFAULT FALSE,      -- 是否为默认地址
+                                is_active BOOLEAN DEFAULT TRUE,        -- 是否激活
+                                created_at TIMESTAMP DEFAULT NOW(),    -- 创建时间
+                                updated_at TIMESTAMP DEFAULT NOW()     -- 更新时间
+);
+-- 插入用户地址数据
+INSERT INTO user_addresses (user_id, name, phone, address, is_default) VALUES
+                                                                           (1, 'John Zhang', '13800138000', 'Room 101, Unit 1, Building 1, Residential Complex, Chaoyang District, Beijing', true),
+                                                                           (1, 'Mike Li', '13900139000', 'Room 2001, 20th Floor, Office Building, Pudong New Area, Shanghai', false),
+                                                                           (1, 'Jerry Wang', '1-613-727-4723', '1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8', false)
+ON CONFLICT (id) DO NOTHING;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
