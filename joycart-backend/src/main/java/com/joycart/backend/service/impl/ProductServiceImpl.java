@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,5 +55,33 @@ public class ProductServiceImpl implements ProductService {
         }
     }
     
+    @Override
+    public List<Map<String, Object>> getAllActiveProducts() {
+        logger.debug("Getting all active products");
+        
+        try {
+            //fetch active products from database
+            List<Product> products = productRepository.findByIsActiveTrue();
+            logger.info("Found {} active products", products.size());
+            
+            List<Map<String, Object>> productList = new ArrayList<>();
+            for (Product product : products) {
+                Map<String, Object> productMap = new HashMap<>();
+                productMap.put("id", product.getProductId());
+                productMap.put("title", product.getTitle());
+                productMap.put("imgUrl", product.getImgUrl());
+                productMap.put("price", product.getPrice());
+                productMap.put("sales", product.getSales());
+                productList.add(productMap);
+            }
+            
+            logger.info("Successfully retrieved {} active products", productList.size());
+            return productList;
+            
+        } catch (Exception e) {
+            logger.error("Error getting all active products: {}", e.getMessage(), e);
+            return null;
+        }
+    }
 
 }
