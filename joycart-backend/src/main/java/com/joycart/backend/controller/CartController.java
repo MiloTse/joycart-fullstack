@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.CartService;
 import com.joycart.backend.util.JwtUtil;
@@ -42,13 +43,13 @@ public class CartController {
      */
     @GetMapping("/products")
     public ResponseEntity<ResponseDTO<Object[]>> getCartProducts(
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = ApiConstants.AUTHORIZATION_HEADER, required = false) String token) {
         logger.info("Received cart products request");
         
         try {
             // 从JWT token中获取用户ID
             Integer userId = null;
-            if (token != null && token.startsWith("Bearer ")) {
+            if (token != null && token.startsWith(ApiConstants.BEARER_PREFIX)) {
                 try {
                     String jwtToken = token.substring(7);
                     userId = jwtUtil.getUserIdFromToken(jwtToken);
@@ -119,13 +120,13 @@ public class CartController {
     @GetMapping("/item")
     public ResponseEntity<ResponseDTO<Map<String, Integer>>> getCartItemCount(
             @RequestParam String id,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = ApiConstants.AUTHORIZATION_HEADER, required = false) String token) {
         logger.info("Received cart item count request for productId: {}", id);
         
         try {
             // 从JWT token中获取用户ID
             Integer userId = null;
-            if (token != null && token.startsWith("Bearer ")) {
+            if (token != null && token.startsWith(ApiConstants.BEARER_PREFIX)) {
                 try {
                     String jwtToken = token.substring(7);
                     userId = jwtUtil.getUserIdFromToken(jwtToken);
@@ -168,14 +169,14 @@ public class CartController {
     public ResponseEntity<ResponseDTO<Map<String, Object>>> addToCart(
             @RequestParam String productId,
             @RequestParam int count,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = ApiConstants.AUTHORIZATION_HEADER, required = false) String token) {
         
         logger.info("Received add to cart request - productId: {}, count: {}", productId, count);
         
         try {
             // 从JWT token中获取用户ID
             Integer userId = null;
-            if (token != null && token.startsWith("Bearer ")) {
+            if (token != null && token.startsWith(ApiConstants.BEARER_PREFIX)) {
                 try {
                     String jwtToken = token.substring(7);
                     userId = jwtUtil.getUserIdFromToken(jwtToken);
@@ -218,14 +219,14 @@ public class CartController {
     public ResponseEntity<ResponseDTO<Map<String, Object>>> changeCartItem(
             @RequestParam String id,
             @RequestParam int count,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = ApiConstants.AUTHORIZATION_HEADER, required = false) String token) {
         
         logger.info("Received cart change request for productId: {}, count: {}", id, count);
         
         try {
             // 从JWT token中获取用户ID
             Integer userId = null;
-            if (token != null && token.startsWith("Bearer ")) {
+            if (token != null && token.startsWith(ApiConstants.BEARER_PREFIX)) {
                 try {
                     String jwtToken = token.substring(7);
                     userId = jwtUtil.getUserIdFromToken(jwtToken);
