@@ -3,6 +3,7 @@ package com.joycart.backend.controller;
 import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.CartItem;
 import com.joycart.backend.dto.ResponseDTO;
+import com.joycart.backend.service.DeliveryTimeService;
 import com.joycart.backend.service.ProductService;
 import com.joycart.backend.service.UserAddressService;
 import com.joycart.backend.util.JwtUtil;
@@ -27,6 +28,9 @@ public class OrderController {
     
     @Autowired
     private UserAddressService userAddressService;
+    
+    @Autowired
+    private DeliveryTimeService deliveryTimeService;
     
     @Autowired
     private JwtUtil jwtUtil;
@@ -206,8 +210,8 @@ public class OrderController {
         Map<String, Object> orderData = new HashMap<>();
         orderData.put("balance", 200);
         
-        // 时间选择范围（保持不变）
-        orderData.put("timeRange", createTimeRange());
+        // 时间选择范围（动态生成）
+        orderData.put("timeRange", deliveryTimeService.getAvailableDeliveryTimes());
         
         // 默认地址（保持不变）
         Map<String, String> address = new HashMap<>();
@@ -278,8 +282,8 @@ public class OrderController {
         Map<String, Object> orderData = new HashMap<>();
         orderData.put("balance", 200);
         
-        // 时间选择范围
-        orderData.put("timeRange", createTimeRange());
+        // 时间选择范围（动态生成）
+        orderData.put("timeRange", deliveryTimeService.getAvailableDeliveryTimes());
         
         // 默认地址
         Map<String, String> address = new HashMap<>();
@@ -299,38 +303,6 @@ public class OrderController {
         return orderData;
     }
 
-    private List<List<Map<String, String>>> createTimeRange() {
-        // 创建时间选择器数据格式（参考原始orderDetail.json格式）
-        List<List<Map<String, String>>> timeRange = new ArrayList<>();
-        
-        // 日期选项（第一列）
-        List<Map<String, String>> dateOptions = Arrays.asList(
-            Map.of("label", "2025-05-09", "value", "2025-05-09"),
-            Map.of("label", "2025-05-10", "value", "2025-05-10"),
-            Map.of("label", "2025-05-11", "value", "2025-05-11")
-        );
-        
-        // 小时选项（第二列）
-        List<Map<String, String>> hourOptions = Arrays.asList(
-            Map.of("label", "09", "value", "09"),
-            Map.of("label", "10", "value", "10"),
-            Map.of("label", "11", "value", "11")
-        );
-        
-        // 分钟选项（第三列）
-        List<Map<String, String>> minuteOptions = Arrays.asList(
-            Map.of("label", "00", "value", "00"),
-            Map.of("label", "15", "value", "15"),
-            Map.of("label", "30", "value", "30"),
-            Map.of("label", "45", "value", "45")
-        );
-        
-        timeRange.add(dateOptions);
-        timeRange.add(hourOptions);
-        timeRange.add(minuteOptions);
-        
-        return timeRange;
-    }
 
     private Object createShopData() {
         // 简化商店数据
