@@ -4,6 +4,7 @@ import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.CartItem;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.DeliveryTimeService;
+import com.joycart.backend.service.OrderService;
 import com.joycart.backend.service.ProductService;
 import com.joycart.backend.service.UserAddressService;
 import com.joycart.backend.util.JwtUtil;
@@ -33,10 +34,14 @@ public class OrderController {
     private DeliveryTimeService deliveryTimeService;
     
     @Autowired
+    private OrderService orderService;
+    
+    @Autowired
     private JwtUtil jwtUtil;
 
     // Key: orderId, Value: selected productList
     private static final Map<String, List<CartItem>> orderStorage = new HashMap<>();
+    
     
     /**
      * 提交购物车，创建订单
@@ -44,7 +49,8 @@ public class OrderController {
      * @return 订单ID
      */
     @PostMapping("/submit")
-    public ResponseEntity<ResponseDTO<Map<String, String>>> submitCart(@RequestBody List<CartItem> cartItems) {
+    public ResponseEntity<ResponseDTO<Map<String, String>>> submitCart(@RequestBody List<CartItem> cartItems,
+                                                                       @RequestHeader(ApiConstants.AUTHORIZATION_HEADER) String authorization) {
         logger.info("Received cart submit request with {} items", cartItems != null ? cartItems.size() : 0);
         
         if (cartItems != null) {
@@ -54,16 +60,17 @@ public class OrderController {
         }
         
         try {
-            //生成唯一订单ID（简单实现）
-            String orderId = "ORDER_" + System.currentTimeMillis();
+            // 从Authorization头中提取JWT token
+            String token = authorization.replace(ApiConstants.BEARER_PREFIX, "");
+            Integer userId = jwtUtil.getUserIdFromToken(token);
             
-            // 保存选中的商品到订单存储, 后续改为使用db
-            if (cartItems != null && !cartItems.isEmpty()) {
-                orderStorage.put(orderId, new ArrayList<>(cartItems));
-                logger.info("Stored {} items for order: {}", cartItems.size(), orderId);
-            } else {
-                logger.warn("No items provided for order: {}", orderId);
+            if (userId == null) {
+                logger.warn("Unable to extract user ID from token");
+                return ResponseEntity.ok(ResponseDTO.error("用户认证失败"));
             }
+            
+            // 使用OrderService提交订单
+            String orderId = orderService.submitOrder(cartItems, userId);
             
             Map<String, String> data = new HashMap<>();
             data.put("orderId", orderId);
@@ -130,26 +137,26 @@ public class OrderController {
      * @return 订单详情数据
      */
     @GetMapping("/detail")
-    public ResponseEntity<ResponseDTO<Map<String, Object>>> getOrderDetail(@RequestParam String id) {
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getOrderDetail(@RequestParam String id,
+                                                                           @RequestHeader(ApiConstants.AUTHORIZATION_HEADER) String authorization) {
         logger.info("Received order detail request for orderId: {}", id);
         
         try {
-            // 第1步：从订单存储中获取选中的商品列表
-            List<CartItem> orderItems = orderStorage.get(id);
+            // 从Authorization头中提取JWT token
+            String token = authorization.replace(ApiConstants.BEARER_PREFIX, "");
+            Integer userId = jwtUtil.getUserIdFromToken(token);
             
-            Map<String, Object> orderData;
-            if (orderItems != null && !orderItems.isEmpty()) {
-                // 根据实际订单商品生成动态数据
-                orderData = createDynamicOrderDetailData(id, orderItems);
-                logger.info("Generated dynamic order detail for {} items", orderItems.size());
-                
-                for (CartItem item : orderItems) {
-                    logger.info("Order item: productId={}, count={}", item.getProductId(), item.getCount());
-                }
-            } else {
-                // 如果没有找到订单数据，使用默认数据（兼容旧订单）
-                logger.warn("No order items found for orderId: {}, using default data", id);
-                orderData = createOrderDetailData();
+            if (userId == null) {
+                logger.warn("Unable to extract user ID from token");
+                return ResponseEntity.ok(ResponseDTO.error("用户认证失败"));
+            }
+            
+            // 使用OrderService获取订单详情
+            Map<String, Object> orderData = orderService.getOrderDetail(id, userId);
+            
+            if (orderData == null) {
+                logger.warn("Order not found or access denied for orderId: {}, userId: {}", id, userId);
+                return ResponseEntity.ok(ResponseDTO.error("订单不存在或无权限访问"));
             }
             
             ResponseDTO<Map<String, Object>> response = ResponseDTO.success("订单详情获取成功", orderData);
@@ -177,15 +184,31 @@ public class OrderController {
             @RequestParam String orderId,
             @RequestParam String addressId,
             @RequestParam String time,
-            @RequestParam String payWay) {
+            @RequestParam String payWay,
+            @RequestHeader(ApiConstants.AUTHORIZATION_HEADER) String authorization) {
         
         logger.info("Received payment request - orderId: {}, addressId: {}, time: {}, payWay: {}", 
                    orderId, addressId, time, payWay);
         
         try {
-            // 模拟支付处理逻辑
-            boolean paymentSuccess = true; //暂时硬编码为成功，后续改为调用支付服务
+            // 从Authorization头中提取JWT token
+            String token = authorization.replace(ApiConstants.BEARER_PREFIX, "");
+            Integer userId = jwtUtil.getUserIdFromToken(token);
             
+            if (userId == null) {
+                logger.warn("Unable to extract user ID from token");
+                return ResponseEntity.ok(ResponseDTO.error("用户认证失败"));
+            }
+            
+            // 使用OrderService处理支付
+            Map<String, Object> paymentResult = orderService.processPayment(orderId, addressId, time, payWay, userId);
+            
+            if (paymentResult == null) {
+                logger.warn("Payment processing failed for order: {}", orderId);
+                return ResponseEntity.ok(ResponseDTO.error("支付处理失败"));
+            }
+            
+            boolean paymentSuccess = (Boolean) paymentResult.get("success");
             ResponseDTO<Boolean> response = ResponseDTO.success("支付处理成功", paymentSuccess);
             
             if (paymentSuccess) {
