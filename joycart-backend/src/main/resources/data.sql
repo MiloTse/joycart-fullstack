@@ -84,8 +84,35 @@ INSERT INTO user_addresses (user_id, name, phone, address, is_default) VALUES
                                                                            (1, 'Jerry Wang', '1-613-727-4723', '1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8', false)
 ON CONFLICT (id) DO NOTHING;
 
+-- 创建订单表
+CREATE TABLE IF NOT EXISTS orders (
+    id BIGSERIAL PRIMARY KEY,
+    order_id VARCHAR(50) UNIQUE NOT NULL,   -- 订单号
+    user_id INTEGER NOT NULL,              -- 用户ID
+    total_amount DECIMAL(10,2) NOT NULL,   -- 订单总金额
+    status VARCHAR(20) DEFAULT 'PENDING',  -- 订单状态
+    delivery_date DATE,                    -- 配送日期
+    delivery_time VARCHAR(10),             -- 配送时间 (如 "09:00")
+    address_id BIGINT,                     -- 配送地址ID
+    payment_method VARCHAR(50),            -- 支付方式
+    created_at TIMESTAMP DEFAULT NOW(),    -- 创建时间
+    updated_at TIMESTAMP DEFAULT NOW()     -- 更新时间
+);
 
+-- 创建商店数据表
+CREATE TABLE IF NOT EXISTS shops (
+    id BIGSERIAL PRIMARY KEY,
+    shop_id VARCHAR(50) UNIQUE NOT NULL,   -- 商店唯一标识
+    shop_name VARCHAR(200) NOT NULL,       -- 商店名称
+    is_active BOOLEAN DEFAULT TRUE,        -- 是否激活
+    created_at TIMESTAMP DEFAULT NOW(),    -- 创建时间
+    updated_at TIMESTAMP DEFAULT NOW()     -- 更新时间
+);
 
+-- 插入商店数据
+INSERT INTO shops (shop_id, shop_name) VALUES
+('8137', 'Mei''s Fresh Produce')
+ON CONFLICT (shop_id) DO NOTHING;
 
 
 
