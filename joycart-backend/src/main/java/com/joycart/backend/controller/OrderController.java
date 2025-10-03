@@ -1,10 +1,15 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
+import com.joycart.backend.dto.ResponseDTO;
+import com.joycart.backend.service.ProductService;
+import com.joycart.backend.service.UserAddressService;
+import com.joycart.backend.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.joycart.backend.dto.ResponseDTO;
 
 import java.util.*;
 
@@ -14,16 +19,14 @@ import java.util.*;
 class CartItem {
     private String productId;
     private Integer count;
-    
-    // 构造函数
+
     public CartItem() {}
     
     public CartItem(String productId, Integer count) {
         this.productId = productId;
         this.count = count;
     }
-    
-    // Getters and Setters
+
     public String getProductId() { return productId; }
     public void setProductId(String productId) { this.productId = productId; }
     
@@ -43,37 +46,17 @@ public class OrderController {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-    //先模拟订单数据
+    @Autowired
+    private ProductService productService;
+    
+    @Autowired
+    private UserAddressService userAddressService;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
+
     // Key: orderId, Value: selected productList
     private static final Map<String, List<CartItem>> orderStorage = new HashMap<>();
-    
-    // 商品信息存储 (实际项目中应该从数据库查询)
-    // Key: productId, Value: 商品详细信息
-    private static final Map<String, Map<String, Object>> productInfoStorage = new HashMap<>();
-    
-    static {
-        // 初始化商品信息数据，与Cart页面的硬编码数据保持一致
-        Map<String, Object> product88391 = new HashMap<>();
-        product88391.put("productId", "88391");
-        product88391.put("title", "Sweet Radish 10 lbs - Crisp and Sweet, Perfect for Salads");
-        product88391.put("price", 14.9);
-        product88391.put("imgUrl", "/images/external/category-list-5.png");
-        productInfoStorage.put("88391", product88391);
-        
-        Map<String, Object> product88392 = new HashMap<>();
-        product88392.put("productId", "88392");
-        product88392.put("title", "Australian Beef Rolls 450g - Ideal for Hot Pot and BBQ");
-        product88392.put("price", 35.0);
-        product88392.put("imgUrl", "/images/external/category-list-3.png");
-        productInfoStorage.put("88392", product88392);
-        
-        Map<String, Object> product89391 = new HashMap<>();
-        product89391.put("productId", "89391");
-        product89391.put("title", "Fresh Snapper 900g - Cleaned and Ready to Cook");
-        product89391.put("price", 69.9);
-        product89391.put("imgUrl", "/images/external/category-list-6.png");
-        productInfoStorage.put("89391", product89391);
-    }
     
     /**
      * 提交购物车，创建订单
@@ -119,26 +102,39 @@ public class OrderController {
 
     /**
      * 获取用户地址列表
+     * @param authorization JWT token
      * @return 用户地址列表
      */
     @GetMapping("/addresses")
-    public ResponseEntity<ResponseDTO<Object[]>> getUserAddresses() {
+    public ResponseEntity<ResponseDTO<Object[]>> getUserAddresses(
+            @RequestHeader(ApiConstants.AUTHORIZATION_HEADER) String authorization) {
         logger.info("Received user addresses request");
         
         try {
-            // 硬编码用户地址数据（实际项目中应该根据JWT token获取用户的地址）
-            Object[] addressList = {
-                createAddressItem("1", "John Zhang", "13800138000", 
-                    "Room 101, Unit 1, Building 1, Residential Complex, Chaoyang District, Beijing", true),
-                createAddressItem("2", "Mike Li", "13900139000", 
-                    "Room 2001, 20th Floor, Office Building, Pudong New Area, Shanghai", false),
-                createAddressItem("3", "Jerry Wang", "1-613-727-4723", 
-                    "1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8", false)
-            };
+            // 从JWT token中提取用户ID
+            String token = authorization.replace(ApiConstants.BEARER_PREFIX, "");
+            Integer userId = jwtUtil.getUserIdFromToken(token);
             
-            ResponseDTO<Object[]> response = ResponseDTO.success("用户地址列表获取成功", addressList);
+            if (userId == null) {
+                logger.warn("Invalid token or user not found");
+                return ResponseEntity.badRequest().body(ResponseDTO.error(ApiConstants.UNAUTHORIZED_MESSAGE));
+            }
             
-            logger.info("User addresses retrieved successfully, found {} addresses", addressList.length);
+            // 从数据库获取用户地址数据
+            List<Map<String, Object>> addressList = userAddressService.getUserAddresses(userId);
+            
+            if (addressList == null) {
+                logger.warn("No addresses found for userId: {}", userId);
+                return ResponseEntity.badRequest().body(ResponseDTO.error(ApiConstants.USER_ADDRESSES_NOT_FOUND_MESSAGE));
+            }
+            
+            // 转换为Object[]格式以保持前端兼容性
+            Object[] addressArray = addressList.toArray();
+            
+            ResponseDTO<Object[]> response = ResponseDTO.success(ApiConstants.USER_ADDRESSES_SUCCESS_MESSAGE, addressArray);
+            
+            logger.info("User addresses retrieved successfully from database, found {} addresses for userId: {}", 
+                       addressArray.length, userId);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
@@ -263,8 +259,8 @@ public class OrderController {
             String productId = item.getProductId();
             Integer count = item.getCount();
             
-            // 从商品信息存储中获取商品详情
-            Map<String, Object> productInfo = productInfoStorage.get(productId);
+            // 从ProductService获取商品详情
+            Map<String, Object> productInfo = productService.getProductDetail(productId);
             if (productInfo != null) {
                 Map<String, Object> product = new HashMap<>();
                 product.put("productId", productId);
@@ -378,6 +374,7 @@ public class OrderController {
         
         return new Object[]{shop1};
     }
+
 
     private Map<String, Object> createAddressItem(String id, String name, String phone, 
                                                   String address, boolean isDefault) {
