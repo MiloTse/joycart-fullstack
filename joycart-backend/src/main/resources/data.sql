@@ -38,3 +38,28 @@ INSERT INTO products (id, product_id, title, subtitle, img_url, price, sales, or
 (9, '88394', 'Premium Avocado Hass Variety 4 pieces', 'Creamy and nutritious Hass avocados, perfect for healthy meals', '/images/external/category-list-3.png', 32.9, 167, 'California Grown', '4 pieces', 'Premium Hass avocados with creamy texture and rich flavor. Perfect for making guacamole, adding to salads, or enjoying on toast.', true, NOW(), NOW()),
 (10, '88395', 'Fresh Spinach Organic Leafy Greens 200g', 'Nutritious organic spinach, packed with vitamins and minerals', '/images/external/category-list-4.png', 12.9, 298, 'Organic Certified', '200g', 'Fresh organic spinach leaves, rich in iron and vitamins. Perfect for salads, smoothies, or cooking as a healthy side dish.', true, NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
+
+
+CREATE TABLE nearby_stores (
+                               id BIGSERIAL PRIMARY KEY,
+                               store_id VARCHAR(50) UNIQUE NOT NULL,  -- 商店唯一标识
+                               name VARCHAR(200) NOT NULL,            -- 商店名称
+                               phone VARCHAR(50),                      -- 联系电话
+                               address TEXT NOT NULL,                  -- 详细地址
+                               latitude DECIMAL(10, 7),               -- 纬度
+                               longitude DECIMAL(10, 7),              -- 经度
+                               distance VARCHAR(20),                   -- 距离描述（如"799m"）
+                               is_active BOOLEAN DEFAULT TRUE,        -- 是否激活
+                               sort_order INTEGER DEFAULT 0,          -- 排序字段
+                               created_at TIMESTAMP DEFAULT NOW(),    -- 创建时间
+                               updated_at TIMESTAMP DEFAULT NOW()     -- 更新时间
+);
+
+-- 插入附近商店数据, 铺底数据。
+INSERT INTO nearby_stores (store_id, name, phone, address, latitude, longitude, distance, sort_order) VALUES
+                                                                                                          ('8318', 'College Square Store', '1-613-001-9999', '1385 Woodroffe Ave, Ottawa, ON K4S 1A6, Canada', 45.3498, -75.7553, '799m', 1),
+                                                                                                          ('8317', 'Kanata Technology Park Store', '1-613-003-8888', '350 Legget Dr, Kanata, ON K2K 3N1, Canada', 45.333, -75.7369, '1.1km', 2),
+                                                                                                          ('8319', 'Rideau Centre Store', '1-613-005-7777', '50 Rideau St, Ottawa, ON K1N 9J7, Canada', 45.4215, -75.6919, '2.3km', 3),
+                                                                                                          ('8320', 'Bayshore Shopping Centre Store', '1-613-007-6666', '100 Bayshore Dr, Ottawa, ON K2B 8C1, Canada', 45.3636, -75.8064, '3.8km', 4),
+                                                                                                          ('8321', 'St. Laurent Shopping Centre Store', '1-613-009-5555', '1200 St Laurent Blvd, Ottawa, ON K1K 3B8, Canada', 45.4213, -75.6187, '4.2km', 5)
+ON CONFLICT (store_id) DO NOTHING;
