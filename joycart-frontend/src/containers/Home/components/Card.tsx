@@ -39,10 +39,10 @@ const Card = (props: CardPropsType) => {
                         return (
                             <div className="card-content-item" key={item.id} onClick={() => handleItemClick(item.id)}>
                                 <img
-                                    alt={item.name}
+                                    alt={item.title || item.name}
                                     className="card-content-item-img"
                                     src={item.imgUrl}/>
-                                <p className='card-content-item-desc'>{item.name}</p>
+                                <p className='card-content-item-desc'>{item.subtitle || item.title || item.name}</p>
                                 <div className='card-content-item-price'>
                                     <span className='card-content-item-price-symbol'>&#36;</span>
                                     {item.price}
