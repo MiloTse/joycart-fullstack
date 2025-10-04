@@ -120,6 +120,30 @@ CREATE TABLE IF NOT EXISTS shops (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- 创建位置表
+CREATE TABLE IF NOT EXISTS locations (
+    id BIGSERIAL PRIMARY KEY,
+    location_id VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 创建轮播图表
+CREATE TABLE IF NOT EXISTS banners (
+    id BIGSERIAL PRIMARY KEY,
+    banner_id VARCHAR(50) UNIQUE NOT NULL,
+    img_url VARCHAR(500) NOT NULL,
+    title VARCHAR(200),
+    link_url VARCHAR(500),
+    is_active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
 -- ===========================================
 -- 2. 删除现有数据（按依赖关系顺序删除）
 -- ===========================================
@@ -135,6 +159,8 @@ DELETE FROM products;           -- 商品表（依赖categories表）
 DELETE FROM tags;               -- 标签表（独立表）
 DELETE FROM categories;         -- 分类表（独立表）
 DELETE FROM shops;              -- 商店表（独立表）
+DELETE FROM banners;            -- 轮播图表（独立表）
+DELETE FROM locations;          -- 位置表（独立表）
 -- 注意：users表通常不删除，因为包含用户账户信息
 
 -- ===========================================
@@ -188,3 +214,15 @@ INSERT INTO user_addresses (user_id, name, phone, address, is_default) VALUES
 -- 插入商店数据
 INSERT INTO shops (shop_id, shop_name) VALUES
 ('8137', 'Mei''s Fresh Produce');
+
+-- 插入位置数据
+INSERT INTO locations (location_id, name, is_active, sort_order, created_at, updated_at) VALUES
+('001', 'Ottawa(Chinatown store)', true, 1, NOW(), NOW()),
+('002', 'Toronto(Downtown store)', true, 2, NOW(), NOW()),
+('003', 'Vancouver(West End store)', true, 3, NOW(), NOW());
+
+-- 插入轮播图数据
+INSERT INTO banners (banner_id, img_url, title, is_active, sort_order, created_at, updated_at) VALUES
+('1135', '/images/banner01.png', 'Fresh Produce Banner', true, 1, NOW(), NOW()),
+('1136', '/images/external/banner.png', 'Special Offer Banner', true, 2, NOW(), NOW()),
+('1137', '/images/external/banner.png', 'New Arrivals Banner', true, 3, NOW(), NOW());
