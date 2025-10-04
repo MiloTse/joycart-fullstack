@@ -2,6 +2,7 @@ package com.joycart.backend.controller;
 
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.ProductService;
+import com.joycart.backend.service.HotSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,23 +23,32 @@ public class SearchController {
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private HotSearchService hotSearchService;
 
     @GetMapping("/hot")
     public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getHotSearchList() {
         logger.info("Received hot search list request");
         
         try {
-            // 热门搜索关键词（相对固定的数据，暂时保留硬编码）
-            List<Map<String, String>> hotSearchList = Arrays.asList(
-                createHotSearchItem("8318", "Pork"),
-                createHotSearchItem("8317", "Steak"),
-                createHotSearchItem("8319", "Seafood"),
-                createHotSearchItem("8320", "Vegetables")
-            );
+            // 从数据库获取热门搜索列表
+            List<Map<String, String>> hotSearchList = hotSearchService.getAllActiveHotSearches();
+            
+            if (hotSearchList == null || hotSearchList.isEmpty()) {
+                logger.warn("No hot search data found in database, using default data");
+                // 如果数据库中没有数据，使用默认值
+                hotSearchList = Arrays.asList(
+                    createHotSearchItem("8318", "Pork"),
+                    createHotSearchItem("8317", "Steak"),
+                    createHotSearchItem("8319", "Seafood"),
+                    createHotSearchItem("8320", "Vegetables")
+                );
+            }
             
             ResponseDTO<List<Map<String, String>>> response = ResponseDTO.success("热门搜索列表获取成功", hotSearchList);
             
-            logger.info("Hot search list retrieved successfully");
+            logger.info("Hot search list retrieved successfully from database");
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
