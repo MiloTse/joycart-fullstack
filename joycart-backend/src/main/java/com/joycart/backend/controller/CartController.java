@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -26,15 +25,6 @@ public class CartController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Key: productId, Value: count
-    private static final Map<String, Integer> cartStorage = new HashMap<>();
-    
-    static {
-        //测试数据，模拟用户已有的购物车商品
-        cartStorage.put("88391", 2);
-        cartStorage.put("88392", 1);
-        cartStorage.put("89391", 1);
-    }
 
     /**
      * 获取购物车商品列表
@@ -258,22 +248,4 @@ public class CartController {
         }
     }
 
-    private Map<String, Object> createShopCartData(String shopId, String shopName, Object[] cartList) {
-        Map<String, Object> shop = new HashMap<>();
-        shop.put("shopId", shopId);
-        shop.put("shopName", shopName);
-        shop.put("cartList", cartList);
-        return shop;
-    }
-
-    private Map<String, Object> createCartProduct(String productId, String imgUrl, String title, 
-                                                  double price, int count) {
-        Map<String, Object> product = new HashMap<>();
-        product.put("productId", productId);
-        product.put("imgUrl", imgUrl);
-        product.put("title", title);
-        product.put("price", price);
-        product.put("count", count);
-        return product;
-    }
 }
