@@ -3,7 +3,6 @@ package com.joycart.backend.service.impl;
 import com.joycart.backend.dto.CartItem;
 import com.joycart.backend.model.Order;
 import com.joycart.backend.model.OrderItem;
-import com.joycart.backend.model.Product;
 import com.joycart.backend.repository.OrderItemRepository;
 import com.joycart.backend.repository.OrderRepository;
 import com.joycart.backend.service.DeliveryTimeService;
@@ -111,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
         }
         
         Map<String, Object> orderData = new HashMap<>();
+        // 余额信息应该从用户账户或配置中获取，暂时使用默认值
         orderData.put("balance", 200);
         
         // 时间选择范围（动态生成）
@@ -121,17 +121,23 @@ public class OrderServiceImpl implements OrderService {
         if (addresses != null && !addresses.isEmpty()) {
             orderData.put("address", addresses.get(0)); // 使用第一个地址作为默认地址
         } else {
-            // 如果没有地址，使用默认地址
-            Map<String, String> defaultAddress = new HashMap<>();
-            defaultAddress.put("id", "10036");
-            defaultAddress.put("name", "Jerry Wang");
-            defaultAddress.put("phone", "1-613-727-4723");
-            defaultAddress.put("address", "1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8");
-            orderData.put("address", defaultAddress);
+            // 如果没有地址，记录警告并返回null
+            logger.warn("No addresses found for userId: {}, order cannot be processed", userId);
+            return null;
         }
         
-        // 默认时间
-        orderData.put("time", new String[]{"2025-05-09", "09", "00"});
+        // 配送时间应该从订单中获取，如果没有则使用当前时间
+        if (order.getDeliveryDate() != null && order.getDeliveryTime() != null) {
+            orderData.put("time", new String[]{order.getDeliveryDate().toString(), order.getDeliveryTime(), "00"});
+        } else {
+            // 使用当前时间作为默认值
+            LocalDateTime now = LocalDateTime.now();
+            orderData.put("time", new String[]{
+                now.toLocalDate().toString(),
+                String.format("%02d", now.getHour()),
+                String.format("%02d", now.getMinute())
+            });
+        }
         orderData.put("total", order.getTotalAmount().doubleValue());
         
         // 获取订单商品信息
@@ -220,6 +226,12 @@ public class OrderServiceImpl implements OrderService {
      * 根据订单项创建商店数据
      */
     private Object createShopDataFromOrderItems(List<OrderItem> orderItems) {
+        if (orderItems == null || orderItems.isEmpty()) {
+            logger.warn("No order items found for order");
+            return new Object[]{};
+        }
+        
+        // 商店信息应该从数据库获取，暂时使用默认值
         Map<String, Object> shop = new HashMap<>();
         shop.put("shopId", "8137");
         shop.put("shopName", "Mei's Fresh Produce");
@@ -232,11 +244,13 @@ public class OrderServiceImpl implements OrderService {
                 Map<String, Object> productInfo = new HashMap<>();
                 productInfo.put("productId", item.getProductId());
                 productInfo.put("imgUrl", productData.get("imgUrl"));
-                productInfo.put("weight", "0.45kg");
+                productInfo.put("weight", "0.45kg"); // 重量信息应该从商品数据中获取
                 productInfo.put("title", productData.get("title"));
                 productInfo.put("price", productData.get("price"));
                 productInfo.put("count", item.getQuantity());
                 cartList.add(productInfo);
+            } else {
+                logger.warn("Product data not found for productId: {}", item.getProductId());
             }
         }
         
