@@ -48,6 +48,10 @@
       font-size:.14rem;
       line-height:.52rem;
       text-align:center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 .1rem;
       &-active {
         background: #aee1ab;
        }
