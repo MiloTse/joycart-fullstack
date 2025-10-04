@@ -3,9 +3,7 @@ package com.joycart.backend.controller;
 import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.CartItem;
 import com.joycart.backend.dto.ResponseDTO;
-import com.joycart.backend.service.DeliveryTimeService;
 import com.joycart.backend.service.OrderService;
-import com.joycart.backend.service.ProductService;
 import com.joycart.backend.service.UserAddressService;
 import com.joycart.backend.util.JwtUtil;
 import org.slf4j.Logger;
@@ -25,22 +23,13 @@ public class OrderController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
-    private ProductService productService;
-    
-    @Autowired
     private UserAddressService userAddressService;
-    
-    @Autowired
-    private DeliveryTimeService deliveryTimeService;
     
     @Autowired
     private OrderService orderService;
     
     @Autowired
     private JwtUtil jwtUtil;
-
-    // Key: orderId, Value: selected productList
-    private static final Map<String, List<CartItem>> orderStorage = new HashMap<>();
     
     
     /**
@@ -226,135 +215,5 @@ public class OrderController {
         }
     }
 
-    /**
-     * 根据实际订单商品创建动态订单详情数据
-     */
-    private Map<String, Object> createDynamicOrderDetailData(String orderId, List<CartItem> orderItems) {
-        Map<String, Object> orderData = new HashMap<>();
-        orderData.put("balance", 200);
-        
-        // 时间选择范围（动态生成）
-        orderData.put("timeRange", deliveryTimeService.getAvailableDeliveryTimes());
-        
-        // 默认地址（保持不变）
-        Map<String, String> address = new HashMap<>();
-        address.put("id", "10036");
-        address.put("name", "Jerry Wang");
-        address.put("phone", "1-613-727-4723");
-        address.put("address", "1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8");
-        orderData.put("address", address);
-        
-        // 默认时间（保持不变）
-        orderData.put("time", new String[]{"2025-05-09", "09", "00"});
-        
-        // 根据实际订单商品动态生成商店和商品信息
-        List<Map<String, Object>> shopList = new ArrayList<>();
-        double totalPrice = 0.0;
-        
-        // 简化处理：假设所有商品都来自同一个商店
-        Map<String, Object> shop = new HashMap<>();
-        shop.put("shopId", "8137");
-        shop.put("shopName", "Mei's Fresh Produce");
-        
-        List<Map<String, Object>> productList = new ArrayList<>();
-        
-        for (CartItem item : orderItems) {
-            String productId = item.getProductId();
-            Integer count = item.getCount();
-            
-            // 从ProductService获取商品详情
-            Map<String, Object> productInfo = productService.getProductDetail(productId);
-            if (productInfo != null) {
-                Map<String, Object> product = new HashMap<>();
-                product.put("productId", productId);
-                product.put("imgUrl", productInfo.get("imgUrl"));
-                product.put("title", productInfo.get("title"));
-                product.put("price", productInfo.get("price"));
-                product.put("count", count);
-                
-                productList.add(product);
-                
-                // 计算总价
-                Double price = (Double) productInfo.get("price");
-                totalPrice += price * count;
-                
-                logger.info("Added product to order: {} x {} = ${}", 
-                    productInfo.get("title"), count, price * count);
-            } else {
-                logger.warn("Product info not found for productId: {}", productId);
-            }
-        }
-        
-        shop.put("cartList", productList);
-        shopList.add(shop);
-        orderData.put("shop", shopList);
-        
-        // 设置动态计算的总价（保留两位小数精度）
-        orderData.put("total", Math.round(totalPrice * 100.0) / 100.0);
-        
-        logger.info("Dynamic order total: ${}", totalPrice);
-        logger.info("Order data structure: shop array size = {}", shopList.size());
-        logger.info("Full order data keys: {}", orderData.keySet());
-        return orderData;
-    }
 
-    /**
-     * 创建订单详情数据（硬编码模拟数据）
-     */
-    private Map<String, Object> createOrderDetailData() {
-        Map<String, Object> orderData = new HashMap<>();
-        orderData.put("balance", 200);
-        
-        // 时间选择范围（动态生成）
-        orderData.put("timeRange", deliveryTimeService.getAvailableDeliveryTimes());
-        
-        // 默认地址
-        Map<String, String> address = new HashMap<>();
-        address.put("id", "10036");
-        address.put("name", "Jerry Wang");
-        address.put("phone", "1-613-727-4723");
-        address.put("address", "1385 Woodroffe Avenue, Ottawa, ON, K2G 1V8");
-        orderData.put("address", address);
-        
-        // 默认时间
-        orderData.put("time", new String[]{"2025-05-09", "09", "00"});
-        orderData.put("total", 630);
-        
-        // 商店和商品信息
-        orderData.put("shop", createShopData());
-        
-        return orderData;
-    }
-
-
-    private Object createShopData() {
-        // 简化商店数据
-        Map<String, Object> shop1 = new HashMap<>();
-        shop1.put("shopId", "8137");
-        shop1.put("shopName", "Mei's Fresh Produce");
-        
-        Map<String, Object> product1 = new HashMap<>();
-        product1.put("productId", "88391");
-        product1.put("imgUrl", "/images/external/category-list-5.png");
-        product1.put("weight", "0.45kg");
-        product1.put("title", "Sweet Radish 10 lbs - Crisp and Sweet, Perfect for Salads");
-        product1.put("price", 14.9);
-        product1.put("count", 2);
-        
-        shop1.put("cartList", new Object[]{product1});
-        
-        return new Object[]{shop1};
-    }
-
-
-    private Map<String, Object> createAddressItem(String id, String name, String phone, 
-                                                  String address, boolean isDefault) {
-        Map<String, Object> item = new HashMap<>();
-        item.put("id", id);
-        item.put("name", name);
-        item.put("phone", phone);
-        item.put("address", address);
-        item.put("isDefault", isDefault);
-        return item;
-    }
 }
