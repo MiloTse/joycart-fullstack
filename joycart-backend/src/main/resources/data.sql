@@ -156,6 +156,22 @@ CREATE TABLE IF NOT EXISTS hot_searches (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- 创建用户资料表
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id BIGSERIAL PRIMARY KEY,
+    user_id VARCHAR(50) UNIQUE NOT NULL,
+    nickname VARCHAR(100),
+    avatar VARCHAR(500),
+    vip_level VARCHAR(20),
+    coupons INTEGER DEFAULT 0,
+    reward_points INTEGER DEFAULT 0,
+    phone_number VARCHAR(20),
+    email VARCHAR(100),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
 -- ===========================================
 -- 2. 删除现有数据（按依赖关系顺序删除）
 -- ===========================================
@@ -174,6 +190,7 @@ DELETE FROM shops;              -- 商店表（独立表）
 DELETE FROM banners;            -- 轮播图表（独立表）
 DELETE FROM locations;          -- 位置表（独立表）
 DELETE FROM hot_searches;       -- 热门搜索表（独立表）
+DELETE FROM user_profiles;      -- 用户资料表（独立表）
 -- 注意：users表通常不删除，因为包含用户账户信息
 
 -- ===========================================
@@ -250,3 +267,9 @@ INSERT INTO hot_searches (search_id, keyword, is_active, sort_order, search_coun
 ('HS006', 'Frozen Foods', true, 6, 589, NOW(), NOW()),
 ('HS007', 'Beverages', true, 7, 456, NOW(), NOW()),
 ('HS008', 'Snacks', true, 8, 398, NOW(), NOW());
+
+-- 插入用户资料数据
+INSERT INTO user_profiles (user_id, nickname, avatar, vip_level, coupons, reward_points, phone_number, email, is_active, created_at, updated_at) VALUES
+('12', 'Tom Wang', '/images/external/category-list-5.png', 'VIP5', 4, 258, '1234567890', 'tom.wang@example.com', true, NOW(), NOW()),
+('13', 'Jerry Wang', '/images/external/category-list-1.png', 'VIP3', 2, 156, '0987654321', 'jerry.wang@example.com', true, NOW(), NOW()),
+('14', 'Alice Smith', '/images/external/category-list-2.png', 'VIP1', 1, 89, '5551234567', 'alice.smith@example.com', true, NOW(), NOW());
