@@ -25,6 +25,8 @@ export type CategoriesType = Array<{
 export type CardListType = Array<{
     id: string,
     name: string,
+    title: string,
+    subtitle: string,
     imgUrl: string,
     price:string
 }>
