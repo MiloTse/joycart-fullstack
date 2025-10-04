@@ -48,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
                 Map<String, String> categoryMap = new HashMap<>();
                 categoryMap.put("id", String.valueOf(category.getId()));
                 categoryMap.put("name", category.getName());
+                categoryMap.put("imgUrl", category.getImgUrl());
                 categoryList.add(categoryMap);
             }
             
