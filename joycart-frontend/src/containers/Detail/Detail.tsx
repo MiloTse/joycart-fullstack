@@ -143,9 +143,12 @@ const Detail = () => {
             addToCartRequest({
                 url: API_ENDPOINTS.CART_ADD,
                 method: 'POST',
-                data: `productId=${params.id}&count=${count}`,
+                data: {
+                    productId: params.id,
+                    count: count
+                },
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/json'
                 }
             }).then(response => {
                 console.log('=== Add to Cart API Response ===');

@@ -150,16 +150,16 @@ public class CartController {
 
     /**
      * 添加商品到购物车（新增或更新数量）
-     * @param productId 商品ID
-     * @param count 商品数量
      * @param token JWT token (从Header中获取)
      * @return 添加结果
      */
     @PostMapping("/add")
     public ResponseEntity<ResponseDTO<Map<String, Object>>> addToCart(
-            @RequestParam String productId,
-            @RequestParam int count,
+            @RequestBody Map<String, Object> requestBody,
             @RequestHeader(value = ApiConstants.AUTHORIZATION_HEADER, required = false) String token) {
+        
+        String productId = (String) requestBody.get("productId");
+        Integer count = (Integer) requestBody.get("count");
         
         logger.info("Received add to cart request - productId: {}, count: {}", productId, count);
         
