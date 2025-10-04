@@ -81,16 +81,20 @@ public class HomeController {
         }
         
         List<Category> categories = new java.util.ArrayList<>();
-        for (Map<String, String> categoryMap : categoryList) {
+        // 只取前8个分类，对应原始Home页面的2行4列布局
+        int maxCategories = Math.min(8, categoryList.size());
+        for (int i = 0; i < maxCategories; i++) {
+            Map<String, String> categoryMap = categoryList.get(i);
             Category category = new Category();
             category.setId(Long.parseLong(categoryMap.get("id")));
             category.setName(categoryMap.get("name"));
-            category.setImgUrl("/images/external/category-1.png"); // 默认图片
+            category.setImgUrl(categoryMap.get("imgUrl")); // 使用数据库中的图片URL
             category.setDescription("");
             category.setActive(true);
             categories.add(category);
         }
         
+        logger.info("Converted {} categories for home display", categories.size());
         return categories;
     }
     
@@ -106,6 +110,7 @@ public class HomeController {
             product.setId(Long.parseLong(productMap.get("id").toString()));
             product.setProductId(productMap.get("id").toString());
             product.setTitle(productMap.get("title").toString());
+            product.setSubtitle(productMap.get("subtitle") != null ? productMap.get("subtitle").toString() : "");
             product.setPrice(Double.parseDouble(productMap.get("price").toString()));
             product.setImgUrl(productMap.get("imgUrl").toString());
             product.setSales(Integer.parseInt(productMap.get("sales").toString()));
