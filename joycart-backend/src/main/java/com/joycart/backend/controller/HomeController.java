@@ -8,12 +8,15 @@ import com.joycart.backend.model.Category;
 import com.joycart.backend.model.Product;
 import com.joycart.backend.service.CategoryService;
 import com.joycart.backend.service.ProductService;
+import com.joycart.backend.service.LocationService;
+import com.joycart.backend.service.BannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -30,20 +33,45 @@ public class HomeController {
     
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private LocationService locationService;
+    
+    @Autowired
+    private BannerService bannerService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO<HomeResponseDTO.HomeData>> getHomeData() {
         logger.info("Received home data request");
         
         try {
-            // 获取位置信息（暂时硬编码）
-            LocationInfo location = new LocationInfo("001", "Ottawa(Chinatown store)");
+            // 从数据库获取位置信息
+            Map<String, String> locationData = locationService.getLocationById("001");
+            LocationInfo location;
+            if (locationData != null) {
+                location = new LocationInfo(locationData.get("id"), locationData.get("name"));
+            } else {
+                // 如果数据库中没有位置数据，使用默认值
+                logger.warn("No location data found in database, using default location");
+                location = new LocationInfo("001", "Ottawa(Chinatown store)");
+            }
             
-            // 获取轮播图信息（暂时硬编码，后续可以从数据库获取）
-            List<BannerInfo> banners = Arrays.asList(
-                new BannerInfo("1135", "/images/banner01.png"),
-                new BannerInfo("1136", "/images/external/banner.png")
-            );
+            // 从数据库获取轮播图信息
+            List<Map<String, String>> bannerData = bannerService.getAllActiveBanners();
+            List<BannerInfo> banners;
+            if (bannerData != null && !bannerData.isEmpty()) {
+                banners = new ArrayList<>();
+                for (Map<String, String> bannerMap : bannerData) {
+                    banners.add(new BannerInfo(bannerMap.get("id"), bannerMap.get("imgUrl")));
+                }
+            } else {
+                // 如果数据库中没有轮播图数据，使用默认值
+                logger.warn("No banner data found in database, using default banners");
+                banners = Arrays.asList(
+                    new BannerInfo("1135", "/images/banner01.png"),
+                    new BannerInfo("1136", "/images/external/banner.png")
+                );
+            }
             
             // 从数据库获取分类信息
             Map<String, Object> categoryData = categoryService.getCategoryAndTagList();
