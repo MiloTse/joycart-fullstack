@@ -28,6 +28,18 @@ const Category = () => {
 
     const [currentTag, setCurrentTag] = useState('');
     const  [ currentCategory,  setCurrentCategory ]=useState('');
+    
+    // 处理分类点击，确保只有一个分类被激活
+    const handleCategoryClick = (categoryId: string) => {
+        setCurrentCategory(categoryId);
+        // 当选择分类时，重置标签选择
+        setCurrentTag('');
+    };
+    
+    // 处理标签点击，确保只有一个标签被激活
+    const handleTagClick = (tag: string) => {
+        setCurrentTag(tag);
+    };
     //sending request dynamically based on page data changed
     const {request: tagRequest  } = useRequest<CategoryAndTagResponseType>({manual: true});
     //passing request data productRequestData to useRequest
@@ -189,14 +201,14 @@ const Category = () => {
             </div>
             <div className="category">
                 <div className={currentCategory===''? 'category-item category-item-active':'category-item'}
-                onClick={()=>{setCurrentCategory('')}}
-                >全部商品</div>
+                onClick={()=>{handleCategoryClick('')}}
+                >All Products</div>
                 {
                     categories && categories.map((category)=>{
                         return(
                             <div key={category.id}
                                  className={category.id === currentCategory ? "category-item category-item-active":"category-item "}
-                                 onClick={()=>{setCurrentCategory(category.id)}}
+                                 onClick={()=>{handleCategoryClick(category.id)}}
                             >
                                 {category.name}
                             </div>)
@@ -205,15 +217,15 @@ const Category = () => {
             </div>
             <div className="tag">
                 <div className= { currentTag ==='' ? 'tag-item tag-item-active':'tag-item'}
-                     onClick={()=>{setCurrentTag('')}}
+                     onClick={()=>{handleTagClick('')}}
                 >
-                    全部
+                    All
                 </div>
                 {
                     tags && tags.map((tag,index)=>(
                             <div className= {tag===currentTag? 'tag-item tag-item-active':'tag-item'}
                                  key={tag+index}
-                                 onClick={()=>{setCurrentTag(tag)}}
+                                 onClick={()=>{handleTagClick(tag)}}
                             >
                                 {tag}
                             </div>
@@ -223,7 +235,7 @@ const Category = () => {
 
             </div>
             <div className="product">
-                <div className="product-title">精选商品({products.length})</div>
+                <div className="product-title">Featured Products({products.length})</div>
                 {
                     products && products.map((product)=> {
 
