@@ -2,20 +2,16 @@
 -- 项目铺底数据。
 -- 使用INSERT ... ON CONFLICT DO NOTHING确保可重复执行
 
--- 插入分类数据（恢复原始categoryAndTagList.json数据）
+-- 插入分类数据（基于原始Home页面的8个分类，2行4列布局）
 INSERT INTO categories (id, name, img_url, description, is_active, sort_order, created_at, updated_at) VALUES
-(8210, '精选商品', '/images/external/category-1.png', '精选商品类', true, 1, NOW(), NOW()),
-(8211, '单品优惠', '/images/external/category-2.png', '单品优惠类', true, 2, NOW(), NOW()),
-(8212, '新鲜水果', '/images/external/category-3.png', '新鲜水果类', true, 3, NOW(), NOW()),
-(8213, '时令蔬菜', '/images/external/category-4.png', '时令蔬菜类', true, 4, NOW(), NOW()),
-(8214, '肉蛋家禽', '/images/external/category-5.png', '肉蛋家禽类', true, 5, NOW(), NOW()),
-(8215, '水产海鲜', '/images/external/category-6.png', '水产海鲜类', true, 6, NOW(), NOW()),
-(8216, '牛奶面包', '/images/external/category-7.png', '牛奶面包类', true, 7, NOW(), NOW()),
-(8217, '冷冻冷藏', '/images/external/category-8.png', '冷冻冷藏类', true, 8, NOW(), NOW()),
-(8218, '米面粮油', '/images/external/category-1.png', '米面粮油类', true, 9, NOW(), NOW()),
-(8219, '生活用品', '/images/external/category-2.png', '生活用品类', true, 10, NOW(), NOW()),
-(8220, '进口食品', '/images/external/category-3.png', '进口食品类', true, 11, NOW(), NOW()),
-(8221, '精美礼盒', '/images/external/category-4.png', '精美礼盒类', true, 12, NOW(), NOW())
+(8210, 'Produce', '/images/external/category-1.png', 'Fresh vegetables and greens', true, 1, NOW(), NOW()),
+(8211, 'Meat & Seafood', '/images/external/category-2.png', 'Fresh meat and seafood products', true, 2, NOW(), NOW()),
+(8212, 'Fresh Fruit', '/images/external/category-3.png', 'Fresh fruits and citrus', true, 3, NOW(), NOW()),
+(8213, 'Milk & Dairy', '/images/external/category-4.png', 'Dairy products and milk', true, 4, NOW(), NOW()),
+(8214, 'Oils & Masala', '/images/external/category-5.png', 'Cooking oils and spices', true, 5, NOW(), NOW()),
+(8215, 'Snack', '/images/external/category-6.png', 'Snacks and packaged foods', true, 6, NOW(), NOW()),
+(8216, 'Appliances', '/images/external/category-7.png', 'Home appliances and furniture', true, 7, NOW(), NOW()),
+(8217, 'Cosmetics', '/images/external/category-8.png', 'Beauty and personal care', true, 8, NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 -- 插入标签数据（恢复原始categoryAndTagList.json数据）
