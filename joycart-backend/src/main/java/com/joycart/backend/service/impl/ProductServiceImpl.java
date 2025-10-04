@@ -69,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
                 Map<String, Object> productMap = new HashMap<>();
                 productMap.put("id", product.getProductId());
                 productMap.put("title", product.getTitle());
+                productMap.put("subtitle", product.getSubtitle());
                 productMap.put("imgUrl", product.getImgUrl());
                 productMap.put("price", product.getPrice());
                 productMap.put("sales", product.getSales());
