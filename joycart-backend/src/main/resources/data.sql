@@ -144,6 +144,18 @@ CREATE TABLE IF NOT EXISTS banners (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- 创建热门搜索表
+CREATE TABLE IF NOT EXISTS hot_searches (
+    id BIGSERIAL PRIMARY KEY,
+    search_id VARCHAR(50) UNIQUE NOT NULL,
+    keyword VARCHAR(200) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER DEFAULT 0,
+    search_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
 -- ===========================================
 -- 2. 删除现有数据（按依赖关系顺序删除）
 -- ===========================================
@@ -161,6 +173,7 @@ DELETE FROM categories;         -- 分类表（独立表）
 DELETE FROM shops;              -- 商店表（独立表）
 DELETE FROM banners;            -- 轮播图表（独立表）
 DELETE FROM locations;          -- 位置表（独立表）
+DELETE FROM hot_searches;       -- 热门搜索表（独立表）
 -- 注意：users表通常不删除，因为包含用户账户信息
 
 -- ===========================================
@@ -226,3 +239,14 @@ INSERT INTO banners (banner_id, img_url, title, is_active, sort_order, created_a
 ('1135', '/images/banner01.png', 'Fresh Produce Banner', true, 1, NOW(), NOW()),
 ('1136', '/images/external/banner.png', 'Special Offer Banner', true, 2, NOW(), NOW()),
 ('1137', '/images/external/banner.png', 'New Arrivals Banner', true, 3, NOW(), NOW());
+
+-- 插入热门搜索数据
+INSERT INTO hot_searches (search_id, keyword, is_active, sort_order, search_count, created_at, updated_at) VALUES
+('HS001', 'Fresh Fruit', true, 1, 1250, NOW(), NOW()),
+('HS002', 'Organic Vegetables', true, 2, 980, NOW(), NOW()),
+('HS003', 'Meat & Seafood', true, 3, 856, NOW(), NOW()),
+('HS004', 'Dairy Products', true, 4, 742, NOW(), NOW()),
+('HS005', 'Bakery Items', true, 5, 623, NOW(), NOW()),
+('HS006', 'Frozen Foods', true, 6, 589, NOW(), NOW()),
+('HS007', 'Beverages', true, 7, 456, NOW(), NOW()),
+('HS008', 'Snacks', true, 8, 398, NOW(), NOW());
