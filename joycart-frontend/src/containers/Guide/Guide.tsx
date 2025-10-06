@@ -79,7 +79,7 @@ const Guide =() => {
                  className="main-pic"
                  src={require('../../images/halg_logo_icon_@2x.png')}
             />
-            <p className="title">Happy Shopping</p>
+            <p className="title">JOY CART</p>
             <img alt="Shop with Joy, Eat with Trust"
                  className="sub-pic"
                  src={require('../../images/slogan_word_icon_@2x.png')}
