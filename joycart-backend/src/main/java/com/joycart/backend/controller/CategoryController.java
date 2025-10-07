@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.CategoryService;
 import com.joycart.backend.service.ProductService;
@@ -35,15 +36,15 @@ public class CategoryController {
             
             if (data == null) {
                 logger.warn("No category and tag data found in database");
-                return ResponseEntity.badRequest().body(ResponseDTO.error("数据库中未找到分类和标签数据"));
+                return ResponseEntity.badRequest().body(ResponseDTO.error(ApiConstants.CATEGORY_DATA_NOT_FOUND_MESSAGE));
             }
             
             logger.info("Category and tag list retrieved successfully from database");
-            return ResponseEntity.ok(ResponseDTO.success("分类和标签列表获取成功", data));
+            return ResponseEntity.ok(ResponseDTO.success(ApiConstants.CATEGORY_LIST_SUCCESS_MESSAGE, data));
             
         } catch (Exception e) {
             logger.error("Error retrieving category and tag list: {}", e.getMessage(), e);
-            return ResponseEntity.ok(ResponseDTO.error("获取分类和标签列表失败: " + e.getMessage()));
+            return ResponseEntity.ok(ResponseDTO.error(ApiConstants.ERROR_MESSAGE + ": " + e.getMessage()));
         }
     }
     
@@ -57,15 +58,15 @@ public class CategoryController {
             
             if (products == null) {
                 logger.warn("No products found in database");
-                return ResponseEntity.badRequest().body(ResponseDTO.error("数据库中未找到商品数据"));
+                return ResponseEntity.badRequest().body(ResponseDTO.error(ApiConstants.PRODUCT_DATA_NOT_FOUND_MESSAGE));
             }
             
             logger.info("Category products retrieved successfully from database");
-            return ResponseEntity.ok(ResponseDTO.success("分类商品列表获取成功", products));
+            return ResponseEntity.ok(ResponseDTO.success(ApiConstants.CATEGORY_PRODUCTS_SUCCESS_MESSAGE, products));
             
         } catch (Exception e) {
             logger.error("Error retrieving category products: {}", e.getMessage(), e);
-            return ResponseEntity.ok(ResponseDTO.error("获取分类商品列表失败: " + e.getMessage()));
+            return ResponseEntity.ok(ResponseDTO.error(ApiConstants.CATEGORY_PRODUCTS_FAILED_MESSAGE + ": " + e.getMessage()));
         }
     }
 }
