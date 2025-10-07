@@ -2,6 +2,7 @@ package com.joycart.backend.controller;
 
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.UserProfileService;
+import com.joycart.backend.constants.ApiConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserProfileController {
         try {
             // 如果没有提供userId，使用默认值（为了测试）
             if (userId == null || userId.isEmpty()) {
-                userId = "12";
+                userId = ApiConstants.DEFAULT_USER_ID;
                 logger.warn("No userId provided, using default userId: {}", userId);
             }
             
@@ -41,23 +42,23 @@ public class UserProfileController {
             Map<String, Object> profileData = userProfileService.getUserProfileByUserId(userId);
             
             if (profileData != null) {
-                ResponseDTO<Map<String, Object>> response = ResponseDTO.success("用户资料获取成功", profileData);
+                ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.USER_PROFILE_SUCCESS_MESSAGE, profileData);
                 logger.info("User profile retrieved successfully from database for userId: {}", userId);
                 return ResponseEntity.ok(response);
             } else {
                 logger.warn("No user profile found for userId: {}, using default data", userId);
                 // 如果数据库中没有数据，使用默认值
                 Map<String, Object> defaultProfileData = new HashMap<>();
-                defaultProfileData.put("id", userId);
-                defaultProfileData.put("nickname", "Guest User");
-                defaultProfileData.put("avatar", "/images/external/category-list-5.png");
-                defaultProfileData.put("vipLevel", "VIP1");
-                defaultProfileData.put("coupons", 0);
-                defaultProfileData.put("rewardPoints", 0);
-                defaultProfileData.put("phoneNumber", "");
-                defaultProfileData.put("email", "");
+                defaultProfileData.put(ApiConstants.USER_ID, userId);
+                defaultProfileData.put(ApiConstants.USER_NICKNAME, ApiConstants.DEFAULT_GUEST_NICKNAME);
+                defaultProfileData.put(ApiConstants.USER_AVATAR, ApiConstants.DEFAULT_AVATAR);
+                defaultProfileData.put(ApiConstants.USER_VIP_LEVEL, ApiConstants.DEFAULT_VIP_LEVEL);
+                defaultProfileData.put(ApiConstants.USER_COUPONS, 0);
+                defaultProfileData.put(ApiConstants.USER_REWARD_POINTS, 0);
+                defaultProfileData.put(ApiConstants.USER_PHONE_NUMBER, "");
+                defaultProfileData.put(ApiConstants.USER_EMAIL, "");
                 
-                ResponseDTO<Map<String, Object>> response = ResponseDTO.success("用户资料获取成功（使用默认数据）", defaultProfileData);
+                ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.USER_PROFILE_DEFAULT_MESSAGE, defaultProfileData);
                 return ResponseEntity.ok(response);
             }
             
