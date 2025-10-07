@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.HomeResponseDTO;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.dto.common.BannerInfo;
@@ -87,11 +88,11 @@ public class HomeController {
             );
             
             logger.info("Home data retrieved successfully from database");
-            return ResponseEntity.ok(ResponseDTO.success("主页数据获取成功", homeData));
+            return ResponseEntity.ok(ResponseDTO.success(ApiConstants.HOME_DATA_SUCCESS_MESSAGE, homeData));
             
         } catch (Exception e) {
             logger.error("Error retrieving home data: {}", e.getMessage(), e);
-            return ResponseEntity.ok(ResponseDTO.error("主页数据获取失败: " + e.getMessage()));
+            return ResponseEntity.ok(ResponseDTO.error(ApiConstants.HOME_DATA_FAILED_MESSAGE + ": " + e.getMessage()));
         }
     }
     
