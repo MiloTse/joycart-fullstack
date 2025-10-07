@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.ErrorResponseDTO;
 import com.joycart.backend.dto.LoginRequestDTO;
 import com.joycart.backend.dto.LoginResponseDTO;
@@ -38,14 +39,14 @@ public class UserController {
         if (userService.existsByPhoneNumber(user.getPhoneNumber())) {
             logger.warn("Registration failed - Phone number already exists: {}",
                     user.getPhoneNumber());
-            ResponseDTO<User> errorResponse = ResponseDTO.error("手机号已存在，请使用其他手机号");
+            ResponseDTO<User> errorResponse = ResponseDTO.error(ApiConstants.USER_PHONE_EXISTS_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
         if (user.getEmail() != null && !user.getEmail().isEmpty()
                 && userService.existsByEmail(user.getEmail())) {
             logger.warn("Registration failed - Email already exists: {}", user.getEmail());
-            ResponseDTO<User> errorResponse = ResponseDTO.error("邮箱已存在，请使用其他邮箱");
+            ResponseDTO<User> errorResponse = ResponseDTO.error(ApiConstants.USER_EMAIL_EXISTS_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
         
@@ -54,12 +55,12 @@ public class UserController {
             logger.info("User registered successfully with ID: {} for username: {}", 
                        savedUser.getId(), savedUser.getUsername());
             
-            ResponseDTO<User> response = ResponseDTO.success("用户注册成功", savedUser);
+            ResponseDTO<User> response = ResponseDTO.success(ApiConstants.USER_REGISTER_SUCCESS_MESSAGE, savedUser);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Error registering user: {} - {}",
                     user.getUsername(), e.getMessage(), e);
-            ResponseDTO<User> errorResponse = ResponseDTO.error("用户注册失败，请重试");
+            ResponseDTO<User> errorResponse = ResponseDTO.error(ApiConstants.USER_REGISTER_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -71,13 +72,13 @@ public class UserController {
         // 入参参数校验
         if (loginRequestDTO.getPhoneNumber() == null || loginRequestDTO.getPhoneNumber().trim().isEmpty()) {
             logger.warn("Login failed - Phone number is empty");
-            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("手机号不能为空");
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_PHONE_EMPTY_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
         if (loginRequestDTO.getPassword() == null || loginRequestDTO.getPassword().trim().isEmpty()) {
             logger.warn("Login failed - Password is empty for phone: {}", loginRequestDTO.getPhoneNumber());
-            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("密码不能为空");
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_PASSWORD_EMPTY_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
@@ -86,7 +87,7 @@ public class UserController {
             
             if (!userOptional.isPresent()) {
                 logger.warn("Login failed - User not found for phone: {}", loginRequestDTO.getPhoneNumber());
-                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("手机号未注册");
+                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_PHONE_NOT_REGISTERED_MESSAGE);
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
@@ -95,7 +96,7 @@ public class UserController {
             // 验证密码（使用加密验证）
             if (!userService.verifyPassword(loginRequestDTO.getPassword(), user.getPassword())) {
                 logger.warn("Login failed - Invalid password for phone: {}", loginRequestDTO.getPhoneNumber());
-                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("密码错误");
+                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_PASSWORD_INCORRECT_MESSAGE);
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
@@ -108,7 +109,7 @@ public class UserController {
                 token
             );
             
-            ResponseDTO<LoginResponseDTO.UserData> response = ResponseDTO.success("登录成功", userData);
+            ResponseDTO<LoginResponseDTO.UserData> response = ResponseDTO.success(ApiConstants.USER_LOGIN_SUCCESS_MESSAGE, userData);
             
             logger.info("User logged in successfully: {}", user.getUsername());
             return ResponseEntity.ok(response);
@@ -116,7 +117,7 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Error during login for phone: {} - {}", 
                     loginRequestDTO.getPhoneNumber(), e.getMessage(), e);
-            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error("登录服务暂时不可用，请重试");
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_LOGIN_FAILED_MESSAGE);
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
