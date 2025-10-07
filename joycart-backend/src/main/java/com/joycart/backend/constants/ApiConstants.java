@@ -118,16 +118,31 @@ public class ApiConstants {
      * 用户相关消息
      */
     public static final String USER_NOT_FOUND_MESSAGE = "用户不存在";
+    public static final String USER_PHONE_EMPTY_MESSAGE = "手机号不能为空";
+    public static final String USER_PASSWORD_EMPTY_MESSAGE = "密码不能为空";
+    public static final String USER_PHONE_EXISTS_MESSAGE = "手机号已存在，请使用其他手机号";
+    public static final String USER_EMAIL_EXISTS_MESSAGE = "邮箱已存在，请使用其他邮箱";
+    public static final String USER_PHONE_NOT_REGISTERED_MESSAGE = "手机号未注册";
+    public static final String USER_PASSWORD_INCORRECT_MESSAGE = "密码错误";
+    public static final String USER_REGISTER_SUCCESS_MESSAGE = "用户注册成功";
+    public static final String USER_REGISTER_FAILED_MESSAGE = "用户注册失败，请重试";
+    public static final String USER_LOGIN_SUCCESS_MESSAGE = "登录成功";
+    public static final String USER_LOGIN_FAILED_MESSAGE = "登录服务暂时不可用，请重试";
     public static final String INVALID_TOKEN_MESSAGE = "无效的token";
     public static final String USER_PROFILE_SUCCESS_MESSAGE = "用户资料获取成功";
     public static final String USER_PROFILE_DEFAULT_MESSAGE = "用户资料获取成功（使用默认数据）";
+    public static final String USER_PROFILE_FAILED_MESSAGE = "获取用户资料失败，请重试";
     
     /**
      * 商品相关消息
      */
     public static final String PRODUCT_NOT_FOUND_MESSAGE = "商品不存在";
+    public static final String PRODUCT_DATA_NOT_FOUND_MESSAGE = "数据库中未找到商品数据";
     public static final String PRODUCT_LIST_SUCCESS_MESSAGE = "商品列表获取成功";
     public static final String PRODUCT_DETAIL_SUCCESS_MESSAGE = "商品详情获取成功";
+    public static final String PRODUCT_DETAIL_FAILED_MESSAGE = "获取商品详情失败，请重试";
+    public static final String CATEGORY_PRODUCTS_SUCCESS_MESSAGE = "分类商品列表获取成功";
+    public static final String CATEGORY_PRODUCTS_FAILED_MESSAGE = "获取分类商品列表失败";
     
     /**
      * 分类相关消息
@@ -139,26 +154,40 @@ public class ApiConstants {
      * 购物车相关消息
      */
     public static final String CART_ITEM_COUNT_SUCCESS_MESSAGE = "购物车商品数量获取成功";
-    public static final String CART_ADD_SUCCESS_MESSAGE = "商品添加到购物车成功";
-    public static final String CART_CHANGE_SUCCESS_MESSAGE = "购物车商品修改成功";
+    public static final String CART_ADD_SUCCESS_MESSAGE = "商品已成功添加到购物车";
+    public static final String CART_ADD_FAILED_MESSAGE = "添加到购物车失败，请重试";
+    public static final String CART_CHANGE_SUCCESS_MESSAGE = "购物车更新成功";
+    public static final String CART_CHANGE_FAILED_MESSAGE = "购物车更新失败，请重试";
     public static final String CART_PRODUCTS_SUCCESS_MESSAGE = "购物车商品列表获取成功";
+    public static final String CART_PRODUCTS_FAILED_MESSAGE = "获取购物车商品列表失败，请重试";
+    public static final String CART_PRODUCT_INFO_SUCCESS_MESSAGE = "商品购物车信息获取成功";
+    public static final String CART_PRODUCT_INFO_FAILED_MESSAGE = "获取商品购物车信息失败，请重试";
     
     /**
      * 订单相关消息
      */
     public static final String ORDER_SUBMIT_SUCCESS_MESSAGE = "订单提交成功";
+    public static final String ORDER_SUBMIT_FAILED_MESSAGE = "订单提交失败，请重试";
     public static final String ORDER_DETAIL_SUCCESS_MESSAGE = "订单详情获取成功";
+    public static final String ORDER_DETAIL_FAILED_MESSAGE = "获取订单详情失败，请重试";
     public static final String ORDER_PAYMENT_SUCCESS_MESSAGE = "支付处理成功";
+    public static final String ORDER_PAYMENT_FAILED_MESSAGE = "支付处理失败";
+    public static final String ORDER_PAYMENT_PROCESS_FAILED_MESSAGE = "支付处理失败，请重试";
+    public static final String USER_ADDRESSES_FAILED_MESSAGE = "获取用户地址失败，请重试";
     
     /**
      * 搜索相关消息
      */
-    public static final String HOT_SEARCH_SUCCESS_MESSAGE = "热门搜索获取成功";
+    public static final String HOT_SEARCH_SUCCESS_MESSAGE = "热门搜索列表获取成功";
+    public static final String HOT_SEARCH_FAILED_MESSAGE = "获取热门搜索列表失败，请重试";
+    public static final String PRODUCT_SEARCH_SUCCESS_MESSAGE = "商品搜索完成";
+    public static final String PRODUCT_SEARCH_FAILED_MESSAGE = "商品搜索失败，请重试";
     
     /**
      * 主页相关消息
      */
     public static final String HOME_DATA_SUCCESS_MESSAGE = "主页数据获取成功";
+    public static final String HOME_DATA_FAILED_MESSAGE = "主页数据获取失败";
     public static final String LOCATION_DATA_SUCCESS_MESSAGE = "位置信息获取成功";
     public static final String BANNER_DATA_SUCCESS_MESSAGE = "轮播图数据获取成功";
     
@@ -274,5 +303,6 @@ public class ApiConstants {
      */
     public static final String NEARBY_STORES_SUCCESS_MESSAGE = "附近商店列表获取成功";
     public static final String NEARBY_STORES_NOT_FOUND_MESSAGE = "数据库中未找到商店数据";
+    public static final String NEARBY_STORES_FAILED_MESSAGE = "获取附近商店列表失败";
 
 }
