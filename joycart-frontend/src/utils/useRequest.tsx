@@ -82,6 +82,12 @@ function useRequest<T>(
                     localStorage.removeItem('token');
                     //then directly redirect to login page
                     navigate('/account/login');
+                } else if(e?.response?.status === 403) {//403 means forbidden
+                    //if token is expired or invalid, clear it and show friendly message
+                    localStorage.removeItem('token');
+                    message('登录已过期，请重新登录', 2000);
+                    //then redirect to login page
+                    navigate('/account/login');
                 }
 
                 setError(e.message || 'unknown request error.');
