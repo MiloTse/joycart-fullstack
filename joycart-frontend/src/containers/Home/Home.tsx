@@ -8,6 +8,7 @@ import Category from "./components/Category";
 import Card from "./components/Card";
 import NavBar from "../../components/NavBar/NavBar";
 import {API_ENDPOINTS} from "../../config/api";
+import {STORAGE_LOCATION, SUCCESS_CODE, RESPONSE_DATA} from "../../constants/apiConstants";
 
 
 
@@ -20,7 +21,7 @@ const defaultRequestData = {
 }
 
 const Home =() => {
-    const localLocation= localStorage.getItem('location');
+    const localLocation= localStorage.getItem(STORAGE_LOCATION);
     const locationHistory= localLocation ? JSON.parse(localLocation) : null;
     // 位置信息功能暂时禁用,改为GET请求, 解决停用Charles Proxy的404请求报错问题。
     // if(locationHistory) {
@@ -61,7 +62,7 @@ const Home =() => {
                  const { latitude, longitude } = coords;
                  console.log(latitude,longitude);
                  //store the location to localStorage
-                 localStorage.setItem('location', JSON.stringify({
+                 localStorage.setItem(STORAGE_LOCATION, JSON.stringify({
                      latitude, longitude
                  }));
                  // 位置信息功能暂时禁用（因为改为GET请求）
@@ -83,7 +84,7 @@ const Home =() => {
 
 
     let  location, banners, categories, fresh  = undefined;
-    const dataResult = data?.code === 200 ? data.data : null;
+    const dataResult = data?.code === SUCCESS_CODE ? data[RESPONSE_DATA] : null;
     //assign value if dataResult exist
     if(dataResult) {
         //优先使用用户选择的商店位置，如果没有则使用后端API返回的位置
