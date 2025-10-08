@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.ProductService;
 import com.joycart.backend.service.HotSearchService;
@@ -46,14 +47,14 @@ public class SearchController {
                 );
             }
             
-            ResponseDTO<List<Map<String, String>>> response = ResponseDTO.success("热门搜索列表获取成功", hotSearchList);
+            ResponseDTO<List<Map<String, String>>> response = ResponseDTO.success(ApiConstants.HOT_SEARCH_SUCCESS_MESSAGE, hotSearchList);
             
             logger.info("Hot search list retrieved successfully from database");
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving hot search list: {}", e.getMessage(), e);
-            ResponseDTO<List<Map<String, String>>> errorResponse = ResponseDTO.error("获取热门搜索列表失败，请重试");
+            ResponseDTO<List<Map<String, String>>> errorResponse = ResponseDTO.error(ApiConstants.HOT_SEARCH_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -80,7 +81,7 @@ public class SearchController {
             
             if (allProducts == null) {
                 logger.warn("No products found in database");
-                return ResponseEntity.badRequest().body(ResponseDTO.error("数据库中未找到商品数据"));
+                return ResponseEntity.badRequest().body(ResponseDTO.error(ApiConstants.PRODUCT_DATA_NOT_FOUND_MESSAGE));
             }
             
             // 简单的关键词过滤（实际项目中应该使用更复杂的搜索算法）
@@ -92,7 +93,7 @@ public class SearchController {
                 }
             }
             
-            ResponseDTO<List<Map<String, Object>>> response = ResponseDTO.success("商品搜索完成", filteredProducts);
+            ResponseDTO<List<Map<String, Object>>> response = ResponseDTO.success(ApiConstants.PRODUCT_SEARCH_SUCCESS_MESSAGE, filteredProducts);
             
             logger.info("Product search completed successfully, found {} products for keyword: {}", 
                        filteredProducts.size(), keyword);
@@ -100,7 +101,7 @@ public class SearchController {
             
         } catch (Exception e) {
             logger.error("Error searching products: {}", e.getMessage(), e);
-            ResponseDTO<List<Map<String, Object>>> errorResponse = ResponseDTO.error("商品搜索失败，请重试");
+            ResponseDTO<List<Map<String, Object>>> errorResponse = ResponseDTO.error(ApiConstants.PRODUCT_SEARCH_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
