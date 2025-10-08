@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.ProductService;
 import org.slf4j.Logger;
@@ -27,14 +28,14 @@ public class ProductController {
             // 从数据库获取商品详情数据
             Map<String, Object> productDetail = productService.getProductDetail(id);
             
-            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品详情获取成功", productDetail);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.PRODUCT_DETAIL_SUCCESS_MESSAGE, productDetail);
             
             logger.info("Product detail retrieved successfully for id: {}", id);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving product detail for id: {} - {}", id, e.getMessage(), e);
-            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取商品详情失败，请重试");
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error(ApiConstants.PRODUCT_DETAIL_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
