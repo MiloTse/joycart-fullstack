@@ -1,5 +1,6 @@
 package com.joycart.backend.controller;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.service.NearbyStoreService;
 import org.slf4j.Logger;
@@ -41,15 +42,15 @@ public class NearbyController {
             
             if (storeList == null) {
                 logger.warn("No stores found in database");
-                return ResponseEntity.badRequest().body(ResponseDTO.error("数据库中未找到商店数据"));
+                return ResponseEntity.badRequest().body(ResponseDTO.error(ApiConstants.NEARBY_STORES_NOT_FOUND_MESSAGE));
             }
             
             logger.info("Nearby stores retrieved successfully from database, found {} stores", storeList.size());
-            return ResponseEntity.ok(ResponseDTO.success("附近商店列表获取成功", storeList));
+            return ResponseEntity.ok(ResponseDTO.success(ApiConstants.NEARBY_STORES_SUCCESS_MESSAGE, storeList));
             
         } catch (Exception e) {
             logger.error("Error retrieving nearby stores: {}", e.getMessage(), e);
-            return ResponseEntity.ok(ResponseDTO.error("获取附近商店列表失败: " + e.getMessage()));
+            return ResponseEntity.ok(ResponseDTO.error(ApiConstants.NEARBY_STORES_FAILED_MESSAGE + ": " + e.getMessage()));
         }
     }
 
