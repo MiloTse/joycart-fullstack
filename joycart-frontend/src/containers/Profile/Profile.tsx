@@ -6,6 +6,23 @@ import {API_ENDPOINTS} from "../../config/api";
 import type {ResponseType} from "./types";
 import {useNavigate} from "react-router-dom";
 import {message} from "../../utils/message";
+import {
+    RESPONSE_CODE,
+    RESPONSE_DATA,
+    USER_NICKNAME,
+    USER_AVATAR,
+    USER_VIP_LEVEL,
+    USER_COUPONS,
+    USER_REWARD_POINTS,
+    STORAGE_TOKEN,
+    STORAGE_LOCATION,
+    ROUTE_LOGIN,
+    DEFAULT_SHOPPER_NICKNAME,
+    DEFAULT_AVATAR,
+    SUCCESS_CODE,
+    ERROR_MESSAGES,
+    HTTP_METHODS
+} from "../../constants/apiConstants";
 
 
 
@@ -15,7 +32,7 @@ function Profile() {
     // 使用useMemo缓存请求配置对象，防止无限循环
     const requestConfig = useMemo(() => ({
         url: API_ENDPOINTS.USER_PROFILE,
-        method: 'GET'
+        method: HTTP_METHODS.GET
     }), []); // 空依赖数组 = 只创建一次
     
     const { data, error, loaded } = useRequest<ResponseType>(requestConfig);
@@ -24,20 +41,20 @@ function Profile() {
     console.log('Profile - data:', data);
     console.log('Profile - error:', error);
     console.log('Profile - loaded:', loaded);
-    console.log('Profile - token:', localStorage.getItem('token'));
+    console.log('Profile - token:', localStorage.getItem(STORAGE_TOKEN));
     
     if (data) {
-        console.log('User profile data:', data.data);
+        console.log('User profile data:', data[RESPONSE_DATA]);
     }
     console.log('============================');
 
     // 从API响应中提取用户数据，检查ResponseDTO格式
-    const userData = (data?.code === 200 && data?.data) ? data.data : {
-        nickname: 'Shopper',
-        avatar: '/images/external/category-list-5.png',
-        vipLevel: 'VIP0',
-        coupons: 0,
-        rewardPoints: 0
+    const userData = (data?.[RESPONSE_CODE] === SUCCESS_CODE && data?.[RESPONSE_DATA]) ? data[RESPONSE_DATA] : {
+        [USER_NICKNAME]: DEFAULT_SHOPPER_NICKNAME,
+        [USER_AVATAR]: DEFAULT_AVATAR,
+        [USER_VIP_LEVEL]: 'VIP0',
+        [USER_COUPONS]: 0,
+        [USER_REWARD_POINTS]: 0
     };
 
     function handleMemberClick() {
@@ -47,14 +64,14 @@ function Profile() {
 
     function handleLogout() {
         try {
-            localStorage.removeItem('token');
-            localStorage.removeItem('location');
-            message('Successfully logged out!');
+            localStorage.removeItem(STORAGE_TOKEN);
+            localStorage.removeItem(STORAGE_LOCATION);
+            message(ERROR_MESSAGES.LOGOUT_SUCCESS);
             //jump to login page
-            navigate('/account/login');
+            navigate(ROUTE_LOGIN);
         } catch (error) {
             console.error('Logout error:', error);
-            message('Logout failed, please try again');
+            message(ERROR_MESSAGES.LOGOUT_FAILED);
         }
     }
 
