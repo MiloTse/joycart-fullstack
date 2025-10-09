@@ -3,12 +3,21 @@ import {useState, useRef, useCallback, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {message} from "./message";
 import {API_CONFIG} from "../config/api";
+import {
+    STORAGE_TOKEN,
+    CONTENT_TYPE_JSON,
+    CONTENT_TYPE_HEADER,
+    AUTHORIZATION_HEADER,
+    BEARER_PREFIX,
+    HTTP_STATUS,
+    HTTP_METHODS
+} from "../constants/apiConstants";
 
 //默认请求参数
 const defaultRequestConfig= {
     //default initial value
     url: '/',
-    method: 'GET',
+    method: HTTP_METHODS.GET,
     data: {},
     params: {},
 }
@@ -45,13 +54,13 @@ function useRequest<T>(
         setLoaded(false);
 
         //bring login token to backend when sending request
-        const loginToken = localStorage.getItem('token');
+        const loginToken = localStorage.getItem(STORAGE_TOKEN);
         const headers: any = {
-            'Content-Type': 'application/json',
+            [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
         };
         
         if (loginToken) {
-            headers['Authorization'] = `Bearer ${loginToken}`;
+            headers[AUTHORIZATION_HEADER] = `${BEARER_PREFIX}${loginToken}`;
         }
 
         // 允许请求覆盖默认的headers
@@ -77,14 +86,14 @@ function useRequest<T>(
                 setData(response.data);
                 return response.data;
             }).catch(e => {
-                if(e?.response?.status === 401) {//401 means unauthorized
+                if(e?.response?.status === HTTP_STATUS.UNAUTHORIZED) {//401 means unauthorized
                     //if token is invalid, clear it
-                    localStorage.removeItem('token');
+                    localStorage.removeItem(STORAGE_TOKEN);
                     //then directly redirect to login page
                     navigate('/account/login');
-                } else if(e?.response?.status === 403) {//403 means forbidden
+                } else if(e?.response?.status === HTTP_STATUS.FORBIDDEN) {//403 means forbidden
                     //if token is expired or invalid, clear it and show friendly message
-                    localStorage.removeItem('token');
+                    localStorage.removeItem(STORAGE_TOKEN);
                     message('登录已过期，请重新登录', 2000);
                     //then redirect to login page
                     navigate('/account/login');
