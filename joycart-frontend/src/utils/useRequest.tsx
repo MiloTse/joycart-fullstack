@@ -10,7 +10,9 @@ import {
     AUTHORIZATION_HEADER,
     BEARER_PREFIX,
     HTTP_STATUS,
-    HTTP_METHODS
+    HTTP_METHODS,
+    ROUTE_LOGIN,
+    ERROR_MESSAGES
 } from "../constants/apiConstants";
 
 //默认请求参数
@@ -90,16 +92,16 @@ function useRequest<T>(
                     //if token is invalid, clear it
                     localStorage.removeItem(STORAGE_TOKEN);
                     //then directly redirect to login page
-                    navigate('/account/login');
+                    navigate(ROUTE_LOGIN);
                 } else if(e?.response?.status === HTTP_STATUS.FORBIDDEN) {//403 means forbidden
                     //if token is expired or invalid, clear it and show friendly message
                     localStorage.removeItem(STORAGE_TOKEN);
-                    message('登录已过期，请重新登录', 2000);
+                    message(ERROR_MESSAGES.TOKEN_EXPIRED, 2000);
                     //then redirect to login page
-                    navigate('/account/login');
+                    navigate(ROUTE_LOGIN);
                 }
 
-                setError(e.message || 'unknown request error.');
+                setError(e.message || ERROR_MESSAGES.UNKNOWN_REQUEST_ERROR);
                 throw e; // 保持原始错误对象，不要包装成新的Error
             }).finally(()=>{
                 setLoaded(true);
