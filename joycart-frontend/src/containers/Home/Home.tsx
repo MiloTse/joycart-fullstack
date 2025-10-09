@@ -8,7 +8,7 @@ import Category from "./components/Category";
 import Card from "./components/Card";
 import NavBar from "../../components/NavBar/NavBar";
 import {API_ENDPOINTS} from "../../config/api";
-import {STORAGE_LOCATION, SUCCESS_CODE, RESPONSE_DATA} from "../../constants/apiConstants";
+import {STORAGE_LOCATION, SUCCESS_CODE, RESPONSE_DATA, HTTP_METHODS} from "../../constants/apiConstants";
 
 
 
@@ -17,7 +17,7 @@ import {STORAGE_LOCATION, SUCCESS_CODE, RESPONSE_DATA} from "../../constants/api
 //defaultRequestData - 使用真实的后端API
 const defaultRequestData = {
     url: API_ENDPOINTS.HOME,
-    method: 'GET',
+    method: HTTP_METHODS.GET,
 }
 
 const Home =() => {
