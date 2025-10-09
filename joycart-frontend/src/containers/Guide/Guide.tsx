@@ -2,6 +2,7 @@ import './style.scss';
 import React, { useEffect, useRef} from 'react';
 import {useNavigate} from "react-router-dom";
 import useRequest from "../../utils/useRequest";
+import {STORAGE_TOKEN, HTTP_METHODS} from "../../constants/apiConstants";
 
 //define a custom hook to handle animation
 const useRefAnimation = ()=> {
@@ -43,7 +44,7 @@ const Guide =() => {
 
     //simple way to handle click event without useCallback hook without buffering
     async function handleIconClick() {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem(STORAGE_TOKEN);
         
         if(!token) {
             // 没有token，直接跳转到登录页面
@@ -57,7 +58,7 @@ const Guide =() => {
             // Has token, here should validate its validity - try to call an authenticated API
             await validateToken({
                 url: '/home',
-                method: 'GET'
+                method: HTTP_METHODS.GET
             });
             
             // token有效，跳转到home页面
@@ -67,7 +68,7 @@ const Guide =() => {
             console.log("invalid token:", token);
             // token无效或验证失败，清除token并跳转到登录页面
             // Token is invalid or validation failed, clear token and redirect to login page
-            localStorage.removeItem('token');
+            localStorage.removeItem(STORAGE_TOKEN);
             navigate('/account/login');
         }
     }
