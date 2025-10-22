@@ -1,14 +1,13 @@
 package com.joycart.backend.model;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 /**
  * 商品分类实体类
  */
 @Entity
 @Table(name = "categories")
-public class Category {
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +28,6 @@ public class Category {
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder = 0;
     
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-    
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-
     public Category() {
     }
 
@@ -92,21 +84,5 @@ public class Category {
 
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
