@@ -3,11 +3,10 @@ package com.joycart.backend.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends BaseEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,15 +36,7 @@ public class Order {
     @Column(name = "payment_method")
     private String paymentMethod;
     
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-    
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-    
     public Order() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
     
     public Long getId() {
@@ -118,21 +109,5 @@ public class Order {
     
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
