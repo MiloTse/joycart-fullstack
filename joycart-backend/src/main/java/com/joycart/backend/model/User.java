@@ -25,6 +25,9 @@ public class User extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
     
+    @Column(name = "language_preference", nullable = false)
+    private String languagePreference = "en-US";
+    
 
 
     public User() {
@@ -76,5 +79,13 @@ public class User extends BaseEntity {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getLanguagePreference() {
+        return languagePreference;
+    }
+
+    public void setLanguagePreference(String languagePreference) {
+        this.languagePreference = languagePreference;
     }
 }
