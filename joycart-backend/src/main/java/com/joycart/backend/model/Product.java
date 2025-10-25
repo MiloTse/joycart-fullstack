@@ -1,6 +1,7 @@
 package com.joycart.backend.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
@@ -19,8 +20,8 @@ public class Product extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String subtitle;
 
-    @Column(nullable = false)
-    private Double price;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @Column(nullable = false)
     private Integer sales = 0;
@@ -43,7 +44,7 @@ public class Product extends BaseEntity {
     public Product() {
     }
 
-    public Product(String productId, String title, String subtitle, Double price, 
+    public Product(String productId, String title, String subtitle, BigDecimal price, 
                    Integer sales, String imgUrl, String origin, String specification, String detail) {
         this.productId = productId;
         this.title = title;
@@ -89,11 +90,11 @@ public class Product extends BaseEntity {
         this.subtitle = subtitle;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
