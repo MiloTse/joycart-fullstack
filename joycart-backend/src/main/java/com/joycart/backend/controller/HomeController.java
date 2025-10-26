@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -140,7 +141,7 @@ public class HomeController {
             product.setProductId(productMap.get("id").toString());
             product.setTitle(productMap.get("title").toString());
             product.setSubtitle(productMap.get("subtitle") != null ? productMap.get("subtitle").toString() : "");
-            product.setPrice(Double.parseDouble(productMap.get("price").toString()));
+            product.setPrice(BigDecimal.valueOf(Double.parseDouble(productMap.get("price").toString())));
             product.setImgUrl(productMap.get("imgUrl").toString());
             product.setSales(Integer.parseInt(productMap.get("sales").toString()));
             product.setIsActive(true);
