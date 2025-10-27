@@ -1,5 +1,6 @@
 package com.joycart.backend.service.impl;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.model.Cart;
 import com.joycart.backend.repository.CartRepository;
 import com.joycart.backend.service.CartService;
@@ -202,7 +203,7 @@ public class CartServiceImpl implements CartService {
         // 转换Cart实体为前端期望的格式
         List<Map<String, Object>> cartList = new ArrayList<>();
         for (Cart cartItem : cartItems) {
-            Map<String, Object> productInfo = productService.getProductDetail(cartItem.getProductId());
+            Map<String, Object> productInfo = productService.getProductDetail(cartItem.getProductId(), ApiConstants.DEFAULT_LANGUAGE);
             Map<String, Object> product = new HashMap<>();
             product.put("productId", cartItem.getProductId());
             product.put("count", cartItem.getQuantity());
@@ -231,7 +232,7 @@ public class CartServiceImpl implements CartService {
         
         try {
             // 通过ProductService获取真实商品信息
-            Map<String, Object> productInfo = productService.getProductDetail(productId);
+            Map<String, Object> productInfo = productService.getProductDetail(productId, ApiConstants.DEFAULT_LANGUAGE);
             
             if (productInfo == null) {
                 logger.warn("Product not found for productId: {}, returning null", productId);
