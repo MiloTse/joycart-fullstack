@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_TYPE_SYSTEM_MESSAGE;
+
 @RestController
 @RequestMapping("/users")
 @CrossOrigin("*")
@@ -122,11 +124,11 @@ public class UserController {
             
             // 从数据库查询用户语言偏好对应的成功消息
             String languageCode = user.getLanguagePreference();
-            String successMessage = translationService.getTranslation("system_message", 0L, "login.success", languageCode);
+            String successMessage = translationService.getTranslation(TRANSLATIONS_TYPE_SYSTEM_MESSAGE, 0L, "login.success", languageCode);
             
             if (successMessage == null) {
                 // 如果没有找到翻译，回退到英文或使用默认值
-                successMessage = translationService.getTranslation("system_message", 0L, "login.success", "en-US");
+                successMessage = translationService.getTranslation(TRANSLATIONS_TYPE_SYSTEM_MESSAGE, 0L, "login.success", "en-US");
                 if (successMessage == null) {
                     successMessage = "Login successfully"; // 最后回退
                 }
