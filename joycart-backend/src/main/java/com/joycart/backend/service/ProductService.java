@@ -8,9 +8,10 @@ public interface ProductService {
     /**
      * 根据商品ID获取商品详情
      * @param productId 商品ID
+     * @param languageCode 语言代码 (en-US, zh-CN, fr-FR)
      * @return 商品详情Map
      */
-    Map<String, Object> getProductDetail(String productId);
+    Map<String, Object> getProductDetail(String productId, String languageCode);
     
     /**
      * 获取所有激活的商品列表
