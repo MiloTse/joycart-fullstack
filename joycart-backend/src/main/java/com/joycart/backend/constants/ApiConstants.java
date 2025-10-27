@@ -321,4 +321,7 @@ public class ApiConstants {
     public static final String NEARBY_STORES_NOT_FOUND_MESSAGE = "数据库中未找到商店数据";
     public static final String NEARBY_STORES_FAILED_MESSAGE = "获取附近商店列表失败";
 
+
+    public static final String TRANSLATIONS_TYPE_SYSTEM_MESSAGE = "system_message";
+
 }
