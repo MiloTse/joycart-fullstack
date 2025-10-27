@@ -1,11 +1,11 @@
 package com.joycart.backend.controller;
 
 import com.joycart.backend.constants.ApiConstants;
-import com.joycart.backend.dto.ErrorResponseDTO;
 import com.joycart.backend.dto.LoginRequestDTO;
 import com.joycart.backend.dto.LoginResponseDTO;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.model.User;
+import com.joycart.backend.service.TranslationService;
 import com.joycart.backend.service.UserService;
 import com.joycart.backend.util.JwtUtil;
 import org.slf4j.Logger;
@@ -29,6 +29,9 @@ public class UserController {
     
     @Autowired
     private JwtUtil jwtUtil;
+    
+    @Autowired
+    private TranslationService translationService;
 
      @PostMapping("/register")
     public ResponseEntity<ResponseDTO<User>> registerUser(@RequestBody User user){
@@ -55,7 +58,21 @@ public class UserController {
             logger.info("User registered successfully with ID: {} for username: {}", 
                        savedUser.getId(), savedUser.getUsername());
             
-            ResponseDTO<User> response = ResponseDTO.success(ApiConstants.USER_REGISTER_SUCCESS_MESSAGE, savedUser);
+            // 从数据库查询用户语言偏好对应的成功消息
+            String languageCode = savedUser.getLanguagePreference();
+            String successMessage = translationService.getTranslation("system_message", 0L, "register.success", languageCode);
+            
+            if (successMessage == null) {
+                // 如果没有找到翻译，回退到英文或使用默认值
+                successMessage = translationService.getTranslation("system_message", 0L, "register.success", "en-US");
+                if (successMessage == null) {
+                    successMessage = "Register successfully"; // 最后回退
+                }
+            }
+            
+            logger.debug("User language preference: {}, success message: {}", languageCode, successMessage);
+            
+            ResponseDTO<User> response = ResponseDTO.success(successMessage, savedUser);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Error registering user: {} - {}",
@@ -103,13 +120,27 @@ public class UserController {
             // Generate JWT token
             String token = jwtUtil.generateToken(user.getId(), user.getPhoneNumber());
             
+            // 从数据库查询用户语言偏好对应的成功消息
+            String languageCode = user.getLanguagePreference();
+            String successMessage = translationService.getTranslation("system_message", 0L, "login.success", languageCode);
+            
+            if (successMessage == null) {
+                // 如果没有找到翻译，回退到英文或使用默认值
+                successMessage = translationService.getTranslation("system_message", 0L, "login.success", "en-US");
+                if (successMessage == null) {
+                    successMessage = "Login successfully"; // 最后回退
+                }
+            }
+            
+            logger.debug("User language preference: {}, success message: {}", languageCode, successMessage);
+            
             // create return responseDTO
             LoginResponseDTO.UserData userData = new LoginResponseDTO.UserData(
                 user.getId(), 
                 token
             );
             
-            ResponseDTO<LoginResponseDTO.UserData> response = ResponseDTO.success(ApiConstants.USER_LOGIN_SUCCESS_MESSAGE, userData);
+            ResponseDTO<LoginResponseDTO.UserData> response = ResponseDTO.success(successMessage, userData);
             
             logger.info("User logged in successfully: {}", user.getUsername());
             return ResponseEntity.ok(response);
