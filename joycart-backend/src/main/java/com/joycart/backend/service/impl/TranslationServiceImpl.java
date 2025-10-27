@@ -1,5 +1,6 @@
 package com.joycart.backend.service.impl;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.model.Translation;
 import com.joycart.backend.repository.TranslationRepository;
 import com.joycart.backend.service.TranslationService;
@@ -72,9 +73,9 @@ public class TranslationServiceImpl implements TranslationService {
             entityType, entityId, fieldName, languageCode);
         
         String translation = getTranslation(entityType, entityId, fieldName, languageCode);
-        if (translation == null && !"en-US".equals(languageCode)) {
-            logger.debug("Translation not found for language {}, falling back to en-US", languageCode);
-            translation = getTranslation(entityType, entityId, fieldName, "en-US");
+        if (translation == null && !ApiConstants.LANGUAGE_EN_US.equals(languageCode)) {
+            logger.debug("Translation not found for language {}, falling back to {}", languageCode, ApiConstants.LANGUAGE_EN_US);
+            translation = getTranslation(entityType, entityId, fieldName, ApiConstants.LANGUAGE_EN_US);
         }
         
         return translation;
