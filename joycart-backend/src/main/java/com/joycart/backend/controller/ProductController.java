@@ -21,16 +21,18 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<Map<String, Object>>> getProductDetail(@PathVariable String id) {
-        logger.info("Received product detail request for id: {}", id);
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getProductDetail(
+            @PathVariable String id,
+            @RequestParam(value = "lang", defaultValue = "en-US") String languageCode) {
+        logger.info("Received product detail request for id: {}, language: {}", id, languageCode);
         
         try {
-            // 从数据库获取商品详情数据
-            Map<String, Object> productDetail = productService.getProductDetail(id);
+            // 从数据库获取商品详情数据，根据语言偏好返回翻译内容
+            Map<String, Object> productDetail = productService.getProductDetail(id, languageCode);
             
             ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.PRODUCT_DETAIL_SUCCESS_MESSAGE, productDetail);
             
-            logger.info("Product detail retrieved successfully for id: {}", id);
+            logger.info("Product detail retrieved successfully for id: {}, language: {}", id, languageCode);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
