@@ -1,5 +1,6 @@
 package com.joycart.backend.service.impl;
 
+import com.joycart.backend.constants.ApiConstants;
 import com.joycart.backend.dto.CartItem;
 import com.joycart.backend.model.Order;
 import com.joycart.backend.model.OrderItem;
@@ -52,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
         // 计算订单总金额
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (CartItem item : cartItems) {
-            Map<String, Object> productData = productService.getProductDetail(item.getProductId());
+            Map<String, Object> productData = productService.getProductDetail(item.getProductId(), ApiConstants.DEFAULT_LANGUAGE);
             if (productData != null && productData.get("price") != null) {
                 Double price = (Double) productData.get("price");
                 BigDecimal itemTotal = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(item.getCount()));
@@ -74,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
         
         // 创建订单项
         for (CartItem item : cartItems) {
-            Map<String, Object> productData = productService.getProductDetail(item.getProductId());
+            Map<String, Object> productData = productService.getProductDetail(item.getProductId(), ApiConstants.DEFAULT_LANGUAGE);
             if (productData != null && productData.get("price") != null) {
                 Double price = (Double) productData.get("price");
                 OrderItem orderItem = new OrderItem();
@@ -239,7 +240,7 @@ public class OrderServiceImpl implements OrderService {
         List<Map<String, Object>> cartList = new ArrayList<>();
         
         for (OrderItem item : orderItems) {
-            Map<String, Object> productData = productService.getProductDetail(item.getProductId());
+            Map<String, Object> productData = productService.getProductDetail(item.getProductId(), ApiConstants.DEFAULT_LANGUAGE);
             if (productData != null) {
                 Map<String, Object> productInfo = new HashMap<>();
                 productInfo.put("productId", item.getProductId());
