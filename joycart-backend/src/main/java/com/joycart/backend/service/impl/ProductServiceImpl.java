@@ -3,6 +3,7 @@ package com.joycart.backend.service.impl;
 import com.joycart.backend.model.Product;
 import com.joycart.backend.repository.ProductRepository;
 import com.joycart.backend.service.ProductService;
+import com.joycart.backend.service.TranslationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+    
+    @Autowired
+    private TranslationService translationService;
 
     @Override
-    public Map<String, Object> getProductDetail(String productId) {
-        logger.debug("Getting product detail for productId: {}", productId);
+    public Map<String, Object> getProductDetail(String productId, String languageCode) {
+        logger.debug("Getting product detail for productId: {}, languageCode: {}", productId, languageCode);
         
         try {
             Optional<Product> productOptional = productRepository.findByProductIdAndIsActiveTrue(productId);
@@ -36,17 +40,24 @@ public class ProductServiceImpl implements ProductService {
             Product product = productOptional.get();
             Map<String, Object> productDetail = new HashMap<>();
             
+            // 基础信息
             productDetail.put("id", product.getProductId());
             productDetail.put("imgUrl", product.getImgUrl());
-            productDetail.put("title", product.getTitle());
-            productDetail.put("subtitle", product.getSubtitle());
             productDetail.put("price", product.getPrice());
             productDetail.put("sales", product.getSales());
             productDetail.put("origin", product.getOrigin());
             productDetail.put("specification", product.getSpecification());
             productDetail.put("detail", product.getDetail());
             
-            logger.info("Product detail retrieved successfully for productId: {}", productId);
+            // 获取翻译后的标题和副标题
+            String translatedTitle = translationService.getTranslationWithFallback("product", product.getId(), "title", languageCode);
+            String translatedSubtitle = translationService.getTranslationWithFallback("product", product.getId(), "subtitle", languageCode);
+            
+            // 使用翻译文本，如果没有翻译则使用默认英文
+            productDetail.put("title", translatedTitle != null ? translatedTitle : product.getTitle());
+            productDetail.put("subtitle", translatedSubtitle != null ? translatedSubtitle : product.getSubtitle());
+            
+            logger.info("Product detail retrieved successfully for productId: {}, language: {}", productId, languageCode);
             return productDetail;
             
         } catch (Exception e) {
