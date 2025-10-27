@@ -6,6 +6,22 @@ package com.joycart.backend.constants;
  */
 public class ApiConstants {
     
+    // ===========================================
+    // Language Codes (ISO 639-1 + BCP 47)
+    // ===========================================
+    /** 英语 (美国) - 默认语言 */
+    public static final String LANGUAGE_EN_US = "en-US";
+    /** 中文 (简体) */
+    public static final String LANGUAGE_ZH_CN = "zh-CN";
+    /** 法语 (法国) */
+    public static final String LANGUAGE_FR_FR = "fr-FR";
+    /** 默认语言代码 */
+    public static final String DEFAULT_LANGUAGE = LANGUAGE_EN_US;
+    
+    // ===========================================
+    // HTTP请求头常量
+    // ===========================================
+    
     /**
      * HTTP请求头常量
      */
