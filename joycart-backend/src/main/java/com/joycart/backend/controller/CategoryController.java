@@ -27,12 +27,13 @@ public class CategoryController {
     private ProductService productService;
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDTO<Map<String, Object>>> getCategoryAndTagList() {
-        logger.info("Received category and tag list request");
+    public ResponseEntity<ResponseDTO<Map<String, Object>>> getCategoryAndTagList(
+            @RequestParam(value = "lang", defaultValue = ApiConstants.DEFAULT_LANGUAGE) String languageCode) {
+        logger.info("Received category and tag list request, lang={}", languageCode);
         
         try {
             // 从数据库获取分类和标签数据
-            Map<String, Object> data = categoryService.getCategoryAndTagList();
+            Map<String, Object> data = categoryService.getCategoryAndTagList(languageCode);
             
             if (data == null) {
                 logger.warn("No category and tag data found in database");
