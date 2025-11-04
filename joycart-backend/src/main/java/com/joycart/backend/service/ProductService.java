@@ -15,7 +15,8 @@ public interface ProductService {
     
     /**
      * 获取所有激活的商品列表
+     * @param languageCode 语言代码 (en-US, zh-CN, fr-FR)
      * @return 商品列表
      */
-    List<Map<String, Object>> getAllActiveProducts();
+    List<Map<String, Object>> getAllActiveProducts(String languageCode);
 }
