@@ -54,8 +54,8 @@ public class CategoryController {
         logger.info("Received category products request");
         
         try {
-            // 真实查询数据库数据，代替之前的硬编码
-            List<Map<String, Object>> products = productService.getAllActiveProducts();
+            // 真实查询数据库数据，代替之前的硬编码 (使用默认语言)
+            List<Map<String, Object>> products = productService.getAllActiveProducts(ApiConstants.DEFAULT_LANGUAGE);
             
             if (products == null) {
                 logger.warn("No products found in database");
