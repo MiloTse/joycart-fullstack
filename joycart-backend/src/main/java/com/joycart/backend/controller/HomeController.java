@@ -43,8 +43,9 @@ public class HomeController {
     private BannerService bannerService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<HomeResponseDTO.HomeData>> getHomeData() {
-        logger.info("Received home data request");
+    public ResponseEntity<ResponseDTO<HomeResponseDTO.HomeData>> getHomeData(
+            @RequestParam(value = "lang", defaultValue = ApiConstants.DEFAULT_LANGUAGE) String languageCode) {
+        logger.info("Received home data request, lang={}", languageCode);
         
         try {
             // 从数据库获取位置信息
@@ -75,12 +76,12 @@ public class HomeController {
                 );
             }
             
-            // 从数据库获取分类信息 (传递默认语言)
-            Map<String, Object> categoryData = categoryService.getCategoryAndTagList(ApiConstants.DEFAULT_LANGUAGE);
+            // 从数据库获取分类信息 (使用语言参数)
+            Map<String, Object> categoryData = categoryService.getCategoryAndTagList(languageCode);
             List<Category> categories = convertToCategoryList(categoryData);
             
-            // 从数据库获取商品信息
-            List<Map<String, Object>> productData = productService.getAllActiveProducts();
+            // 从数据库获取商品信息 (使用语言参数)
+            List<Map<String, Object>> productData = productService.getAllActiveProducts(languageCode);
             List<Product> freshProducts = convertToProductList(productData);
             
             // 构造响应数据
