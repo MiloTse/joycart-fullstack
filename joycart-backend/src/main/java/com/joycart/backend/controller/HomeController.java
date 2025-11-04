@@ -75,8 +75,8 @@ public class HomeController {
                 );
             }
             
-            // 从数据库获取分类信息
-            Map<String, Object> categoryData = categoryService.getCategoryAndTagList();
+            // 从数据库获取分类信息 (传递默认语言)
+            Map<String, Object> categoryData = categoryService.getCategoryAndTagList(ApiConstants.DEFAULT_LANGUAGE);
             List<Category> categories = convertToCategoryList(categoryData);
             
             // 从数据库获取商品信息
