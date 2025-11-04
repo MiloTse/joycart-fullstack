@@ -29,12 +29,13 @@ public class SearchController {
     private HotSearchService hotSearchService;
 
     @GetMapping("/hot")
-    public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getHotSearchList() {
-        logger.info("Received hot search list request");
+    public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getHotSearchList(
+            @RequestParam(value = "lang", defaultValue = ApiConstants.DEFAULT_LANGUAGE) String languageCode) {
+        logger.info("Received hot search list request, lang={}", languageCode);
         
         try {
-            // 从数据库获取热门搜索列表
-            List<Map<String, String>> hotSearchList = hotSearchService.getAllActiveHotSearches();
+            // 从数据库获取热门搜索列表（使用翻译服务）
+            List<Map<String, String>> hotSearchList = hotSearchService.getAllActiveHotSearches(languageCode);
             
             if (hotSearchList == null || hotSearchList.isEmpty()) {
                 logger.warn("No hot search data found in database, using default data");
@@ -77,7 +78,8 @@ public class SearchController {
         
         try {
             // 从数据库获取所有商品进行搜索（简化实现，实际项目中应该实现真正的搜索逻辑）
-            List<Map<String, Object>> allProducts = productService.getAllActiveProducts();
+            // 使用默认语言，因为搜索功能可能需要在多语言环境下搜索
+            List<Map<String, Object>> allProducts = productService.getAllActiveProducts(ApiConstants.DEFAULT_LANGUAGE);
             
             if (allProducts == null) {
                 logger.warn("No products found in database");
