@@ -79,17 +79,18 @@ ON CONFLICT (banner_id) DO NOTHING;
 
 -- ===========================================
 -- 8. 插入热门搜索数据
+-- 注意：id字段需要明确指定，以便与翻译表V6中的entity_id对应
 -- ===========================================
-INSERT INTO hot_searches (search_id, keyword, is_active, sort_order, search_count, created_at, updated_at) VALUES
-('HS001', 'Fresh Fruit', true, 1, 1250, NOW(), NOW()),
-('HS002', 'Organic Vegetables', true, 2, 980, NOW(), NOW()),
-('HS003', 'Meat & Seafood', true, 3, 856, NOW(), NOW()),
-('HS004', 'Dairy Products', true, 4, 742, NOW(), NOW()),
-('HS005', 'Bakery Items', true, 5, 623, NOW(), NOW()),
-('HS006', 'Frozen Foods', true, 6, 589, NOW(), NOW()),
-('HS007', 'Beverages', true, 7, 456, NOW(), NOW()),
-('HS008', 'Snacks', true, 8, 398, NOW(), NOW())
-ON CONFLICT (search_id) DO NOTHING;
+INSERT INTO hot_searches (id, search_id, keyword, is_active, sort_order, search_count, created_at, updated_at) VALUES
+(1, 'HS001', 'Fresh Fruit', true, 1, 1250, NOW(), NOW()),
+(2, 'HS002', 'Organic Vegetables', true, 2, 980, NOW(), NOW()),
+(3, 'HS003', 'Meat & Seafood', true, 3, 856, NOW(), NOW()),
+(4, 'HS004', 'Dairy Products', true, 4, 742, NOW(), NOW()),
+(5, 'HS005', 'Bakery Items', true, 5, 623, NOW(), NOW()),
+(6, 'HS006', 'Frozen Foods', true, 6, 589, NOW(), NOW()),
+(7, 'HS007', 'Beverages', true, 7, 456, NOW(), NOW()),
+(8, 'HS008', 'Snacks', true, 8, 398, NOW(), NOW())
+ON CONFLICT (id) DO NOTHING;
 
 -- ===========================================
 -- 9. 插入用户资料数据
