@@ -3,6 +3,7 @@ package com.joycart.backend.service.impl;
 import com.joycart.backend.model.HotSearch;
 import com.joycart.backend.repository.HotSearchRepository;
 import com.joycart.backend.service.HotSearchService;
+import com.joycart.backend.service.TranslationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,12 @@ public class HotSearchServiceImpl implements HotSearchService {
     @Autowired
     private HotSearchRepository hotSearchRepository;
     
+    @Autowired
+    private TranslationService translationService;
+    
     @Override
-    public List<Map<String, String>> getAllActiveHotSearches() {
-        logger.debug("Getting all active hot searches from database");
+    public List<Map<String, String>> getAllActiveHotSearches(String languageCode) {
+        logger.debug("Getting all active hot searches from database, lang={}", languageCode);
         
         try {
             List<HotSearch> hotSearches = hotSearchRepository.findByIsActiveTrueOrderBySortOrderAscIdAsc();
@@ -34,7 +38,12 @@ public class HotSearchServiceImpl implements HotSearchService {
             for (HotSearch hotSearch : hotSearches) {
                 Map<String, String> hotSearchMap = new HashMap<>();
                 hotSearchMap.put("id", hotSearch.getSearchId());
-                hotSearchMap.put("keyword", hotSearch.getKeyword());
+                
+                // 获取翻译后的关键词
+                String translatedKeyword = translationService.getTranslationWithFallback(
+                        "hot_search", hotSearch.getId(), "keyword", languageCode);
+                
+                hotSearchMap.put("keyword", translatedKeyword != null ? translatedKeyword : hotSearch.getKeyword());
                 hotSearchList.add(hotSearchMap);
             }
             
@@ -48,8 +57,8 @@ public class HotSearchServiceImpl implements HotSearchService {
     }
     
     @Override
-    public Map<String, String> getHotSearchById(String searchId) {
-        logger.debug("Getting hot search by id: {}", searchId);
+    public Map<String, String> getHotSearchById(String searchId, String languageCode) {
+        logger.debug("Getting hot search by id: {}, lang={}", searchId, languageCode);
         
         try {
             HotSearch hotSearch = hotSearchRepository.findBySearchIdAndIsActiveTrue(searchId);
@@ -60,7 +69,12 @@ public class HotSearchServiceImpl implements HotSearchService {
             
             Map<String, String> hotSearchMap = new HashMap<>();
             hotSearchMap.put("id", hotSearch.getSearchId());
-            hotSearchMap.put("keyword", hotSearch.getKeyword());
+            
+            // 获取翻译后的关键词
+            String translatedKeyword = translationService.getTranslationWithFallback(
+                    "hot_search", hotSearch.getId(), "keyword", languageCode);
+            
+            hotSearchMap.put("keyword", translatedKeyword != null ? translatedKeyword : hotSearch.getKeyword());
             
             logger.info("Hot search retrieved successfully for id: {}", searchId);
             return hotSearchMap;
