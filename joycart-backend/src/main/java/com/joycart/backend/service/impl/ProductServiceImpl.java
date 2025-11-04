@@ -67,8 +67,8 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
-    public List<Map<String, Object>> getAllActiveProducts() {
-        logger.debug("Getting all active products");
+    public List<Map<String, Object>> getAllActiveProducts(String languageCode) {
+        logger.debug("Getting all active products, lang={}", languageCode);
         
         try {
             //fetch active products from database
@@ -79,8 +79,15 @@ public class ProductServiceImpl implements ProductService {
             for (Product product : products) {
                 Map<String, Object> productMap = new HashMap<>();
                 productMap.put("id", product.getProductId());
-                productMap.put("title", product.getTitle());
-                productMap.put("subtitle", product.getSubtitle());
+                
+                // 获取翻译后的标题和副标题
+                String translatedTitle = translationService.getTranslationWithFallback(
+                        "product", product.getId(), "title", languageCode);
+                String translatedSubtitle = translationService.getTranslationWithFallback(
+                        "product", product.getId(), "subtitle", languageCode);
+                
+                productMap.put("title", translatedTitle != null ? translatedTitle : product.getTitle());
+                productMap.put("subtitle", translatedSubtitle != null ? translatedSubtitle : product.getSubtitle());
                 productMap.put("imgUrl", product.getImgUrl());
                 productMap.put("price", product.getPrice());
                 productMap.put("sales", product.getSales());
