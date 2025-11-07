@@ -4,6 +4,8 @@ import useRequest from "../../utils/useRequest";
 import { message } from "../../utils/message";
 import {useNavigate} from "react-router-dom";
 import {API_ENDPOINTS} from "../../config/api";
+import {LANGUAGE_OPTIONS, getCurrentLanguage, setLanguagePreference} from "../../utils/i18n";
+import {DEFAULT_LANGUAGE} from "../../constants/apiConstants";
 //1. 首先定义接口返回内容
 // type ResponseType = {
 //     status:string,
@@ -15,6 +17,7 @@ const Register = ()=> {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [checkPassword, setCheckPassword] = useState('');
+    const [languagePreference, setLanguagePreferenceState] = useState(getCurrentLanguage());
     const navigate = useNavigate();
 
 
@@ -59,7 +62,8 @@ const Register = ()=> {
                 data:{
                     username:userName,
                     phoneNumber:phoneNumber,
-                    password:password
+                    password:password,
+                    languagePreference: languagePreference
                 }
             }
 
@@ -71,6 +75,8 @@ const Register = ()=> {
             
             // 检查ResponseDTO格式的响应
             if(response.code === 200) {
+                // 保存语言偏好到localStorage
+                setLanguagePreference(languagePreference);
                 message(response.message || 'Register Successfully！');
                 navigate('/account/login');
             } else {
@@ -138,6 +144,22 @@ const Register = ()=> {
                                setCheckPassword(e.target.value);
                            }}
                     />
+                </div>
+                <div className="form-item">
+                    <div className='form-item-title'>Language Preference</div>
+                    <select 
+                        value={languagePreference}
+                        className="form-item-content"
+                        onChange={(e) => {
+                            setLanguagePreferenceState(e.target.value);
+                        }}
+                    >
+                        {LANGUAGE_OPTIONS.map(option => (
+                            <option key={option.code} value={option.code}>
+                                {option.nativeName} ({option.name})
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
