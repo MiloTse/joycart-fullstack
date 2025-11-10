@@ -12,8 +12,11 @@ import {
     HTTP_STATUS,
     HTTP_METHODS,
     ROUTE_LOGIN,
-    ERROR_MESSAGES
+    ERROR_MESSAGES,
+    DEFAULT_LANGUAGE,
+    STORAGE_LANGUAGE
 } from "../constants/apiConstants";
+import {getCurrentLanguage} from "./i18n";
 
 //默认请求参数
 const defaultRequestConfig= {
@@ -70,6 +73,17 @@ function useRequest<T>(
             Object.assign(headers, requestOptions.headers);
         }
 
+        // 自动添加语言参数到GET请求
+        let params = requestOptions.params || {};
+        if (requestOptions.method === HTTP_METHODS.GET || !requestOptions.method) {
+            // 对于GET请求，自动添加lang参数
+            const currentLanguage = getCurrentLanguage();
+            params = {
+                ...params,
+                lang: currentLanguage
+            };
+        }
+
         //发送异步请求，捕捉异常
         //sending a request, catching an exception
         return axios.request<T>({
@@ -81,7 +95,7 @@ function useRequest<T>(
                 method: requestOptions.method,
                 signal: controllerRef.current.signal,
                 data: requestOptions.data,
-                params: requestOptions.params,
+                params: params,
                 headers,
             // headers: {...headers, ...requestOptions.headers}, //added token to header
             }).then(response => {
@@ -111,6 +125,7 @@ function useRequest<T>(
 
     //传递参数发生变化，自动发送请求
     //useRequest 封装了useEffect
+    // 注意：需要监听语言变化，当语言改变时重新请求
     useEffect(() => {
         if(!options.manual) {//if not manual, automatically send request
             //here should handle the exception thrown by request
@@ -120,7 +135,7 @@ function useRequest<T>(
 
         }
 
-    }, [options,request]);
+    }, [options, request]); // request已经在内部使用了getCurrentLanguage()，会自动获取最新语言
 
 
 
