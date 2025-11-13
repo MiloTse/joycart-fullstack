@@ -1,5 +1,7 @@
 package com.joycart.backend.dto;
 
+import com.joycart.backend.constants.ApiConstants;
+
 public class ResponseDTO<T> {
     private Integer code;
     private String message;
@@ -14,15 +16,15 @@ public class ResponseDTO<T> {
     }
 
     public static <T> ResponseDTO<T> success(T data) {
-        return new ResponseDTO<>(200, "success", data);
+        return new ResponseDTO<>(ApiConstants.HTTP_STATUS_OK, ApiConstants.DEFAULT_RESPONSE_SUCCESS_MESSAGE, data);
     }
 
     public static <T> ResponseDTO<T> success(String message, T data) {
-        return new ResponseDTO<>(200, message, data);
+        return new ResponseDTO<>(ApiConstants.HTTP_STATUS_OK, message, data);
     }
 
     public static <T> ResponseDTO<T> error(String message) {
-        return new ResponseDTO<>(400, message, null);
+        return new ResponseDTO<>(ApiConstants.HTTP_STATUS_BAD_REQUEST, message, null);
     }
 
     public static <T> ResponseDTO<T> error(Integer code, String message) {
