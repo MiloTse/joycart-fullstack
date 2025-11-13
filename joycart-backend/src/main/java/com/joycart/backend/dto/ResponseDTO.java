@@ -22,7 +22,7 @@ public class ResponseDTO<T> {
     }
 
     public static <T> ResponseDTO<T> error(String message) {
-        return new ResponseDTO<>(400, "Bad Request", null);
+        return new ResponseDTO<>(400, message, null);
     }
 
     public static <T> ResponseDTO<T> error(Integer code, String message) {
