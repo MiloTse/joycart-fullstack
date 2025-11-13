@@ -323,5 +323,7 @@ public class ApiConstants {
 
 
     public static final String TRANSLATIONS_TYPE_SYSTEM_MESSAGE = "system_message";
+    public static final String TRANSLATIONS_KEY_LOGIN_SUCCESS = "login.success";
+    public static final String TRANSLATIONS_KEY_REGISTER_SUCCESS = "register.success";
 
 }
