@@ -29,6 +29,19 @@ public class ApiConstants {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String CONTENT_TYPE_HEADER = "Content-Type";
     public static final String CONTENT_TYPE_JSON = "application/json";
+
+    // ===========================================
+    // HTTP状态码常量
+    /** HTTP 200 - OK */
+    public static final int HTTP_STATUS_OK = 200;
+    /** HTTP 400 - Bad Request */
+    public static final int HTTP_STATUS_BAD_REQUEST = 400;
+
+    // 通用响应消息常量
+    /** 默认成功消息（英文） */
+    public static final String DEFAULT_RESPONSE_SUCCESS_MESSAGE = "success";
+    /** 默认错误消息（英文） */
+    public static final String DEFAULT_RESPONSE_ERROR_MESSAGE = "Bad Request";
     
     /**
      * 响应字段名常量
