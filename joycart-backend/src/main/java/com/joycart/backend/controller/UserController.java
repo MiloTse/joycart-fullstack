@@ -62,11 +62,21 @@ public class UserController {
             
             // 从数据库查询用户语言偏好对应的成功消息
             String languageCode = savedUser.getLanguagePreference();
-            String successMessage = translationService.getTranslation("system_message", 0L, "register.success", languageCode);
+            String successMessage = translationService.getTranslation(
+                    ApiConstants.TRANSLATIONS_TYPE_SYSTEM_MESSAGE,
+                    0L,
+                    ApiConstants.TRANSLATIONS_KEY_REGISTER_SUCCESS,
+                    languageCode
+            );
             
             if (successMessage == null) {
                 // 如果没有找到翻译，回退到英文或使用默认值
-                successMessage = translationService.getTranslation("system_message", 0L, "register.success", "en-US");
+                successMessage = translationService.getTranslation(
+                        ApiConstants.TRANSLATIONS_TYPE_SYSTEM_MESSAGE,
+                        0L,
+                        ApiConstants.TRANSLATIONS_KEY_REGISTER_SUCCESS,
+                        ApiConstants.LANGUAGE_EN_US
+                );
                 if (successMessage == null) {
                     successMessage = "Register successfully"; // 最后回退
                 }
@@ -124,11 +134,21 @@ public class UserController {
             
             // 从数据库查询用户语言偏好对应的成功消息
             String languageCode = user.getLanguagePreference();
-            String successMessage = translationService.getTranslation(TRANSLATIONS_TYPE_SYSTEM_MESSAGE, 0L, "login.success", languageCode);
+            String successMessage = translationService.getTranslation(
+                    TRANSLATIONS_TYPE_SYSTEM_MESSAGE,
+                    0L,
+                    ApiConstants.TRANSLATIONS_KEY_LOGIN_SUCCESS,
+                    languageCode
+            );
             
             if (successMessage == null) {
                 // 如果没有找到翻译，回退到英文或使用默认值
-                successMessage = translationService.getTranslation(TRANSLATIONS_TYPE_SYSTEM_MESSAGE, 0L, "login.success", "en-US");
+                successMessage = translationService.getTranslation(
+                        TRANSLATIONS_TYPE_SYSTEM_MESSAGE,
+                        0L,
+                        ApiConstants.TRANSLATIONS_KEY_LOGIN_SUCCESS,
+                        ApiConstants.LANGUAGE_EN_US
+                );
                 if (successMessage == null) {
                     successMessage = "Login successfully"; // 最后回退
                 }
