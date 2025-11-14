@@ -336,6 +336,12 @@ public class ApiConstants {
 
 
     public static final String TRANSLATIONS_TYPE_SYSTEM_MESSAGE = "system_message";
+    public static final String TRANSLATIONS_TYPE_PRODUCT = "product";
+    public static final String TRANSLATIONS_FIELD_TITLE = "title";
+    public static final String TRANSLATIONS_FIELD_SUBTITLE = "subtitle";
+    public static final String TRANSLATIONS_FIELD_ORIGIN = "origin";
+    public static final String TRANSLATIONS_FIELD_SPECIFICATION = "specification";
+    public static final String TRANSLATIONS_FIELD_DETAIL = "detail";
     public static final String TRANSLATIONS_KEY_LOGIN_SUCCESS = "login.success";
     public static final String TRANSLATIONS_KEY_REGISTER_SUCCESS = "register.success";
 
