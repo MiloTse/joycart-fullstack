@@ -45,17 +45,20 @@ public class ProductServiceImpl implements ProductService {
             productDetail.put("imgUrl", product.getImgUrl());
             productDetail.put("price", product.getPrice());
             productDetail.put("sales", product.getSales());
-            productDetail.put("origin", product.getOrigin());
-            productDetail.put("specification", product.getSpecification());
-            productDetail.put("detail", product.getDetail());
             
             // 获取翻译后的标题和副标题
             String translatedTitle = translationService.getTranslationWithFallback("product", product.getId(), "title", languageCode);
             String translatedSubtitle = translationService.getTranslationWithFallback("product", product.getId(), "subtitle", languageCode);
+            String translatedOrigin = translationService.getTranslationWithFallback("product", product.getId(), "origin", languageCode);
+            String translatedSpecification = translationService.getTranslationWithFallback("product", product.getId(), "specification", languageCode);
+            String translatedDetail = translationService.getTranslationWithFallback("product", product.getId(), "detail", languageCode);
             
             // 使用翻译文本，如果没有翻译则使用默认英文
             productDetail.put("title", translatedTitle != null ? translatedTitle : product.getTitle());
             productDetail.put("subtitle", translatedSubtitle != null ? translatedSubtitle : product.getSubtitle());
+            productDetail.put("origin", translatedOrigin != null ? translatedOrigin : product.getOrigin());
+            productDetail.put("specification", translatedSpecification != null ? translatedSpecification : product.getSpecification());
+            productDetail.put("detail", translatedDetail != null ? translatedDetail : product.getDetail());
             
             logger.info("Product detail retrieved successfully for productId: {}, language: {}", productId, languageCode);
             return productDetail;
