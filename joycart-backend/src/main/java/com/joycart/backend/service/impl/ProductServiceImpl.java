@@ -15,6 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_FIELD_DETAIL;
+import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_FIELD_ORIGIN;
+import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_FIELD_SPECIFICATION;
+import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_FIELD_SUBTITLE;
+import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_FIELD_TITLE;
+import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_TYPE_PRODUCT;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -47,11 +54,11 @@ public class ProductServiceImpl implements ProductService {
             productDetail.put("sales", product.getSales());
             
             // 获取翻译后的标题和副标题
-            String translatedTitle = translationService.getTranslationWithFallback("product", product.getId(), "title", languageCode);
-            String translatedSubtitle = translationService.getTranslationWithFallback("product", product.getId(), "subtitle", languageCode);
-            String translatedOrigin = translationService.getTranslationWithFallback("product", product.getId(), "origin", languageCode);
-            String translatedSpecification = translationService.getTranslationWithFallback("product", product.getId(), "specification", languageCode);
-            String translatedDetail = translationService.getTranslationWithFallback("product", product.getId(), "detail", languageCode);
+            String translatedTitle = translationService.getTranslationWithFallback(TRANSLATIONS_TYPE_PRODUCT, product.getId(), TRANSLATIONS_FIELD_TITLE, languageCode);
+            String translatedSubtitle = translationService.getTranslationWithFallback(TRANSLATIONS_TYPE_PRODUCT, product.getId(), TRANSLATIONS_FIELD_SUBTITLE, languageCode);
+            String translatedOrigin = translationService.getTranslationWithFallback(TRANSLATIONS_TYPE_PRODUCT, product.getId(), TRANSLATIONS_FIELD_ORIGIN, languageCode);
+            String translatedSpecification = translationService.getTranslationWithFallback(TRANSLATIONS_TYPE_PRODUCT, product.getId(), TRANSLATIONS_FIELD_SPECIFICATION, languageCode);
+            String translatedDetail = translationService.getTranslationWithFallback(TRANSLATIONS_TYPE_PRODUCT, product.getId(), TRANSLATIONS_FIELD_DETAIL, languageCode);
             
             // 使用翻译文本，如果没有翻译则使用默认英文
             productDetail.put("title", translatedTitle != null ? translatedTitle : product.getTitle());
@@ -85,9 +92,9 @@ public class ProductServiceImpl implements ProductService {
                 
                 // 获取翻译后的标题和副标题
                 String translatedTitle = translationService.getTranslationWithFallback(
-                        "product", product.getId(), "title", languageCode);
+                        TRANSLATIONS_TYPE_PRODUCT, product.getId(), TRANSLATIONS_FIELD_TITLE, languageCode);
                 String translatedSubtitle = translationService.getTranslationWithFallback(
-                        "product", product.getId(), "subtitle", languageCode);
+                        TRANSLATIONS_TYPE_PRODUCT, product.getId(), TRANSLATIONS_FIELD_SUBTITLE, languageCode);
                 
                 productMap.put("title", translatedTitle != null ? translatedTitle : product.getTitle());
                 productMap.put("subtitle", translatedSubtitle != null ? translatedSubtitle : product.getSubtitle());
