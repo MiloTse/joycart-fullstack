@@ -5,6 +5,7 @@ export type LoginResponseType = {
     data: {
         id: number;
         token: string;
+        languagePreference?: string;
     }
 }
 
@@ -18,5 +19,6 @@ export type RegisterResponseType = {
         phoneNumber: string;
         email: string;
         password: string;
+        languagePreference?: string;
     }
 }
