@@ -16,7 +16,7 @@ import {
     DEFAULT_LANGUAGE,
     STORAGE_LANGUAGE
 } from "../constants/apiConstants";
-import {getCurrentLanguage} from "./i18n";
+import {getCurrentLanguage, subscribeLanguageChange} from "./i18n";
 
 //默认请求参数
 const defaultRequestConfig= {
@@ -136,6 +136,22 @@ function useRequest<T>(
         }
 
     }, [options, request]); // request已经在内部使用了getCurrentLanguage()，会自动获取最新语言
+
+    useEffect(() => {
+        if (options.manual) {
+            return;
+        }
+
+        const unsubscribe = subscribeLanguageChange(() => {
+            request(options).catch(e => {
+                message(e?.message, 1500);
+            });
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [options, request]);
 
 
 
