@@ -9,6 +9,8 @@ import Card from "./components/Card";
 import NavBar from "../../components/NavBar/NavBar";
 import {API_ENDPOINTS} from "../../config/api";
 import {STORAGE_LOCATION, SUCCESS_CODE, RESPONSE_DATA, HTTP_METHODS} from "../../constants/apiConstants";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 
 
@@ -23,6 +25,7 @@ const defaultRequestData = {
 const Home =() => {
     const localLocation= localStorage.getItem(STORAGE_LOCATION);
     const locationHistory= localLocation ? JSON.parse(localLocation) : null;
+    const language = useLanguage();
     // 位置信息功能暂时禁用,改为GET请求, 解决停用Charles Proxy的404请求报错问题。
     // if(locationHistory) {
     //     defaultRequestData.data.latitude = locationHistory.latitude;
@@ -109,10 +112,10 @@ const Home =() => {
         <div className="page home-page">
             <Banner location={location} banners={banners}/>
             <Category categories={categories}/>
-            <Card title="New Product" list={fresh}/>
-            <Card title="Flash Sale" list={fresh}/>
+            <Card title={translate(UI_TRANSLATION_KEYS.home.newProductTitle, language)} list={fresh}/>
+            <Card title={translate(UI_TRANSLATION_KEYS.home.flashSaleTitle, language)} list={fresh}/>
             <div className="bottom">
-             -- I am the bottom line --
+             {translate(UI_TRANSLATION_KEYS.home.bottomPlaceholder, language)}
             </div>
             <NavBar activeName='home' />
         </div>
