@@ -6,10 +6,13 @@ import type {ResponseType, ListItemType, CartSubmitArray, SubmitResponseType} fr
 import {message} from "../../utils/message";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 function Cart() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const language = useLanguage();
     
     // 检查是否从Detail页面跳转而来
     const fromDetail = searchParams.get('from') === 'detail';
@@ -45,13 +48,13 @@ function Cart() {
                 //passing newList to list
                 setList(newList);
             } else {
-                message(data.message || '获取购物车商品失败');
+                message(data.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
             }
         }).catch((e)=>{
                 console.error('Cart products error:', e);
-                message(e.message);
+                message(e.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
             })
-    }, [request]);
+    }, [request, language]);
 
 
     function handleCountChange(shopId: string, productId: string, count: string) {
@@ -137,7 +140,7 @@ function Cart() {
             })
         });
         if(params.length === 0){
-            message('Select at least one product');
+            message(translate(UI_TRANSLATION_KEYS.common.selectProductsFirst, language));
             return;
         }
         submitRequest({
@@ -156,11 +159,11 @@ function Cart() {
                 const {orderId} = response.data;
                 navigate(`/order/${orderId}`);
             } else {
-                message(response.message || '订单提交失败');
+                message(response.message || translate(UI_TRANSLATION_KEYS.common.orderSubmitFailed, language));
             }
         }).catch((e)=>{
             console.error('Cart submit error:', e);
-            message(e.message);
+            message(e.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
         })
         console.log(params);
     }
@@ -185,7 +188,7 @@ function Cart() {
                         &#xe6a9;
                     </div>
                 )}
-                Cart
+                {translate(UI_TRANSLATION_KEYS.cart.pageTitle, language)}
             </div>
 
             {/*show every shop iterated by list*/}
@@ -251,16 +254,16 @@ function Cart() {
             <div className='total-price'>
                 <div className='select-all' onClick={handleSelectAllClick}>
                     <div className={notSelectedShop? 'radio' : 'radio radio-active'}></div>
-                    <div className='select-all-text' >Select All</div>
+                    <div className='select-all-text' >{translate(UI_TRANSLATION_KEYS.cart.selectAll, language)}</div>
                 </div>
                 <div className='total'>
-                    <span className='total-text'>Total:</span>
+                    <span className='total-text'>{translate(UI_TRANSLATION_KEYS.cart.total, language)}</span>
                     <div className='total-price-inner'>
                         <span className='total-price-inner-symbol'>&#36; </span>
                         {totalPrice.toFixed(2)}
                     </div>
                 </div>
-                <div className='check' onClick={handleCartSubmit}>Checkout({count})</div>
+                <div className='check' onClick={handleCartSubmit}>{`${translate(UI_TRANSLATION_KEYS.cart.checkout, language)}(${count})`}</div>
 
             </div>
             <NavBar activeName='cart'/>

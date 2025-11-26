@@ -4,8 +4,8 @@ import useRequest from "../../utils/useRequest";
 import { message } from "../../utils/message";
 import {useNavigate} from "react-router-dom";
 import {API_ENDPOINTS} from "../../config/api";
-import {LANGUAGE_OPTIONS, getCurrentLanguage, setLanguagePreference} from "../../utils/i18n";
-import {DEFAULT_LANGUAGE} from "../../constants/apiConstants";
+import useLanguage from "../../hooks/useLanguage";
+import {LANGUAGE_OPTIONS, getCurrentLanguage, setLanguagePreference, translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 //1. 首先定义接口返回内容
 // type ResponseType = {
 //     status:string,
@@ -19,6 +19,7 @@ const Register = ()=> {
     const [checkPassword, setCheckPassword] = useState('');
     const [languagePreference, setLanguagePreferenceState] = useState(getCurrentLanguage());
     const navigate = useNavigate();
+    const language = useLanguage();
 
 
     //use custom hook to send request
@@ -29,27 +30,27 @@ const Register = ()=> {
 
     function handleSubmitBtnClick() {
         if(!userName) {
-             message('userName should not be empty.');
+             message(translate(UI_TRANSLATION_KEYS.messages.usernameRequired, language));
             return;
         }
         if(!phoneNumber) {
             // alert('please input phone number!');
-            message('phone number should not be empty.');
+            message(translate(UI_TRANSLATION_KEYS.messages.phoneRequired, language));
             return;
         }
 
         if(!password) {
-            message('password should not be empty.');
+            message(translate(UI_TRANSLATION_KEYS.messages.passwordRequired, language));
             return;
         }
 
         if(password.length<6) {
-            message('password length should not be less than 6.');
+            message(translate(UI_TRANSLATION_KEYS.messages.passwordTooShort, language));
             return;
         }
 
         if(password!==checkPassword) {
-            message('password should be same as checkPassword.');
+            message(translate(UI_TRANSLATION_KEYS.messages.passwordMismatch, language));
             return;
         }
 
@@ -104,54 +105,56 @@ const Register = ()=> {
         <>
             <div className="form">
                 <div className="form-item">
-                    <div className='form-item-title'>username</div>
+                    <div className='form-item-title'>{translate(UI_TRANSLATION_KEYS.register.usernameLabel, language)}</div>
                     <input value={userName}
                            className='form-item-content'
-                           placeholder='please input username'
+                           placeholder={translate(UI_TRANSLATION_KEYS.register.usernamePlaceholder, language)}
                            onChange={(e)=>{
                                setUserName(e.target.value);
                            }}
                     />
                 </div>
                 <div className="form-item">
-                    <div className='form-item-title'>phone number</div>
+                    <div className='form-item-title'>{translate(UI_TRANSLATION_KEYS.register.phoneNumberLabel, language)}</div>
                     <input value={phoneNumber}
                            className='form-item-content'
-                           placeholder='please input phone number'
+                           placeholder={translate(UI_TRANSLATION_KEYS.register.phoneNumberPlaceholder, language)}
                            onChange={(e)=>{
                                setPhoneNumber(e.target.value);
                            }}
                     />
                 </div>
                 <div className="form-item">
-                    <div className='form-item-title'>password</div>
+                    <div className='form-item-title'>{translate(UI_TRANSLATION_KEYS.register.passwordLabel, language)}</div>
                     <input value={password}
                            type="password"
                            className="form-item-content"
-                           placeholder="please input password"
+                           placeholder={translate(UI_TRANSLATION_KEYS.register.passwordPlaceholder, language)}
                            onChange={(e)=>{
                                setPassword(e.target.value);
                            }}
                     />
                 </div>
                 <div className="form-item">
-                    <div className='form-item-title'>confirm password</div>
+                    <div className='form-item-title'>{translate(UI_TRANSLATION_KEYS.register.confirmPasswordLabel, language)}</div>
                     <input value={checkPassword}
                            type="password"
                            className="form-item-content"
-                           placeholder="please re-input password"
+                           placeholder={translate(UI_TRANSLATION_KEYS.register.confirmPasswordPlaceholder, language)}
                            onChange={(e)=>{
                                setCheckPassword(e.target.value);
                            }}
                     />
                 </div>
                 <div className="form-item">
-                    <div className='form-item-title'>Language Preference</div>
+                    <div className='form-item-title'>{translate(UI_TRANSLATION_KEYS.register.languagePreferenceLabel, language)}</div>
                     <select 
                         value={languagePreference}
                         className="form-item-content"
                         onChange={(e) => {
-                            setLanguagePreferenceState(e.target.value);
+                            const value = e.target.value;
+                            setLanguagePreferenceState(value);
+                            setLanguagePreference(value);
                         }}
                     >
                         {LANGUAGE_OPTIONS.map(option => (
@@ -164,14 +167,14 @@ const Register = ()=> {
             </div>
 
             <div className="submit" onClick={handleSubmitBtnClick}>
-                register
+                {translate(UI_TRANSLATION_KEYS.register.submitButton, language)}
             </div>
             <p className="notice">
                 <input type="checkbox"/>
-                I accept the
-                <a href="#">Terms and Conditions</a>
+                {translate(UI_TRANSLATION_KEYS.register.agreePrefix, language)}
+                <a href="#">{translate(UI_TRANSLATION_KEYS.register.termsLink, language)}</a>
                 &
-                <a href="#">Privacy Policy</a>
+                <a href="#">{translate(UI_TRANSLATION_KEYS.register.privacyLink, language)}</a>
             </p>
 
         </>
