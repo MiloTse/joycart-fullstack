@@ -9,6 +9,8 @@ import {useNavigate} from "react-router-dom";
 import Popover from "../../components/Popover/Popover";
 import {CartChangeResponseType} from "../../types";
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 
 const Category = () => {
@@ -24,6 +26,7 @@ const Category = () => {
     const [cartProductInfo, setCartProductInfo] = useState<CartType>({
         id:'', title:'', imgUrl:'', price: '', count:0,
     });
+    const language = useLanguage();
 
 
     const [currentTag, setCurrentTag] = useState('');
@@ -63,13 +66,13 @@ const Category = () => {
                 const result = data.data;
                 setProducts(result);
             } else {
-                message(data?.message || '获取商品列表失败');
+                message(data?.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
             }
         }).catch((e:any)=>{
             console.error('Category products error:', e);
-            message(e?.message);
+            message(e?.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
         });
-    },[keyword, currentTag, currentCategory,productRequest]);
+    },[keyword, currentTag, currentCategory,productRequest, language]);
 
 
 
@@ -89,13 +92,13 @@ const Category = () => {
                 setCategories(result.categories || []);
                 setTags(result.tags || []);
             } else {
-                message(data?.message || '获取分类列表失败');
+                message(data?.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
             }
         }).catch((e:any)=>{
             console.error('Category list error:', e);
-            message(e?.message);
+            message(e?.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
         });
-    },[tagRequest]);
+    },[tagRequest, language]);
 
     //handle search content change
     function handleKeyDown(key: string, target: EventTarget & HTMLInputElement) {
@@ -128,11 +131,11 @@ const Category = () => {
                 setCartProductInfo(data.data);
                 setShowCart(true);
             } else {
-                message(data.message || '获取商品信息失败');
+                message(data.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
             }
         }).catch((e:any)=>{
             console.error('Category cart product info error:', e);
-            message(e?.message);
+            message(e?.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
         });
 
     }
@@ -171,14 +174,14 @@ const Category = () => {
             if(response.code === 200){
                 setShowCart(false);
                 // 使用后端返回的消息，如果没有则使用默认消息
-                const successMessage = response.message || 'Cart updated successfully!';
+                const successMessage = response.message || translate(UI_TRANSLATION_KEYS.common.cartUpdateSuccess, language);
                 message(successMessage);
             } else {
-                message(response.message || 'Cart update failed');
+                message(response.message || translate(UI_TRANSLATION_KEYS.common.cartUpdateFailed, language));
             }
         }).catch((e)=>{
             console.error('Category cart change error:', e);
-            message(e.message);
+            message(e.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
         })
     }
 
@@ -186,14 +189,14 @@ const Category = () => {
         <div className="page category-page">
             <div className="title">
 
-                <div className="text">Category</div>
+                <div className="text">{translate(UI_TRANSLATION_KEYS.category.pageTitle, language)}</div>
             </div>
             <div className="search">
                 <div className="search-area">
                     <div className="search-icon iconfont">&#xe600;</div>
                     <input
                         className="search-input"
-                        placeholder="Please enter product name"
+                        placeholder={translate(UI_TRANSLATION_KEYS.category.searchPlaceholder, language)}
                         onKeyDown={(e) => {handleKeyDown(e.key, e.currentTarget)} }
                     />
                 </div>
@@ -202,7 +205,7 @@ const Category = () => {
             <div className="category">
                 <div className={currentCategory===''? 'category-item category-item-active':'category-item'}
                 onClick={()=>{handleCategoryClick('')}}
-                >All Products</div>
+                >{translate(UI_TRANSLATION_KEYS.category.allProductsTab, language)}</div>
                 {
                     categories && categories.map((category)=>{
                         return(
@@ -219,7 +222,7 @@ const Category = () => {
                 <div className= { currentTag ==='' ? 'tag-item tag-item-active':'tag-item'}
                      onClick={()=>{handleTagClick('')}}
                 >
-                    All
+                    {translate(UI_TRANSLATION_KEYS.category.allTag, language)}
                 </div>
                 {
                     tags && tags.map((tag,index)=>(
@@ -235,7 +238,7 @@ const Category = () => {
 
             </div>
             <div className="product">
-                <div className="product-title">Featured Products({products.length})</div>
+                <div className="product-title">{`${translate(UI_TRANSLATION_KEYS.category.featuredProducts, language)}(${products.length})`}</div>
                 {
                     products && products.map((product)=> {
 
@@ -252,7 +255,7 @@ const Category = () => {
                                     />
                                     <div className="product-item-content">
                                         <div className="product-item-title">{product.title}</div>
-                                        <div className="product-item-sales">sold {product.sales}</div>
+                                        <div className="product-item-sales">{translate(UI_TRANSLATION_KEYS.common.soldPrefix, language)} {product.sales}</div>
                                         <div className="product-item-price">
                                             <span className="product-item-price-symbol">&#36;  </span>
                                             {product.price}
@@ -260,7 +263,7 @@ const Category = () => {
                                         <div className="product-item-button"
                                              onClick={(e)=>{handleProductClick(e, product.id)}}
                                         >
-                                            buy
+                                            {translate(UI_TRANSLATION_KEYS.common.buyButton, language)}
                                         </div>
                                     </div>
                                 </div>
@@ -287,7 +290,7 @@ const Category = () => {
                     </div>
                     <div className='cart-count'>
                         <div className='cart-count-content'>
-                            Quantity:
+                            {translate(UI_TRANSLATION_KEYS.common.quantityLabel, language)}
                             <div className='cart-count-counter'>
                                 <div className='cart-count-button'
                                      onClick={()=>{handleCartNumberChange(-1)}}
@@ -306,8 +309,8 @@ const Category = () => {
                         </div>
                     </div>
                     <div className='cart-buttons'>
-                        <div className='cart-button cart-button-left' onClick={changeCartInfo}>Add to Cart</div>
-                        <div className='cart-button cart-button-right'>Buy Now</div>
+                        <div className='cart-button cart-button-left' onClick={changeCartInfo}>{translate(UI_TRANSLATION_KEYS.common.addToCart, language)}</div>
+                        <div className='cart-button cart-button-right'>{translate(UI_TRANSLATION_KEYS.common.buyNow, language)}</div>
                     </div>
                 </div>
             </Popover>
