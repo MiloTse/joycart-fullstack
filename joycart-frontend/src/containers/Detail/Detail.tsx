@@ -8,6 +8,8 @@ import Popover from "../../components/Popover/Popover";
 import {message} from "../../utils/message";
 import {CartChangeResponseType} from "../../types";
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 
 const Detail = () => {
@@ -15,6 +17,7 @@ const Detail = () => {
     //showCart default false
     const [showCart, setShowCart] = useState<boolean>(false);
     const params = useParams<{id:string}>();
+    const language = useLanguage();
 
     //assemble request logic of Detail product
     const requestData = useRef({
@@ -72,7 +75,7 @@ const Detail = () => {
              setCount(count);
              setTempCount(count);
          }).catch((e)=>{
-            message(e.message);
+             message(e.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
         })
     }, [cartRequest, params]);
 
@@ -119,14 +122,14 @@ const Detail = () => {
                 setCount(tempCount);
                 setShowCart(false);
                 // 使用后端返回的消息，如果没有则使用默认消息
-                const successMessage = response.message || 'Cart updated successfully!';
+                const successMessage = response.message || translate(UI_TRANSLATION_KEYS.common.cartUpdateSuccess, language);
                 message(successMessage);
             } else {
-                message(response.message || 'Cart update failed');
+                message(response.message || translate(UI_TRANSLATION_KEYS.common.cartUpdateFailed, language));
             }
         }).catch((e)=>{
             console.error('Cart change error:', e);
-            message(e.message);
+            message(e.message || translate(UI_TRANSLATION_KEYS.common.requestFailed, language));
         })
     }
 
@@ -162,7 +165,7 @@ const Detail = () => {
                 console.log('================================');
                 
                 // 使用后端返回的消息，如果没有则使用默认消息
-                const successMessage = response.message || 'Product Added To Cart';
+                const successMessage = response.message || translate(UI_TRANSLATION_KEYS.common.cartAddSuccess, language);
                 message(successMessage);
                 //API调用成功后，重新获取购物车数量以刷新显示
                 cartRequest({
@@ -184,7 +187,7 @@ const Detail = () => {
                 navigate(`/cart?from=detail&productId=${params.id}`);
             }).catch(error => {
                 console.error('Add to cart error:', error);
-                message('添加到购物车失败，请重试');
+                message(translate(UI_TRANSLATION_KEYS.common.cartAddFailed, language));
                 //即使API失败也跳转
                 navigate(`/cart?from=detail&productId=${params.id}`);
             });
@@ -200,14 +203,14 @@ const Detail = () => {
             {/*title area */}
             <div className="title">
                 <div className="iconfont" onClick={()=>{navigate(-1)}}>&#xe6a9;</div>
-                <div className="text">Detail</div>
+                <div className="text">{translate(UI_TRANSLATION_KEYS.detail.pageTitle, language)}</div>
             </div>
             <img className='image' alt='' src={result.imgUrl}/>
             {/*main area */}
             <div className='main'>
                 <div className='main-price'><span className="main-price-symbol">&#36;</span>
                     {result.price}</div>
-                <div className='main-sales'>sold {result.sales}</div>
+                <div className='main-sales'>{translate(UI_TRANSLATION_KEYS.common.soldPrefix, language)} {result.sales}</div>
                  <div className='main-content'>
                     <div
                         className='main-content-title'>{result.title}
@@ -218,11 +221,11 @@ const Detail = () => {
             </div>
             {/*specification area */}
             <div className='spec'>
-                <div className='spec-title'>specification info</div>
+                <div className='spec-title'>{translate(UI_TRANSLATION_KEYS.detail.specTitle, language)}</div>
                 <div className='spec-content'>
                     <div className='spec-content-left'>
-                        <p className='spec-content-item'>origin</p>
-                        <p className='spec-content-item'>spec</p>
+                        <p className='spec-content-item'>{translate(UI_TRANSLATION_KEYS.detail.originLabel, language)}</p>
+                        <p className='spec-content-item'>{translate(UI_TRANSLATION_KEYS.detail.specLabel, language)}</p>
                     </div>
                     <div className='spec-content-right'>
                         <p className='spec-content-item'>{result.origin}</p>
@@ -232,7 +235,7 @@ const Detail = () => {
             </div>
             {/*product detail area */}
             <div className='detail'>
-                <div className='detail-title'>product detail</div>
+                <div className='detail-title'>{translate(UI_TRANSLATION_KEYS.detail.detailSectionTitle, language)}</div>
                 <div className='detail-content'>
                     {result.detail}
 
@@ -248,11 +251,11 @@ const Detail = () => {
                         <span className='icon-count'>{count}</span>
                     </div>
                     <div className='icon-text'>
-                      Shopping Cart
+                      {translate(UI_TRANSLATION_KEYS.common.shoppingCart, language)}
                     </div>
                 </div>
 
-                <div className='cart-button' onClick={()=>{setShowCart(true)}}>Add to Cart</div>
+                <div className='cart-button' onClick={()=>{setShowCart(true)}}>{translate(UI_TRANSLATION_KEYS.common.addToCart, language)}</div>
             </div>
             {/*Popover area*/}
             <Popover show={showCart} blankClickCallBack={ closeMask}>
@@ -269,7 +272,7 @@ const Detail = () => {
                     </div>
                     <div className='cart-count'>
                         <div className='cart-count-content'>
-                            Quantity:
+                            {translate(UI_TRANSLATION_KEYS.common.quantityLabel, language)}
                             <div className='cart-count-counter'>
                                  <div className='cart-count-button'
                                       onClick={()=>{changTempCount(tempCount-1)}}>
@@ -283,7 +286,7 @@ const Detail = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='cart-button' onClick={changeCartInfo}>Add to Cart</div>
+                    <div className='cart-button' onClick={changeCartInfo}>{translate(UI_TRANSLATION_KEYS.common.addToCart, language)}</div>
                 </div>
             </Popover>
         </div>
