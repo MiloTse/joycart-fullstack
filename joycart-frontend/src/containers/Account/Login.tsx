@@ -4,6 +4,8 @@ import useRequest from "../../utils/useRequest";
 import {useNavigate} from "react-router-dom";
 import { message } from "../../utils/message";
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {syncLanguageFromUser, translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 //1. 首先定义接口返回内容
 // type ResponseType = {
 //     status:string,
@@ -17,6 +19,7 @@ const Login = ()=> {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     const navigate = useNavigate();
+    const language = useLanguage();
 
     //use custom hook to send request
     //step1. 通过泛型传递给useRequest 方法
@@ -27,15 +30,15 @@ const Login = ()=> {
     function handleSubmitBtnClick() {
         if(!phoneNumber ) {
             // alert('please input phone number!');
-            message('phone number should not be empty.');
+            message(translate(UI_TRANSLATION_KEYS.messages.phoneRequired, language));
             return;
         }
         if(!password ) {
-             message('password should not be empty.');
+             message(translate(UI_TRANSLATION_KEYS.messages.passwordRequired, language));
             return;
         }
         if(!agreedToTerms) {
-            message('Please agree to the Terms and Conditions and Privacy Policy.');
+            message(translate(UI_TRANSLATION_KEYS.messages.agreeTerms, language));
             return;
         }
         request(
@@ -56,6 +59,7 @@ const Login = ()=> {
             // 检查ResponseDTO格式的响应
             if(response.code === 200 && response.data.token) {
                 localStorage.setItem('token', response.data.token);
+                syncLanguageFromUser(response.data.languagePreference);
                 message(response.message || 'Login Successfully！');
                 //if login success, redirect to home page
                 navigate('/home');
@@ -84,21 +88,21 @@ const Login = ()=> {
         <>
             <div className="form">
                 <div className="form-item">
-                    <div className='form-item-title'>phone number</div>
+                    <div className='form-item-title'>{translate(UI_TRANSLATION_KEYS.login.phoneNumberLabel, language)}</div>
                     <input value={phoneNumber}
                            className='form-item-content'
-                           placeholder='please input phone number'
+                           placeholder={translate(UI_TRANSLATION_KEYS.login.phoneNumberPlaceholder, language)}
                            onChange={(e)=>{
                                setPhoneNumber(e.target.value);
                            }}
                     />
                 </div>
                 <div className="form-item">
-                    <div className='form-item-title'>password</div>
+                    <div className='form-item-title'>{translate(UI_TRANSLATION_KEYS.login.passwordLabel, language)}</div>
                     <input value={password}
                            type="password"
                            className="form-item-content"
-                           placeholder="please input password"
+                           placeholder={translate(UI_TRANSLATION_KEYS.login.passwordPlaceholder, language)}
                            onChange={(e)=>{
                                setPassword(e.target.value);
                            }}
@@ -107,7 +111,7 @@ const Login = ()=> {
             </div>
 
             <div className="submit" onClick={handleSubmitBtnClick}>
-                login
+                {translate(UI_TRANSLATION_KEYS.login.submitButton, language)}
             </div>
             <p className="notice">
                 <input 
@@ -115,10 +119,10 @@ const Login = ()=> {
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
                 />
-                I accept the
-                <a href="#">Terms and Conditions</a>
+                {translate(UI_TRANSLATION_KEYS.login.agreePrefix, language)}
+                <a href="#">{translate(UI_TRANSLATION_KEYS.login.termsLink, language)}</a>
                 &
-                <a href="#">Privacy Policy</a>
+                <a href="#">{translate(UI_TRANSLATION_KEYS.login.privacyLink, language)}</a>
             </p>
 
 
