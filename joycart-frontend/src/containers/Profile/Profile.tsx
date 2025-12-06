@@ -20,14 +20,16 @@ import {
     DEFAULT_SHOPPER_NICKNAME,
     DEFAULT_AVATAR,
     SUCCESS_CODE,
-    ERROR_MESSAGES,
     HTTP_METHODS
 } from "../../constants/apiConstants";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 
 
 function Profile() {
     const navigate = useNavigate();
+    const language = useLanguage();
     
     // 使用useMemo缓存请求配置对象，防止无限循环
     const requestConfig = useMemo(() => ({
@@ -66,12 +68,12 @@ function Profile() {
         try {
             localStorage.removeItem(STORAGE_TOKEN);
             localStorage.removeItem(STORAGE_LOCATION);
-            message(ERROR_MESSAGES.LOGOUT_SUCCESS);
+            message(translate(UI_TRANSLATION_KEYS.common.logoutSuccess, language));
             //jump to login page
             navigate(ROUTE_LOGIN);
         } catch (error) {
             console.error('Logout error:', error);
-            message(ERROR_MESSAGES.LOGOUT_FAILED);
+            message(translate(UI_TRANSLATION_KEYS.common.logoutFailed, language));
         }
     }
 
@@ -79,7 +81,7 @@ function Profile() {
         <div className="profile-page">
             {/*title section*/}
             <div className='profile-title'>
-                profile
+                {translate(UI_TRANSLATION_KEYS.profile.pageTitle, language)}
             </div>
             {/*profile information section*/}
             <div className='profile-profile'>
@@ -88,7 +90,7 @@ function Profile() {
                     <div className='user-info'>
                         <div className='nickname'>{userData.nickname}</div>
                         <div className='logout-button' onClick={handleLogout}>
-                            Logout
+                            {translate(UI_TRANSLATION_KEYS.profile.logout, language)}
                         </div>
                     </div>
                     <div className='vip-info'>
@@ -97,7 +99,7 @@ function Profile() {
                 </div>
                 <div className='profile-profile-right'>
                     <button className='profile-profile-right member-centre' onClick={handleMemberClick}>
-                        Member
+                        {translate(UI_TRANSLATION_KEYS.profile.member, language)}
                     </button>
                 </div>
             </div>
@@ -106,11 +108,11 @@ function Profile() {
             <div className="profile-points">
                 <div className="profile-points-item">
                     <div className="profile-points-value">{userData.coupons}</div>
-                    <div className="profile-points-label">Coupons</div>
+                    <div className="profile-points-label">{translate(UI_TRANSLATION_KEYS.profile.coupons, language)}</div>
                 </div>
                 <div className="profile-points-item">
                     <div className="profile-points-value">{userData.rewardPoints}</div>
-                    <div className="profile-points-label">Reward Points</div>
+                    <div className="profile-points-label">{translate(UI_TRANSLATION_KEYS.profile.rewardPoints, language)}</div>
                 </div>
                 <div className="profile-points-item">
 
@@ -121,38 +123,38 @@ function Profile() {
                 <div className="profile-features-row">
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xe603;</div>
-                        <div className="profile-feature-text">All Orders</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.allOrders, language)}</div>
                     </div>
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xe612;</div>
-                        <div className="profile-feature-text">Pending Payment</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.pendingPayment, language)}</div>
                     </div>
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xe63f;</div>
-                        <div className="profile-feature-text">Awaiting Shipment</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.awaitingShipment, language)}</div>
                     </div>
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xe6b1;</div>
-                        <div className="profile-feature-text">Awaiting Delivery</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.awaitingDelivery, language)}</div>
                     </div>
                 </div>
  
                 <div className="profile-features-row">
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xe611;</div>
-                        <div className="profile-feature-text">Returns & Refunds</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.returnsRefunds, language)}</div>
                     </div>
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xec2e;</div>
-                        <div className="profile-feature-text">Customer Service</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.customerService, language)}</div>
                     </div>
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xe643;</div>
-                        <div className="profile-feature-text">Settings</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.settings, language)}</div>
                     </div>
                     <div className="profile-feature-item">
                         <div className="profile-feature-icon iconfont">&#xe640;</div>
-                        <div className="profile-feature-text">Address</div>
+                        <div className="profile-feature-text">{translate(UI_TRANSLATION_KEYS.profile.address, language)}</div>
                     </div>
                 </div>
             </div>
