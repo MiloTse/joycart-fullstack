@@ -58,14 +58,14 @@ public class CartController {
             // 调用CartService获取购物车商品
             Object[] cartData = cartService.getCartProducts(userId);
             
-            ResponseDTO<Object[]> response = ResponseDTO.success("购物车商品列表获取成功", cartData);
+            ResponseDTO<Object[]> response = ResponseDTO.success(ApiConstants.CART_PRODUCTS_SUCCESS_MESSAGE, cartData);
             
             logger.info("Cart products retrieved successfully for userId: {}, found {} shops", userId, cartData.length);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving cart products: {}", e.getMessage(), e);
-            ResponseDTO<Object[]> errorResponse = ResponseDTO.error("获取购物车商品列表失败，请重试");
+            ResponseDTO<Object[]> errorResponse = ResponseDTO.error(ApiConstants.CART_PRODUCTS_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -85,18 +85,18 @@ public class CartController {
             
             if (productInfo == null) {
                 logger.warn("Product not found for productId: {}", productId);
-                ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("商品不存在");
+                ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error(ApiConstants.PRODUCT_NOT_FOUND_MESSAGE);
                 return ResponseEntity.badRequest().body(errorResponse);
             }
             
-            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品购物车信息获取成功", productInfo);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.CART_PRODUCT_INFO_SUCCESS_MESSAGE, productInfo);
             
             logger.info("Cart product info retrieved successfully for productId: {}", productId);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving cart product info: {}", e.getMessage(), e);
-            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取商品购物车信息失败，请重试");
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error(ApiConstants.CART_PRODUCT_INFO_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -143,7 +143,7 @@ public class CartController {
             
         } catch (Exception e) {
             logger.error("Error retrieving cart item count: {}", e.getMessage(), e);
-            ResponseDTO<Map<String, Integer>> errorResponse = ResponseDTO.error("Failed to retrieve cart item count");
+            ResponseDTO<Map<String, Integer>> errorResponse = ResponseDTO.error(ApiConstants.CART_ITEM_COUNT_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -185,7 +185,7 @@ public class CartController {
             // 调用CartService添加到购物车
             Map<String, Object> data = cartService.addToCart(userId, productId, count);
             
-            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("商品已成功添加到购物车", data);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.CART_ADD_SUCCESS_MESSAGE, data);
             
             logger.info("Product {} {} successfully - userId: {}, productId: {}, count: {}", 
                        data.get("action"), userId, productId, count);
@@ -193,7 +193,7 @@ public class CartController {
             
         } catch (Exception e) {
             logger.error("Error adding product to cart: {}", e.getMessage(), e);
-            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("添加到购物车失败，请重试");
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error(ApiConstants.CART_ADD_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -235,7 +235,7 @@ public class CartController {
             // 调用CartService更新购物车商品
             Map<String, Object> data = cartService.changeCartItem(userId, id, count);
             
-            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("购物车更新成功", data);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.CART_CHANGE_SUCCESS_MESSAGE, data);
             
             logger.info("Cart item {} successfully - userId: {}, productId: {}, count: {}", 
                        data.get("action"), userId, id, count);
@@ -243,7 +243,7 @@ public class CartController {
             
         } catch (Exception e) {
             logger.error("Error updating cart item: {}", e.getMessage(), e);
-            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("购物车更新失败，请重试");
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error(ApiConstants.CART_CHANGE_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
