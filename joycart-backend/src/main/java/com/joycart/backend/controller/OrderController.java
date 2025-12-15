@@ -55,7 +55,7 @@ public class OrderController {
             
             if (userId == null) {
                 logger.warn("Unable to extract user ID from token");
-                return ResponseEntity.ok(ResponseDTO.error("用户认证失败"));
+                return ResponseEntity.ok(ResponseDTO.error(ApiConstants.UNAUTHORIZED_MESSAGE));
             }
             
             // 使用OrderService提交订单
@@ -64,14 +64,14 @@ public class OrderController {
             Map<String, String> data = new HashMap<>();
             data.put("orderId", orderId);
             
-            ResponseDTO<Map<String, String>> response = ResponseDTO.success("订单提交成功", data);
+            ResponseDTO<Map<String, String>> response = ResponseDTO.success(ApiConstants.ORDER_SUBMIT_SUCCESS_MESSAGE, data);
             
             logger.info("Cart submitted successfully, generated orderId: {}", orderId);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error submitting cart: {}", e.getMessage(), e);
-            ResponseDTO<Map<String, String>> errorResponse = ResponseDTO.error("订单提交失败，请重试");
+            ResponseDTO<Map<String, String>> errorResponse = ResponseDTO.error(ApiConstants.ORDER_SUBMIT_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -115,7 +115,7 @@ public class OrderController {
             
         } catch (Exception e) {
             logger.error("Error retrieving user addresses: {}", e.getMessage(), e);
-            ResponseDTO<Object[]> errorResponse = ResponseDTO.error("获取用户地址失败，请重试");
+            ResponseDTO<Object[]> errorResponse = ResponseDTO.error(ApiConstants.USER_ADDRESSES_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -137,7 +137,7 @@ public class OrderController {
             
             if (userId == null) {
                 logger.warn("Unable to extract user ID from token");
-                return ResponseEntity.ok(ResponseDTO.error("用户认证失败"));
+                return ResponseEntity.ok(ResponseDTO.error(ApiConstants.UNAUTHORIZED_MESSAGE));
             }
             
             // 使用OrderService获取订单详情
@@ -145,17 +145,17 @@ public class OrderController {
             
             if (orderData == null) {
                 logger.warn("Order not found or access denied for orderId: {}, userId: {}", id, userId);
-                return ResponseEntity.ok(ResponseDTO.error("订单不存在或无权限访问"));
+                return ResponseEntity.ok(ResponseDTO.error(ApiConstants.ORDER_NOT_FOUND_OR_ACCESS_DENIED_MESSAGE));
             }
             
-            ResponseDTO<Map<String, Object>> response = ResponseDTO.success("订单详情获取成功", orderData);
+            ResponseDTO<Map<String, Object>> response = ResponseDTO.success(ApiConstants.ORDER_DETAIL_SUCCESS_MESSAGE, orderData);
             
             logger.info("Order detail retrieved successfully for orderId: {}", id);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             logger.error("Error retrieving order detail: {}", e.getMessage(), e);
-            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取订单详情失败，请重试");
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error(ApiConstants.ORDER_DETAIL_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -186,7 +186,7 @@ public class OrderController {
             
             if (userId == null) {
                 logger.warn("Unable to extract user ID from token");
-                return ResponseEntity.ok(ResponseDTO.error("用户认证失败"));
+                return ResponseEntity.ok(ResponseDTO.error(ApiConstants.UNAUTHORIZED_MESSAGE));
             }
             
             // 使用OrderService处理支付
@@ -194,11 +194,11 @@ public class OrderController {
             
             if (paymentResult == null) {
                 logger.warn("Payment processing failed for order: {}", orderId);
-                return ResponseEntity.ok(ResponseDTO.error("支付处理失败"));
+                return ResponseEntity.ok(ResponseDTO.error(ApiConstants.ORDER_PAYMENT_FAILED_MESSAGE));
             }
             
             boolean paymentSuccess = (Boolean) paymentResult.get("success");
-            ResponseDTO<Boolean> response = ResponseDTO.success("支付处理成功", paymentSuccess);
+            ResponseDTO<Boolean> response = ResponseDTO.success(ApiConstants.ORDER_PAYMENT_SUCCESS_MESSAGE, paymentSuccess);
             
             if (paymentSuccess) {
                 logger.info("Payment processed successfully for order: {}", orderId);
@@ -210,7 +210,7 @@ public class OrderController {
             
         } catch (Exception e) {
             logger.error("Error processing payment: {}", e.getMessage(), e);
-            ResponseDTO<Boolean> errorResponse = ResponseDTO.error("支付处理失败，请重试");
+            ResponseDTO<Boolean> errorResponse = ResponseDTO.error(ApiConstants.ORDER_PAYMENT_PROCESS_FAILED_MESSAGE);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
