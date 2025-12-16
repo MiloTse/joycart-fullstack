@@ -64,7 +64,7 @@ public class UserProfileController {
             
         } catch (Exception e) {
             logger.error("Error retrieving user profile for userId {}: {}", userId, e.getMessage(), e);
-            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error("获取用户资料失败，请重试");
+            ResponseDTO<Map<String, Object>> errorResponse = ResponseDTO.error(ApiConstants.USER_PROFILE_FAILED_MESSAGE);
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
