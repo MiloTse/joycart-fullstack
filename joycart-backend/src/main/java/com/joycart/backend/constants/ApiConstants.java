@@ -183,6 +183,7 @@ public class ApiConstants {
      * 购物车相关消息
      */
     public static final String CART_ITEM_COUNT_SUCCESS_MESSAGE = "购物车商品数量获取成功";
+    public static final String CART_ITEM_COUNT_FAILED_MESSAGE = "获取购物车商品数量失败，请重试";
     public static final String CART_ADD_SUCCESS_MESSAGE = "商品已成功添加到购物车";
     public static final String CART_ADD_FAILED_MESSAGE = "添加到购物车失败，请重试";
     public static final String CART_CHANGE_SUCCESS_MESSAGE = "购物车更新成功";
@@ -199,6 +200,7 @@ public class ApiConstants {
     public static final String ORDER_SUBMIT_FAILED_MESSAGE = "订单提交失败，请重试";
     public static final String ORDER_DETAIL_SUCCESS_MESSAGE = "订单详情获取成功";
     public static final String ORDER_DETAIL_FAILED_MESSAGE = "获取订单详情失败，请重试";
+    public static final String ORDER_NOT_FOUND_OR_ACCESS_DENIED_MESSAGE = "订单不存在或无权限访问";
     public static final String ORDER_PAYMENT_SUCCESS_MESSAGE = "支付处理成功";
     public static final String ORDER_PAYMENT_FAILED_MESSAGE = "支付处理失败";
     public static final String ORDER_PAYMENT_PROCESS_FAILED_MESSAGE = "支付处理失败，请重试";
