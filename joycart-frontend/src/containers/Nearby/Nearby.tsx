@@ -4,6 +4,8 @@ import {useLocation, useNavigate} from "react-router-dom";
 import React, {useState, useMemo} from "react";
 import type {ResponseType} from "./types";
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 const defaultRequestData = {
     url: API_ENDPOINTS.NEARBY_STORES,
@@ -39,6 +41,7 @@ const Nearby = () => {
     const { data } = useRequest<ResponseType>(requestData);
     const navigate = useNavigate();
     const [keyword, setKeyword] = useState('');
+    const language = useLanguage();
 
     console.log('=== Nearby API Response ===');
     console.log('Full response:', data);
@@ -78,18 +81,18 @@ const Nearby = () => {
                 <div className="iconfont title-icon"
                      onClick={handleGoBackClick} style={{ cursor: 'pointer' }}>
                     &#xe6a9;</div>
-                Switch Store
+                {translate(UI_TRANSLATION_KEYS.nearby.title, language)}
             </div>
             <div className="search">
                 <span className="search-icon iconfont">&#xe600;</span>
                 <input 
                     className="search-input"
-                    placeholder="Please enter address"
+                    placeholder={translate(UI_TRANSLATION_KEYS.nearby.searchPlaceholder, language)}
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                 />
             </div>
-            <div className="subtitle">Nearby Store</div>
+            <div className="subtitle">{translate(UI_TRANSLATION_KEYS.nearby.subtitle, language)}</div>
             <ul className="store-list">
                 {list.map(item => (
                     <li
@@ -99,7 +102,7 @@ const Nearby = () => {
                     >
                         <div className="store-list-item-title">{item.name}</div>
                         <div className="store-list-item-desc">
-                            <span>Tel：{item.phone}</span>
+                            <span>{translate(UI_TRANSLATION_KEYS.nearby.phoneLabel, language)}{item.phone}</span>
                         </div>
                         <div className="store-list-item-address">{item.address}</div>
                         <div className="store-list-item-right">
