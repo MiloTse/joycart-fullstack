@@ -4,6 +4,8 @@ import {useState, useEffect} from "react";
 import useRequest from "../../utils/useRequest";
 import type {ResponseType} from "./types";
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 
 //defaultRequestData - 改为调用真实后端API
@@ -16,6 +18,7 @@ const defaultRequestData = {
 
 const Search = () => {
     const {data} = useRequest<ResponseType>(defaultRequestData);
+    const language = useLanguage();
     
     // 添加ResponseDTO格式的调试日志
     useEffect(() => {
@@ -91,7 +94,7 @@ const Search = () => {
                     <div className="search-icon iconfont">&#xe600;</div>
                     <input
                         className="search-input"
-                           placeholder="Please enter product name"
+                           placeholder={translate(UI_TRANSLATION_KEYS.search.placeholder, language)}
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                         onKeyDown={(e) => {handleKeyDown(e.key)} }
@@ -102,7 +105,7 @@ const Search = () => {
                 historyList.length? (
                     <>
                         <div className="title">
-                            History Search
+                            {translate(UI_TRANSLATION_KEYS.search.historyTitle, language)}
                             <div onClick={handleHistoryListClean}
                                  className="iconfont title-close">
                                 &#xe610;
@@ -126,7 +129,7 @@ const Search = () => {
                 hotList.length? (
                     <>
                         <div className="title">
-                            Hot Search
+                            {translate(UI_TRANSLATION_KEYS.search.hotTitle, language)}
                         </div>
                         <ul className="list">
                             {
