@@ -4,11 +4,14 @@ import {Link, useParams} from 'react-router-dom';
 import useRequest from "../../utils/useRequest";
 import type {ResponseType} from "./types";
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 const SearchList = () => {
     const params = useParams<{ shopId : string; keyword: string}>();
     const [keyword, setKeyword] = useState(params.keyword);
     const [tabValue,setTabValue] = useState('default');
+    const language = useLanguage();
     const [requestData, setRequestData] = useState({
         url: API_ENDPOINTS.SEARCH_PRODUCTS,
         method: 'GET',
@@ -94,7 +97,7 @@ const SearchList = () => {
                     <div className="search-icon iconfont">&#xe600;</div>
                     <input
                         className="search-input"
-                        placeholder="Please enter product name"
+                        placeholder={translate(UI_TRANSLATION_KEYS.searchList.placeholder, language)}
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                         onKeyDown={(e) => {handleKeyDown(e.key)} }
@@ -104,9 +107,9 @@ const SearchList = () => {
             </div>
             {/*item list area*/}
             <div className="tab">
-                <div className={tabValue==='default'? "tab-item tab-item-active" : "tab-item " } onClick={()=>handleTabClick('default')}>Default</div>
-                <div className={tabValue==='sales'? "tab-item tab-item-active" : "tab-item " }   onClick={()=>handleTabClick('sales')}>Sale</div>
-                <div className={tabValue==='price'? "tab-item tab-item-active" : "tab-item " }   onClick={()=>handleTabClick('price')}>Price</div>
+                <div className={tabValue==='default'? "tab-item tab-item-active" : "tab-item " } onClick={()=>handleTabClick('default')}>{translate(UI_TRANSLATION_KEYS.searchList.tabDefault, language)}</div>
+                <div className={tabValue==='sales'? "tab-item tab-item-active" : "tab-item " }   onClick={()=>handleTabClick('sales')}>{translate(UI_TRANSLATION_KEYS.searchList.tabSale, language)}</div>
+                <div className={tabValue==='price'? "tab-item tab-item-active" : "tab-item " }   onClick={()=>handleTabClick('price')}>{translate(UI_TRANSLATION_KEYS.searchList.tabPrice, language)}</div>
 
             </div>
             {/*product list area*/}
@@ -127,7 +130,7 @@ const SearchList = () => {
                                         </span>
                                             {item.price}
                                         </div>
-                                        <div className="item-sales">sold {item.sales} </div>
+                                        <div className="item-sales">{translate(UI_TRANSLATION_KEYS.searchList.sold, language)} {item.sales} </div>
                                     </div>
                                 </div>
 
@@ -144,7 +147,7 @@ const SearchList = () => {
 {/*bottom line*/
 }
 <div className="bottom">
-    -- I am the bottom line --
+    {translate(UI_TRANSLATION_KEYS.common.bottomLine, language)}
 </div>
 </div>
 )
