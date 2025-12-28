@@ -7,6 +7,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import Popover from "../../components/Popover/Popover";
 import { Picker } from 'antd-mobile';
 import {API_ENDPOINTS} from "../../config/api";
+import useLanguage from "../../hooks/useLanguage";
+import {translate, UI_TRANSLATION_KEYS} from "../../utils/i18n";
 
 
 
@@ -24,6 +26,7 @@ import {API_ENDPOINTS} from "../../config/api";
      const [payWay, setPayWay] = useState('wechat');
      const {request: paymentRequest } = useRequest<PaymentResponseType>({ manual:true})
      const navigate = useNavigate();
+     const language = useLanguage();
      useEffect(() => {
          request({
              url: API_ENDPOINTS.ORDER_DETAIL,
@@ -38,7 +41,7 @@ import {API_ENDPOINTS} from "../../config/api";
              if(response.code === 200) {
                  setData(response.data);
              } else {
-                 message(response.message || '获取订单详情失败');
+                 message(response.message || translate(UI_TRANSLATION_KEYS.order.detailFailed, language));
              }
          }).catch((e)=>{
              console.error('Order detail error:', e);
@@ -70,7 +73,7 @@ import {API_ENDPOINTS} from "../../config/api";
                if(response.code === 200) {
                    setAddressList(response.data);
                } else {
-                   message(response.message || '获取地址列表失败');
+                   message(response.message || translate(UI_TRANSLATION_KEYS.order.addressListFailed, language));
                }
            }).catch((e)=>{
                console.error('Order addresses error:', e);
@@ -116,10 +119,10 @@ import {API_ENDPOINTS} from "../../config/api";
              console.log('==================================');
              
              if(response.code === 200 && response.data){
-                 message('Payment successful!');
+                 message(translate(UI_TRANSLATION_KEYS.order.paymentSuccess, language));
                  navigate('/home');
              } else {
-                 message(response.message || 'Payment failed');
+                 message(response.message || translate(UI_TRANSLATION_KEYS.order.paymentFailed, language));
              }
          }).catch((e)=>{
              console.error('Order payment error:', e);
@@ -131,7 +134,7 @@ import {API_ENDPOINTS} from "../../config/api";
      if (!data) {
          return (
              <div className="order-loading">
-                 Loading...
+                 {translate(UI_TRANSLATION_KEYS.order.loading, language)}
              </div>
          );
      }
@@ -142,23 +145,23 @@ import {API_ENDPOINTS} from "../../config/api";
                 <div className="iconfont" onClick={() => {
                     navigate(-1)
                 }}>&#xe6a9;</div>
-                <div className="text">Confirm Order</div>
+                <div className="text">{translate(UI_TRANSLATION_KEYS.order.title, language)}</div>
             </div>
             <div className='receiver' onClick={handleReceiverClick}>
                 <div className='iconfont'>&#xe68e; </div>
                 <div className='receiver-content'>
                     <div className='receiver-name'>
-                        Receiver: {data?.address?.name}
+                        {translate(UI_TRANSLATION_KEYS.order.receiverLabel, language)} {data?.address?.name}
                         <span className='receiver-phone'>{data?.address?.phone}</span>
                     </div>
                     <div className='receiver-address'>
-                        Address: {data?.address?.address}
+                        {translate(UI_TRANSLATION_KEYS.order.addressLabel, language)} {data?.address?.address}
                     </div>
                 </div>
 
             </div>
             <div className='delivery'>
-                <div className='delivery-text'>Delivery Time</div>
+                <div className='delivery-text'>{translate(UI_TRANSLATION_KEYS.order.deliveryTime, language)}</div>
                 <div className='delivery-select' onClick={()=>{setShowTimeRange(true)}}>
                     {data.time?.[0]} {data.time?.[1]}:{data.time?.[2]}
                 </div>
@@ -206,17 +209,17 @@ import {API_ENDPOINTS} from "../../config/api";
 
             <div className='footer'>
                 <div className='footer-total'>
-                    Total:
+                    {translate(UI_TRANSLATION_KEYS.order.totalLabel, language)}
                     <span className='footer-total-price'>
                         <span className='footer-total-symbol'>&#36;</span>
                         {data?.total}
                     </span>
                 </div>
-                <div className='footer-submit' onClick={()=>{setShowPayment(true)}}>Place Order</div>
+                <div className='footer-submit' onClick={()=>{setShowPayment(true)}}>{translate(UI_TRANSLATION_KEYS.order.placeOrderButton, language)}</div>
             </div>
             <Popover show={showAddress} blankClickCallBack={()=> setShowAddress(false)}>
                 <div className='address-popover'>
-                    <div className='address-popover-title'>Choose Address</div>
+                    <div className='address-popover-title'>{translate(UI_TRANSLATION_KEYS.order.chooseAddressTitle, language)}</div>
                     {
                         addressList.map((address ) => (
                             <div className='address-item'
@@ -226,11 +229,11 @@ import {API_ENDPOINTS} from "../../config/api";
                             >
                                 <div className='address-item-content'>
                                     <div className='address-item-name'>
-                                        Receiver: {address.name}
+                                        {translate(UI_TRANSLATION_KEYS.order.receiverLabel, language)} {address.name}
                                         <span className='address-item-phone'>{address.phone}</span>
                                     </div>
                                     <div className='address-item-address'>
-                                        Address: {address.address}
+                                        {translate(UI_TRANSLATION_KEYS.order.addressLabel, language)} {address.address}
                                     </div>
                                 </div>
 
@@ -248,23 +251,23 @@ import {API_ENDPOINTS} from "../../config/api";
             {/*popover for payment method to select*/}
             <Popover show={showPayment} blankClickCallBack={()=> setShowPayment(false)}>
                 <div className='payment-popover'>
-                    <div className='payment-popover-title'>Choose Payment</div>
+                    <div className='payment-popover-title'>{translate(UI_TRANSLATION_KEYS.order.choosePaymentTitle, language)}</div>
                     <div className='payment-popover-price'>&#36; {data?.total}</div>
                     <div className='payment-popover-products'>
                         <div className='payment-popover-product' onClick={()=>{setPayWay('wechat')}}>
                             <img className='payment-popover-img' src='/images/external/weixin.png' alt='wechat' />
-                            WeChat
+                            {translate(UI_TRANSLATION_KEYS.order.paymentWeChat, language)}
                             <div className={payWay === 'wechat' ? 'radio radio-active' : 'radio'}></div>
 
                         </div>
                         <div className='payment-popover-product' onClick={()=>{setPayWay('cash')}}>
                             <img className='payment-popover-img' src='/images/external/cash.png' alt='weixin' />
-                            Balance({data?.balance})
+                            {translate(UI_TRANSLATION_KEYS.order.paymentBalance, language)}({data?.balance})
                             <div className={payWay === 'cash' ? 'radio radio-active' : 'radio'}></div>
                         </div>
                     </div>
                     <div className='payment-popover-button' onClick={handleOrderSubmit} >
-                        Pay Now
+                        {translate(UI_TRANSLATION_KEYS.order.payNowButton, language)}
                     </div>
                 </div>
             </Popover>
