@@ -17,4 +17,13 @@ public interface UserService {
     boolean existsByEmail(String email);
     boolean verifyPassword(String rawPassword, String encodedPassword);
     Optional<User> findByPhoneNumberOrEmail(String phoneNumberOrEmail);
+    
+    /**
+     * 根据Google ID查找用户
+     * 用于Google登录时查找已存在的用户
+     * 
+     * @param googleId Google用户唯一标识（sub字段）
+     * @return 用户Optional对象，如果不存在返回empty
+     */
+    Optional<User> getUserByGoogleId(String googleId);
 }
