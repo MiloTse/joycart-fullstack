@@ -246,4 +246,94 @@ class UserServiceTest {
         assertFalse(result);
         verify(userRepository, times(1)).existsByEmail("notfound@example.com");
     }
+
+    /**
+     * 测试根据Google ID查找用户 - 成功场景
+     * 
+     * 测试说明：
+     * 1. 模拟Repository返回已存在的用户
+     * 2. 验证Service方法返回正确的用户
+     * 3. 验证Repository方法被正确调用
+     * 
+     * 注意：此测试需要User实体包含googleId字段（将在Task B9中添加）
+     * 当前测试：验证方法调用和返回值处理逻辑
+     */
+    @Test
+    void getUserByGoogleId_Success() {
+        // Given: 准备测试数据
+        String googleId = "12345678901234567890";
+        User userWithGoogleId = new User();
+        userWithGoogleId.setId(1);
+        userWithGoogleId.setUsername("googleuser");
+        userWithGoogleId.setEmail("google@example.com");
+        // 注意：googleId字段将在Task B9中添加
+        // userWithGoogleId.setGoogleId(googleId);
+        
+        // 模拟Repository返回用户
+        when(userRepository.findByGoogleId(googleId)).thenReturn(Optional.of(userWithGoogleId));
+        
+        // When: 调用Service方法
+        Optional<User> result = userService.getUserByGoogleId(googleId);
+        
+        // Then: 验证结果
+        assertTrue(result.isPresent(), "应该找到用户");
+        assertEquals(userWithGoogleId, result.get(), "返回的用户应该匹配");
+        assertEquals(1, result.get().getId(), "用户ID应该正确");
+        assertEquals("googleuser", result.get().getUsername(), "用户名应该正确");
+        
+        // 验证Repository方法被调用
+        verify(userRepository, times(1)).findByGoogleId(googleId);
+    }
+
+    /**
+     * 测试根据Google ID查找用户 - 用户不存在场景
+     * 
+     * 测试说明：
+     * 1. 模拟Repository返回empty
+     * 2. 验证Service方法返回empty
+     * 3. 验证Repository方法被正确调用
+     */
+    @Test
+    void getUserByGoogleId_NotFound() {
+        // Given: 准备测试数据
+        String googleId = "99999999999999999999";
+        
+        // 模拟Repository返回empty
+        when(userRepository.findByGoogleId(googleId)).thenReturn(Optional.empty());
+        
+        // When: 调用Service方法
+        Optional<User> result = userService.getUserByGoogleId(googleId);
+        
+        // Then: 验证结果
+        assertFalse(result.isPresent(), "不应该找到用户");
+        
+        // 验证Repository方法被调用
+        verify(userRepository, times(1)).findByGoogleId(googleId);
+    }
+
+    /**
+     * 测试根据Google ID查找用户 - 空参数场景
+     * 
+     * 测试说明：
+     * 1. 传入null或空字符串
+     * 2. 验证方法返回empty，不调用Repository
+     * 3. 验证参数验证逻辑
+     */
+    @Test
+    void getUserByGoogleId_NullOrEmpty() {
+        // Test 1: null参数
+        Optional<User> result1 = userService.getUserByGoogleId(null);
+        assertFalse(result1.isPresent(), "null参数应该返回empty");
+        verify(userRepository, never()).findByGoogleId(anyString());
+        
+        // Test 2: 空字符串参数
+        Optional<User> result2 = userService.getUserByGoogleId("");
+        assertFalse(result2.isPresent(), "空字符串参数应该返回empty");
+        verify(userRepository, never()).findByGoogleId("");
+        
+        // Test 3: 空白字符串参数
+        Optional<User> result3 = userService.getUserByGoogleId("   ");
+        assertFalse(result3.isPresent(), "空白字符串参数应该返回empty");
+        verify(userRepository, never()).findByGoogleId("   ");
+    }
 }
