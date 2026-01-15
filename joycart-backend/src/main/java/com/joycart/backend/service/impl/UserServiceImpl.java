@@ -120,4 +120,50 @@ public class UserServiceImpl implements UserService {
         //再尝试按邮箱查找
         return userRepository.findByEmail(phoneNumberOrEmail);
     }
+
+    /**
+     * 根据Google ID查找用户
+     * 用于Google登录时查找已存在的用户
+     * 
+     * 注意：此方法需要User实体类包含googleId字段（将在Task B9中添加）
+     * 当前实现：调用Repository方法，添加日志输出以便调试
+     * 
+     * @param googleId Google用户唯一标识（sub字段）
+     * @return 用户Optional对象，如果不存在返回empty
+     */
+    @Override
+    public Optional<User> getUserByGoogleId(String googleId) {
+        logger.debug("Attempting to find user by Google ID: {}", 
+                googleId != null && googleId.length() > 10 
+                    ? googleId.substring(0, 10) + "..." : googleId);
+        
+        if (googleId == null || googleId.trim().isEmpty()) {
+            logger.warn("Google ID is null or empty - cannot find user");
+            return Optional.empty();
+        }
+        
+        try {
+            Optional<User> user = userRepository.findByGoogleId(googleId);
+            
+            if (user.isPresent()) {
+                logger.info("User found by Google ID: {} - User ID: {}, Username: {}", 
+                        googleId.substring(0, Math.min(10, googleId.length())), 
+                        user.get().getId(), 
+                        user.get().getUsername());
+            } else {
+                logger.debug("No user found with Google ID: {}", 
+                        googleId.substring(0, Math.min(10, googleId.length())));
+            }
+            
+            return user;
+        } catch (Exception e) {
+            logger.error("Error finding user by Google ID: {} - {}", 
+                    googleId != null && googleId.length() > 10 
+                        ? googleId.substring(0, 10) + "..." : googleId, 
+                    e.getMessage(), e);
+            // 注意：如果User实体还没有googleId字段，这里会抛出异常
+            // 这是预期的，将在Task B9添加字段后解决
+            throw e;
+        }
+    }
 }
