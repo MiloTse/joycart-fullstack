@@ -1,5 +1,6 @@
 package com.joycart.backend.service;
 
+import com.joycart.backend.dto.GoogleUserInfo;
 import com.joycart.backend.model.User;
 
 import java.util.List;
@@ -26,4 +27,12 @@ public interface UserService {
      * @return 用户Optional对象，如果不存在返回empty
      */
     Optional<User> getUserByGoogleId(String googleId);
+
+    /**
+     * 根据Google用户信息创建或更新用户
+     * 
+     * @param googleUserInfo Google用户信息
+     * @return 创建或更新后的用户，如果失败返回null
+     */
+    User createOrUpdateUserFromGoogle(GoogleUserInfo googleUserInfo);
 }
