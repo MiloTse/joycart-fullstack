@@ -1,5 +1,6 @@
 package com.joycart.backend.service;
 
+import com.joycart.backend.dto.GoogleUserInfo;
 import com.joycart.backend.model.User;
 import com.joycart.backend.repository.UserRepository;
 import com.joycart.backend.service.impl.UserServiceImpl;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -335,5 +337,76 @@ class UserServiceTest {
         Optional<User> result3 = userService.getUserByGoogleId("   ");
         assertFalse(result3.isPresent(), "空白字符串参数应该返回empty");
         verify(userRepository, never()).findByGoogleId("   ");
+    }
+
+    /**
+     * 测试Google用户创建/更新 - 入参为空场景
+     */
+    @Test
+    void createOrUpdateUserFromGoogle_NullInput() {
+        User result = userService.createOrUpdateUserFromGoogle(null);
+
+        assertNull(result, "null入参应该返回null");
+        verify(userRepository, never()).save(any(User.class));
+        verify(passwordEncoder, never()).encode(anyString());
+    }
+
+    /**
+     * 测试Google用户创建/更新 - 已存在用户（按email查找）
+     */
+    @Test
+    void createOrUpdateUserFromGoogle_ExistingUserByEmail() {
+        GoogleUserInfo googleUserInfo = new GoogleUserInfo();
+        googleUserInfo.setEmail("google@example.com");
+        googleUserInfo.setName("Google User");
+
+        User existingUser = new User();
+        existingUser.setId(2);
+        existingUser.setUsername("");
+        existingUser.setPhoneNumber("13900139000");
+        existingUser.setEmail("google@example.com");
+        existingUser.setPassword("encoded_password");
+
+        when(userRepository.findByEmail("google@example.com")).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(existingUser);
+
+        User result = userService.createOrUpdateUserFromGoogle(googleUserInfo);
+
+        assertNotNull(result, "返回用户不能为空");
+        assertEquals("Google User", result.getUsername(), "用户名应该被更新");
+        assertEquals("google@example.com", result.getEmail(), "邮箱应该保持一致");
+        verify(userRepository, times(1)).findByEmail("google@example.com");
+        verify(userRepository, times(1)).save(existingUser);
+        verify(passwordEncoder, never()).encode(anyString());
+    }
+
+    /**
+     * 测试Google用户创建/更新 - 新用户创建
+     */
+    @Test
+    void createOrUpdateUserFromGoogle_NewUser() {
+        GoogleUserInfo googleUserInfo = new GoogleUserInfo();
+        googleUserInfo.setEmail("new@example.com");
+        googleUserInfo.setName("New User");
+
+        User newSavedUser = new User();
+        newSavedUser.setId(3);
+        newSavedUser.setUsername("New User");
+        newSavedUser.setPhoneNumber("13900999000");
+        newSavedUser.setEmail("new@example.com");
+        newSavedUser.setPassword("encoded_password");
+
+        when(userRepository.findByEmail("new@example.com")).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("encoded_password");
+        when(userRepository.save(any(User.class))).thenReturn(newSavedUser);
+
+        User result = userService.createOrUpdateUserFromGoogle(googleUserInfo);
+
+        assertNotNull(result, "新用户创建后不应返回null");
+        assertEquals(3, result.getId(), "新用户ID应正确");
+        assertEquals("new@example.com", result.getEmail(), "新用户邮箱应正确");
+        verify(userRepository, times(1)).findByEmail("new@example.com");
+        verify(passwordEncoder, times(1)).encode(anyString());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 }
