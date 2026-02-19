@@ -1,12 +1,15 @@
 package com.joycart.backend.controller;
 
 import com.joycart.backend.constants.ApiConstants;
+import com.joycart.backend.dto.GoogleLoginRequestDTO;
+import com.joycart.backend.dto.GoogleUserInfo;
 import com.joycart.backend.dto.LoginRequestDTO;
 import com.joycart.backend.dto.LoginResponseDTO;
 import com.joycart.backend.dto.ResponseDTO;
 import com.joycart.backend.model.User;
 import com.joycart.backend.service.TranslationService;
 import com.joycart.backend.service.UserService;
+import com.joycart.backend.util.GoogleTokenVerifier;
 import com.joycart.backend.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.joycart.backend.constants.ApiConstants.TRANSLATIONS_TYPE_SYSTEM_MESSAGE;
@@ -34,6 +38,9 @@ public class UserController {
     
     @Autowired
     private TranslationService translationService;
+    
+    @Autowired
+    private GoogleTokenVerifier googleTokenVerifier;
 
      @PostMapping("/register")
     public ResponseEntity<ResponseDTO<User>> registerUser(@RequestBody User user){
@@ -170,6 +177,76 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Error during login for phone: {} - {}", 
                     loginRequestDTO.getPhoneNumber(), e.getMessage(), e);
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_LOGIN_FAILED_MESSAGE);
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
+    @PostMapping("/login/google")
+    public ResponseEntity<ResponseDTO<LoginResponseDTO.UserData>> loginWithGoogle(@RequestBody GoogleLoginRequestDTO request) {
+        logger.info("Received Google login request");
+        
+        if (request == null || request.getIdToken() == null || request.getIdToken().trim().isEmpty()) {
+            logger.warn("Google login failed - ID Token is empty");
+            ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.INVALID_TOKEN_MESSAGE);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+        
+        try {
+            Map<String, Object> payload = googleTokenVerifier.verifyIdToken(request.getIdToken());
+            if (payload == null) {
+                logger.warn("Google login failed - Token verification returned null payload");
+                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.INVALID_TOKEN_MESSAGE);
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+            
+            GoogleUserInfo googleUserInfo = new GoogleUserInfo();
+            googleUserInfo.setEmail((String) payload.get("email"));
+            googleUserInfo.setName((String) payload.get("name"));
+            googleUserInfo.setPicture((String) payload.get("picture"));
+            googleUserInfo.setGoogleId((String) payload.get("sub"));
+            googleUserInfo.setEmailVerified((Boolean) payload.get("emailVerified"));
+            
+            User user = userService.createOrUpdateUserFromGoogle(googleUserInfo);
+            if (user == null) {
+                logger.error("Google login failed - user creation or update returned null");
+                ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_LOGIN_FAILED_MESSAGE);
+                return ResponseEntity.internalServerError().body(errorResponse);
+            }
+            
+            String token = jwtUtil.generateToken(user.getId(), user.getPhoneNumber());
+            
+            String languageCode = user.getLanguagePreference();
+            String successMessage = translationService.getTranslation(
+                    TRANSLATIONS_TYPE_SYSTEM_MESSAGE,
+                    0L,
+                    ApiConstants.TRANSLATIONS_KEY_LOGIN_SUCCESS,
+                    languageCode
+            );
+            
+            if (successMessage == null) {
+                successMessage = translationService.getTranslation(
+                        TRANSLATIONS_TYPE_SYSTEM_MESSAGE,
+                        0L,
+                        ApiConstants.TRANSLATIONS_KEY_LOGIN_SUCCESS,
+                        ApiConstants.LANGUAGE_EN_US
+                );
+                if (successMessage == null) {
+                    successMessage = "Login successfully";
+                }
+            }
+            
+            LoginResponseDTO.UserData userData = new LoginResponseDTO.UserData(
+                    user.getId(),
+                    token
+            );
+            
+            ResponseDTO<LoginResponseDTO.UserData> response = ResponseDTO.success(successMessage, userData);
+            logger.info("Google user logged in successfully: {}", user.getUsername());
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Error during Google login - {}", e.getMessage(), e);
             ResponseDTO<LoginResponseDTO.UserData> errorResponse = ResponseDTO.error(ApiConstants.USER_LOGIN_FAILED_MESSAGE);
             return ResponseEntity.internalServerError().body(errorResponse);
         }
